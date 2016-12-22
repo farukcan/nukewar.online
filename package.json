@@ -1,0 +1,20 @@
+{
+  "name": "nukewar",
+  "version": "1.0.0",
+  "description": "nukewar browser based online game",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "farukcan.net",
+  "license": "ISC",
+  "dependencies": {
+    "mime-types": "^2.1.13",
+    "socket.io": "^1.7.1",
+    "syntax-error": "^1.1.6",
+    "uglify-js": "^2.7.5"
+  }
+}

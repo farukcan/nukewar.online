@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>nukewar.online</title>
+
+	<style type="text/css">
+		body {
+			background-color : black;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+		.interface {
+			position: absolute;
+			top: 0px;
+			bottom: 0px;
+			left: 0px;
+			right: 0px;
+			z-index: 9999;
+			color: #C7DF5F;
+
+			-webkit-user-select: none; /* Chrome/Safari */        
+			-moz-user-select: none; /* Firefox */
+			-ms-user-select: none; /* IE10+ */
+
+			/* Rules below not implemented in browsers yet */
+			-o-user-select: none;
+			user-select: none;
+		}
+
+		#world {
+			position: absolute;
+			right: 0px;
+			width: 100px;
+			font-size: 14px;
+		}
+
+		#world select {
+			width: 100px;
+			background-color: rgba(0,0,0,0.5);
+			color: #E4E8F1;
+
+		}
+
+		#chat {
+			position: absolute;
+			bottom: 0px;
+			width: 300px;
+			height: 150px;
+			background-color: rgba(0,0,0,0.2); /* onfocus hali bu */
+			border-radius: 10px;
+			margin: 5px;
+		}
+
+		#chat input {
+			position: absolute;
+			bottom: 0px;
+			background-color: rgba(0,0,0,0.8);
+			color: white;
+			border : 1px solid black;
+			border-radius: 5px;
+			width: 99%;
+			text-align: center;
+		}
+
+		message {
+			margin: 5px;
+			font-size: 10px;
+		}
+
+		username {
+			color: #CF1E20;
+		}
+
+	</style>
+</head>
+<body>
+
+<div class="interface" id="interface">
+	<div id="world"></div>
+
+	<!-- My cities -->
+
+	<div id="chat">
+	<input type="text" name="" placeholder="type a message">
+		<message>
+			<username>
+				Faruk CAN
+			</username>
+			<post>
+				Hello
+			</post>
+		</message>
+
+
+		
+
+	</div>
+
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
