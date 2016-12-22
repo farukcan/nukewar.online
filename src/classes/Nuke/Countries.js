@@ -1,45 +1,4 @@
 var Countries = {
-	USA : {
-		cities : {
-			newyork : {
-				population : 20630000,
-				position : {
-					lat : 40.712784,
-					lon : -74.005941
-				}
-			},
-			losangeles : {
-				population : 15058000,
-				position : {
-					lat : 34.052234,
-					lon : -118.243685
-				}
-			},
-			chicago : {
-				population : 9156000,
-				position : {
-					lat : 41.878114,
-					lon : -87.629798
-				}
-			},
-			houston : {
-				population : 5764000,
-				position : {
-					lat : 29.760427,
-					lon : -95.369803
-				}
-			},
-			philadelphia : {
-				population : 5570000,
-				position : {
-					lat : 39.952584,
-					lon : -75.165222
-				}
-			},
-		}
-	},
-
-
 	Turkey : {
 		cities : {
 			istanbul : {
@@ -80,6 +39,45 @@ var Countries = {
 		}
 	},
 
+	USA : {
+		cities : {
+			newyork : {
+				population : 20630000,
+				position : {
+					lat : 40.712784,
+					lon : -74.005941
+				}
+			},
+			losangeles : {
+				population : 15058000,
+				position : {
+					lat : 34.052234,
+					lon : -118.243685
+				}
+			},
+			chicago : {
+				population : 9156000,
+				position : {
+					lat : 41.878114,
+					lon : -87.629798
+				}
+			},
+			houston : {
+				population : 5764000,
+				position : {
+					lat : 29.760427,
+					lon : -95.369803
+				}
+			},
+			philadelphia : {
+				population : 5570000,
+				position : {
+					lat : 39.952584,
+					lon : -75.165222
+				}
+			},
+		}
+	},
 
 	Russia : {
 		cities : {

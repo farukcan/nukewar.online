@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Thu Dec 22 2016 14:32:54 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Thu Dec 22 2016 20:18:52 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -1991,47 +1991,6 @@ GPos.prototype = {
 }
 
 var Countries = {
-	USA : {
-		cities : {
-			newyork : {
-				population : 20630000,
-				position : {
-					lat : 40.712784,
-					lon : -74.005941
-				}
-			},
-			losangeles : {
-				population : 15058000,
-				position : {
-					lat : 34.052234,
-					lon : -118.243685
-				}
-			},
-			chicago : {
-				population : 9156000,
-				position : {
-					lat : 41.878114,
-					lon : -87.629798
-				}
-			},
-			houston : {
-				population : 5764000,
-				position : {
-					lat : 29.760427,
-					lon : -95.369803
-				}
-			},
-			philadelphia : {
-				population : 5570000,
-				position : {
-					lat : 39.952584,
-					lon : -75.165222
-				}
-			},
-		}
-	},
-
-
 	Turkey : {
 		cities : {
 			istanbul : {
@@ -2072,6 +2031,45 @@ var Countries = {
 		}
 	},
 
+	USA : {
+		cities : {
+			newyork : {
+				population : 20630000,
+				position : {
+					lat : 40.712784,
+					lon : -74.005941
+				}
+			},
+			losangeles : {
+				population : 15058000,
+				position : {
+					lat : 34.052234,
+					lon : -118.243685
+				}
+			},
+			chicago : {
+				population : 9156000,
+				position : {
+					lat : 41.878114,
+					lon : -87.629798
+				}
+			},
+			houston : {
+				population : 5764000,
+				position : {
+					lat : 29.760427,
+					lon : -95.369803
+				}
+			},
+			philadelphia : {
+				population : 5570000,
+				position : {
+					lat : 39.952584,
+					lon : -75.165222
+				}
+			},
+		}
+	},
 
 	Russia : {
 		cities : {
@@ -2805,16 +2803,65 @@ var Countries = {
 
 
 	//////////////////////////////////////////////////////////////////////////////////
+	//		client
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var socket = io('localhost:3000');
+
+	socket.on('hello',function(){
+		resetCountries();
+	});
+
+	socket.on('disconnect', function(){
+		alert("disconnected");
+	});
+
+	socket.on('message',function(data){
+		console.log(data);
+		$("#messages").append("<message><username>"+data.username+"</username><post>"+data.message+"</post></message>");
+		$('#messages').scrollTop($('#messages')[0].scrollHeight);
+	});
+
+
+	$("#chatinput").keydown(function(e){
+		if(e.keyCode==13){
+			socket.emit('sending message',$("#chatinput").val());
+			$("#chatinput").val('');
+		}
+	});
+
+
+	function resetCountries(){
+		for(country in Countries){
+			Countries[country].lose = false;
+			Countries[country].isYou = false;
+			Countries[country].kills = 0;
+		}
+
+		resetCities();
+	}
+
+	function resetCities(){
+		
+		for(city_name in city_list){
+			city_list[city_name].bombed = false;
+			city_list[city_name].build = false;
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////
 	//		interface
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var w_html="";
 	var selected_city;
+	var your_county = "Turkey";
 
 	for(country in Countries){
 		w_html+="<table><tr><td><img src='flags/16/"+country+".png'/></td><td>"+country+"</td></tr></table>";
 		w_html+="<select class='city_select' id='cityselect_"+country+"'>";
-		w_html+="<option value='none'>"+5+" City</option>";
+		w_html+="<option value='none'>information</option>";
 		for(cityname in Countries[country].cities){
 			var city = Countries[country].cities[cityname];
 			w_html+="<option value='"+cityname+"'>"+cityname+"</option>";
@@ -2825,6 +2872,7 @@ var Countries = {
 
 	$("#world").html(w_html);
 
+	$(".city_select option[value='none']").html("Select a City");
 
 
 	$(".city_select").change(function(e){
@@ -2834,8 +2882,12 @@ var Countries = {
 
 	});
 
+	function getCity(city_name){
+		return city_list[city_name];
+	}
+
 	function InterfaceGOTOCity(city_name){
-		var city = city_list[city_name];
+		var city = getCity(city_name);
 		camera_gpos = new GPos(city.position.lat,city.position.lon);
 	}
 
@@ -2849,7 +2901,119 @@ var Countries = {
 	function InterfaceOnSelectCity(){
 		InterfaceGOTOCity(selected_city);
 		InterfaceResetWorld();
+		$("target").html(selected_city);
+		$("#control").fadeIn();
+
+		
+		InterfaceMakeCardDisabled();
+
+		var city = getCity(selected_city);
+
+		if(isYourCity(selected_city)){
+			if(city.bombed){
+				InterfaceMakeCardActive("clear");
+				InterfaceSetInfo('clear',translate('60 sec'));
+			}
+			else{
+				InterfaceMakeCardPassive("clear");
+				InterfaceSetInfo('clear',translate('City is not damaged'));
+			}
+
+			InterfaceMakeCardActive("swap");
+
+			if(city.build){
+				InterfaceMakeCardPassive("build");
+				InterfaceSetInfo('build',translate('City is not empty'));
+			}else{
+				InterfaceMakeCardActive("build");
+			}
+
+			InterfaceSetInfo('nuke',translate('City is yours'));
+		}else{
+
+			// bombalanmadıysa?
+			InterfaceMakeCardPassive("nuke");
+			InterfaceSetInfo('nuke',translate('x sec'));
+
+
+			InterfaceSetInfo('clear',translate('It is not your city'));
+			InterfaceSetInfo('swap',translate('It is not your city'));
+			InterfaceSetInfo('build',translate('It is not your city'));
+		}
 	}
+
+	function isYourCity(name){
+		return getYourCountry().cities[name] ? true : false;
+	}
+
+	function getYourCountry(){
+		return Countries[your_county];
+	}
+
+	function InterfaceMakeCardDisabled(name){
+		if(name){
+			$("#"+name+"Td").css("opacity",0.2);
+			return;
+		}
+		$(".card").css("opacity",0.2);
+	}
+
+	function InterfaceMakeCardPassive(name){
+		$("#"+name+"Td").css("opacity",0.4);
+	}
+
+	function InterfaceMakeCardActive(name){
+		$("#"+name+"Td").css("opacity",1);
+	}
+
+	function InterfaceSetInfo(card,info){
+		$("#"+card+"Td inf").html(info);
+	}
+
+	$(function(){
+		$("#start").fadeIn(3000);
+	});
+
+
+	//
+	// Multi Lang
+	//
+
+	function translate(string){
+		return string;
+	}
+
+
+	// Statics
+	loop.functions.push(function(Time){
+		$("killed").each(function(i,e){
+			var element = $(e);
+			if(element.attr('enabled')==1){
+				var cur = element.attr('current');
+				var tar = element.attr('target');
+				var val = Math.round(lerp(cur,tar,Math.min(Time.deltaTime,1)));
+				val++;				
+
+
+				if(val >= tar){
+					element.attr('enabled',0);
+					val = tar;
+				}
+
+				element.attr('current',val);
+				element.html(val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+			}
+		});
+	});
+
+
+
+	function lerp(a,b,d){
+		return (1-d) * a + d * b;
+	}
+
+	
+
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
@@ -2896,6 +3060,10 @@ var Countries = {
 		}else{
 			camera_r/=1.05;
 		}
+
+
+		camera_r = Math.min(camera_r,2.6);
+		camera_r = Math.max(camera_r,world_r);
 
 	}
 

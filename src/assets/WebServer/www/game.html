@@ -32,13 +32,14 @@
 			position: absolute;
 			right: 0px;
 			width: 100px;
-			font-size: 14px;
+			font-size: 12px;
 		}
 
 		#world select {
 			width: 100px;
-			background-color: rgba(0,0,0,0.5);
+			background-color: rgba(0,0,0,0.3);
 			color: #E4E8F1;
+			font-size: 12px;
 
 		}
 
@@ -50,6 +51,10 @@
 			background-color: rgba(0,0,0,0.2); /* onfocus hali bu */
 			border-radius: 10px;
 			margin: 5px;
+		}
+
+		#chat:hover {
+			background-color: rgba(10,10,50,0.3);
 		}
 
 		#chat input {
@@ -64,42 +69,139 @@
 		}
 
 		message {
+			display: block;
 			margin: 5px;
-			font-size: 10px;
+			font-size: 14px;
+		}
+
+		#messages {
+			height: 130px;
+			overflow: auto;
 		}
 
 		username {
 			color: #CF1E20;
+			margin-right: 10px;
+		}
+
+
+		#control {
+			margin: 5px;
+		}
+
+		#control h1{
+			margin: 0px;
+			padding: 0px;
+		}
+
+		.card:hover {
+			background-color: rgba(237,28,36,0.3);
+		}
+
+		inf {
+			font-size: 10px;
+			color : white;
+		}
+
+		#status {
+			position: absolute;
+			top: 0px;
+			left: 50%;
+			transform: translate(-50%, 0);
+		}
+
+		#statics {
+			position: absolute;
+			right: 0px;
+			bottom: 0px;
+			margin: 5px;
+		}
+
+		#start {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background-color: rgba(0,0,0,0.5);
+			border-radius: 20px;
+			padding: 10px;
+
+		}
+
+		gamename {
+			font-size: 50px;
+			display: block;
+		}
+
+		slogan {
+			color: white;
+			font-style: italic;
+			display: block;
+		}
+		#start input {
+			margin-top: 10px;
+			background-color: rgba(0,0,0,0.5);
+			border: 1px solid black;
+			color: white;
+			text-align: center;
+			border-radius: 5px;
+			height: 50px;
 		}
 
 	</style>
 </head>
+
 <body>
 
-<div class="interface" id="interface">
-	<div id="world"></div>
+	<div class="interface" id="interface">
+		<div id="world" style="display: none;"></div>
 
-	<!-- My cities -->
+		<!-- My cities -->
 
-	<div id="chat">
-	<input type="text" name="" placeholder="type a message">
-		<message>
-			<username>
-				Faruk CAN
-			</username>
-			<post>
-				Hello
-			</post>
-		</message>
+		<div id="start" style="display: none;">
+			<gamename>nukewar</gamename>
+			<slogan>Nuclear winter is coming!</slogan>
+			<input type="text" placeholder="Type a username">
+		</div>
+
+		<div id="chat">
+			<input type="text" id="chatinput" placeholder="type a message">
+			<div id="messages">
+				
+			</div>
+		</div>
 
 
-		
+		<div id="control" style="display: none;">
+			<h1>Target : <target>target_name</target></h1>
+			
+			<br/>
+
+			<table>			
+				<tr id="nukeTd" class="card"><td><img id="nukeButton" height="48px" src="images/nuke.svg"/></td><td>Launch nuclear missile from <missileselector>[ ]</missileselector> <inf>x sec</inf></td></tr>
+				<tr id="clearTd" class="card"><td><img id="clearButton" height="48px" src="images/clear.svg"/></td><td>Clear Area <inf>60 sec</inf></td></tr>
+				<tr id="swapTd" class="card"><td><img id="swapButton" height="48px" src="images/swap.svg"/></td><td>Transport to <cityselector>[ ]</cityselector> <inf>180 sec</inf></td></tr>
+
+				<tr id="buildTd" class="card"><td><img id="buildButton" height="48px" src="images/build.svg"/></td><td>Build missile launcher<inf>240 sec</inf></td></tr>
+			</table>
+
+		</div>
+
+		<div id="status" style="display: none;">
+			Select a city and make your move
+		</div>
+
+
+		<div id="statics" style="display: none;">
+			<killed id="totalkill" current=0 target=654655 enabled=1> 0 </killed> people dead
+			<killed id="yourlose" current=0 target=54345 enabled=1> 0 </killed> of yours
+		</div>
 
 	</div>
 
-</div>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/socket.io.min.js"></script>
+	<script src="game.js"></script>
 
-<script src="js/jquery.min.js"></script>
-<script src="game.js"></script>
 </body>
 </html>
