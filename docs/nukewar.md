@@ -66,6 +66,11 @@ https://www.transparenttextures.com/
 * **İnşa** : 4dk
 * **Onar**: 1dk (Şehrin nükleer olarak vurulmuş olması gerek)
 
+## Server Side
+
+* socket.io kullanılacak
+* odalar olacak
+
 
 ## Ülkeler
 

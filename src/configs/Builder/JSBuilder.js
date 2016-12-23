@@ -14,6 +14,7 @@ Settings.JSBuilder = {
 				"src/assets/WebServer/www/threex.planets-master/threex.atmospherematerial.js",
 				"src/classes/GPS/GPos.js",
 				"src/classes/Nuke/",
+				"src/assets/JS/languages/",
 				"src/assets/JS/main.js",
 			],
 			to : "src/assets/WebServer/www/game.js",

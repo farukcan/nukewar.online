@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
+
 	<title>nukewar.online</title>
 
 	<style type="text/css">
@@ -119,12 +121,13 @@
 
 		#start {
 			position: absolute;
-			top: 50%;
+			top: 39%;
 			left: 50%;
 			transform: translate(-50%, -50%);
 			background-color: rgba(0,0,0,0.5);
 			border-radius: 20px;
 			padding: 10px;
+			text-align: center;
 
 		}
 
@@ -138,14 +141,60 @@
 			font-style: italic;
 			display: block;
 		}
-		#start input {
+		#nick {
 			margin-top: 10px;
 			background-color: rgba(0,0,0,0.5);
 			border: 1px solid black;
 			color: white;
-			text-align: center;
 			border-radius: 5px;
 			height: 50px;
+			width: 100%;
+			text-align: center;
+		}
+
+		#start .play {
+			float: right;
+			width: 75px;
+			background-color: rgba(0,0,0,0.9);
+			border: 1px solid black;
+			border-radius: 20px;
+			color : white;
+		}
+		#start .play:hover {
+			background-color: rgba(0,0,0,0.2);
+		}
+		small {
+			font-size: 15px;
+		}
+
+		#lobby {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background-color: rgba(0,0,0,0.5);
+			border-radius: 20px;
+			padding: 10px;
+			text-align: center;
+		}
+
+		#languages {
+			position: absolute;
+			left: 0px;
+			font-size: 15px;
+			margin: 5px;
+		}
+		lang {
+			display: block;
+			color: white;
+		}
+
+		lobby {
+			display: block;
+		}
+
+		#lobby_list img{
+			margin-right: 5px;
 		}
 
 	</style>
@@ -158,14 +207,37 @@
 
 		<!-- My cities -->
 
-		<div id="start" style="display: none;">
-			<gamename>nukewar</gamename>
-			<slogan>Nuclear winter is coming!</slogan>
-			<input type="text" placeholder="Type a username">
+		<div id="lobby" style="display: none;">
+			<h2 lang="en">Lobby</h2>
+
+			<div id="lobby_list"></div>
+
+			<hr/>
+			<input type="checkbox" id="cbWait">
+			<spa lang="en">Do not wait for 10 players</span>
+
+
+
 		</div>
 
-		<div id="chat">
-			<input type="text" id="chatinput" placeholder="type a message">
+		<div id="languages" style="display: none;">
+			<span lang="en">Please select your language</span>
+			<lang value="en"> <img src="flags/16/UK.png"> English </lang>
+			<lang value="tr"> <img src="flags/16/Turkey.png"> Türkçe </lang>
+		</div>
+
+		<div id="start" style="display: none;">
+			<gamename>nukewar<small>.online</small></gamename>
+			<slogan lang="en">Nuclear winter is coming!</slogan>
+			<form id="playform">
+				<input id="nick" type="text" placeholder="Type a nickname" lang="en">
+				<input class="play" type="submit" value="Play" lang="en" />
+			</form>
+		</div>
+
+
+		<div id="chat" style="display: none;">
+			<input type="text" id="chatinput" placeholder="type a message" lang="en">
 			<div id="messages">
 				
 			</div>
@@ -200,6 +272,8 @@
 	</div>
 
 	<script src="js/jquery.min.js"></script>
+	<script src="js/js.cookie.js"></script>
+	<script src="js/jquery-lang.js"></script>
 	<script src="js/socket.io.min.js"></script>
 	<script src="game.js"></script>
 

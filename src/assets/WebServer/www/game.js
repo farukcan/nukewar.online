@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Thu Dec 22 2016 20:18:52 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Fri Dec 23 2016 17:11:47 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2398,6 +2398,18 @@ var Countries = {
 		}
 	}
 }
+Lang.prototype.pack.tr = {
+    "token": {
+        "Please select your language" : "Lütfen dilinizi seçiniz",
+        "Lobby" : "Lobi",
+        "Nuclear winter is coming!" : "Nükleer kış geliyor!",
+        "Type a nickname" : "Takma ad giriniz",
+        "Play" : "Oyna",
+        "type a message" : "mesaj yaz",
+        "Do not wait for 10 players" : "10 oyuncuyu bekleme"
+    },
+    "regex": []
+};
 	// Bir WebGL renderi oluştur
 
 	var renderer	= new THREE.WebGLRenderer({
@@ -2451,13 +2463,15 @@ var Countries = {
 		}
 	}
 
+	function setPopulationsOn(){
+		city_cube_list.forEach(function(cube){cube.visible=true;});
+	}	
 
-	//city_cube_list.forEach(function(cube){cube.visible=false;});
+	function setPopulationsOff(){
+		city_cube_list.forEach(function(cube){cube.visible=false;});
+	}
 
-
-
-
-
+	setPopulationsOff();
 
 	//
 	// Flares
@@ -2631,17 +2645,28 @@ var Countries = {
 		this.mesh = new THREE.Mesh( new THREE.BoxGeometry( 0.0005, 0.0005, 0.005 ), new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } ) );
 		this.flare = addFlare( 0.55, 0.9, 0.5, zeropoint );
 
+		// interactive
+		this.position = config.start;
+
 		scene.add(this.mesh);
 		this.id = RocketController.rocketCount++;
 		RocketController.rockets.push(this);
+
 	}
 
 	Rocket.prototype = {
 		remove : function(){
 			// meshi
+			scene.remove(this.mesh);
 			// flaresi
+			scene.remove(this.flare);
 			// ve diziden silinmeli
-			console.log("BOOOOMMMM");
+			for (var index in RocketController.rockets){
+				if(RocketController.rockets[index].id == this.id){
+					RocketController.rockets.splice(index,1);
+					break;
+				}
+			}	
 		}
 	};
 
@@ -2667,11 +2692,14 @@ var Countries = {
 				var position = rocket.startPoint.lerp(rocket.targetPoint , d ); // global olarak şuanki konum
 
 
+
 				rocket.currentDistance = position.distanceBetween(rocket.targetPoint,RocketController.standarts.realWorld); // şuanki hedefe mesafe
 
 
 				if(rocket.currentDistance<0)
 					rocket.currentDistance = 0;
+
+				rocket.position = position;
 
 				position = position.toVector3(world_r + Math.abs(d*d-d) * RocketController.standarts.maxAltitude); // meshin konum ve yüksekliği
 
@@ -2692,51 +2720,20 @@ var Countries = {
 
 
 
-	/*setInterval(function(){
-		new Rocket({
-			start : new GPos(0,0),
-			target : new GPos(Math.random()*90-45,Math.random()*90-45)
-		});
-	},10000);*/
 
 
-	var a = new Rocket({
+
+	var exampleRocketA = new Rocket({
 			start : new GPos(90,0),
 			target : new GPos(-90,0)
 	});
-	var b = new Rocket({
-			start : new GPos(0,-180),
-			target : new GPos(0,0)
-	});
-	/*new Rocket({
-		start : new GPos(0,0),
-		target : new GPos(41.008238,28.978359)
+	var exampleRocketB = new Rocket({
+			start : new GPos(45,0),
+			target : new GPos(0,180)
 	});
 
-	new Rocket({
-		start : new GPos(0,0),
-		target : new GPos(-41.008238,28.978359)
-	});
-
-	new Rocket({
-		start : new GPos(0,0),
-		target : new GPos(-41.008238,-28.978359)
-	});
-
-	new Rocket({
-		start : new GPos(0,0),
-		target : new GPos(41.008238,-28.978359)
-	});
-
-	new Rocket({
-		start : new GPos(0,0),
-		target : new GPos(-90,-28.978359)
-	});
-
-	new Rocket({
-		start : new GPos(0,0),
-		target : new GPos(90,-28.978359)
-	});*/
+	camera.follow = true;
+	camera.target = exampleRocketB;
 
 	//
 	// Efects
@@ -2806,10 +2803,23 @@ var Countries = {
 	//		client
 	//////////////////////////////////////////////////////////////////////////////////
 
-	var socket = io('localhost:3000');
+	var socket = io(window.location.hostname+':3000');
 
-	socket.on('hello',function(){
-		resetCountries();
+	socket.on('state',function(state){
+		switch(state){
+			case 'main':
+				InterfaceSetState(state);
+				socket.emit("set language",lang.currentLang);
+				break;
+
+			case 'lobby':
+				InterfaceSetState(state);
+				resetCountries();
+				break;
+
+			default:
+				alert("undefined state");
+		}
 	});
 
 	socket.on('disconnect', function(){
@@ -2820,6 +2830,38 @@ var Countries = {
 		console.log(data);
 		$("#messages").append("<message><username>"+data.username+"</username><post>"+data.message+"</post></message>");
 		$('#messages').scrollTop($('#messages')[0].scrollHeight);
+	});
+
+	socket.on('users in lobby',function(users){
+		var lobbies = {};
+		users.forEach(function(user){
+			if(lobbies[user.language]){
+				lobbies[user.language].push(user);
+			}else{
+				lobbies[user.language] = [user];
+			}
+		});
+		var html = "";
+		for(lobby in lobbies){
+			var src = $("lang[value='"+lobby+"'] img").attr("src");
+			html += "<lobby><img src='"+src+"'/>";
+			lobbies[lobby].forEach(function(user){
+				var a;
+				if(user.id == socket.id){
+					a="<b>"+user.username+"</b> , ";
+				}else{
+					a=user.username+" , ";
+				}
+
+				if(!user.wait){
+					a = "<u>"+a+"</u>";
+				}
+
+				html+=a;
+			});
+			html += "</lobby>";
+		}
+		$("#lobby_list").html(html);
 	});
 
 
@@ -2888,7 +2930,7 @@ var Countries = {
 
 	function InterfaceGOTOCity(city_name){
 		var city = getCity(city_name);
-		camera_gpos = new GPos(city.position.lat,city.position.lon);
+		camera.GoTo(new GPos(city.position.lat,city.position.lon));
 	}
 
 	function InterfaceResetWorld(){
@@ -2970,8 +3012,53 @@ var Countries = {
 		$("#"+card+"Td inf").html(info);
 	}
 
+	function InterfaceSetState(state){
+		var delay=3000;
+
+		if( state == 'main' ) {
+
+			InterfaceOpenPanels(["start","languages"],delay);
+
+			InterfaceClosePanels(["lobby","chat","world","control","status","statics"],delay);
+
+			$("#nick").focus();
+
+		}else if( state == 'lobby' ){
+
+			InterfaceOpenPanels(["chat","lobby","languages"],100);
+
+			InterfaceClosePanels(["start","world","control","status","statics"],100);
+
+			camera.GoTo(new GPos(-20,120));
+
+		}
+
+	}
+
+	function InterfaceOpenPanels(panels,delay){
+		panels.forEach(function(panel){
+			$("#"+panel).fadeIn(delay);
+		});
+	}
+
+	function InterfaceClosePanels(panels,delay){
+		panels.forEach(function(panel){
+			$("#"+panel).fadeOut(delay);
+		});
+	}
+
 	$(function(){
-		$("#start").fadeIn(3000);
+		
+
+
+		$("#playform").submit(function(){
+			socket.emit('nick',$("#nick").val());
+			return false;
+		});
+
+		$('#cbWait').change(function() {
+	        socket.emit('change wait status',!$(this).is(":checked"));      
+   		});
 	});
 
 
@@ -2979,12 +3066,56 @@ var Countries = {
 	// Multi Lang
 	//
 
+	var lang = new Lang();
+
+    lang.init({
+        defaultLang: 'en',
+
+	    /**
+	     * This object is only required if you want to override the default
+	     * settings for cookies.
+	     */
+	    cookie: {
+	        /**
+	         * Overrides the default cookie name to something else. The default
+	         * is "langCookie".
+	         * @type String
+	         * @optional
+	         */
+	        name: 'langCookie',
+
+	        expiry: 365,
+	        path: '/'
+	    },
+
+	    /**
+	     * If true, cookies will override the "currentLang" option if the
+	     * cookie is set. You usually shouldn't need to specify this option
+	     * at all unless your JavaScript lang.init() method is being
+	     * dynamically generated by PHP or other server-side processor.
+	     * @type Boolean
+	     * @optional 
+	     */
+	    allowCookieOverride: true
+
+    });
+
+
 	function translate(string){
 		return string;
 	}
 
+	$(function(){
+		$("lang").click(function(){
+			window.lang.change($(this).attr("value"));
+			socket.emit("set language",lang.currentLang);
+		});
+	});
 
+	//
 	// Statics
+	//
+
 	loop.functions.push(function(Time){
 		$("killed").each(function(i,e){
 			var element = $(e);
@@ -3071,9 +3202,11 @@ var Countries = {
 	var camera_gpos = new GPos(41.008238,28.978359);
 	var camera_sens = 5000;
 	var camera_r=2.2;
+	camera.GoTo = function(loc){
+		camera.follow = false;
+		camera_gpos = loc;
+	};
 	loop.functions.push(function(Time){
-		/*camera.position.x += (mouse.position.x*5 - camera.position.x) * (Time.deltaTime*3)
-		camera.position.y += (mouse.position.y*5 - camera.position.y) * (Time.deltaTime*3)*/
 
 		if(mouse.down){
 
@@ -3081,13 +3214,23 @@ var Countries = {
 			camera_gpos.lon+=diff.x*Time.deltaTime*camera_sens;
 			camera_gpos.lat-=diff.y*Time.deltaTime*camera_sens;
 			camera_gpos.limit();
+			if(camera.follow){
+				camera.follow = false;
+				camera_gpos.lat = camera.target.position.lat;
+				camera_gpos.lon = camera.target.position.lon;
+			}
 
 		}else{
 			camera_gpos.lon+=Time.deltaTime/10;
 			camera_gpos.limit();
 		}
 
-		camera.position.lerp( camera_gpos.toVector3(camera_r) , Time.deltaTime);
+		if(camera.follow){
+			camera.position.lerp(camera.target.position.toVector3(camera_r),Time.deltaTime);
+
+		}else{
+			camera.position.lerp( camera_gpos.toVector3(camera_r) , Time.deltaTime);
+		}
 
 		old_mouse_pos.copy(mouse.position);
 
