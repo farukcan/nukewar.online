@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Fri Dec 23 2016 17:11:47 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Sun Dec 25 2016 13:02:20 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -1993,35 +1993,35 @@ GPos.prototype = {
 var Countries = {
 	Turkey : {
 		cities : {
-			istanbul : {
+			Istanbul : {
 				population : 13287000,
 				position : {
 					lat : 41.008238,
 					lon : 28.978359
 				}
 			},
-			ankara : {
+			Ankara : {
 				population : 4538000,
 				position : {
 					lat : 39.933363,
 					lon : 32.859742
 				}
 			},
-			izmir : {
+			Izmir : {
 				population : 3112000,
 				position : {
 					lat : 38.423734,
 					lon : 27.142826
 				}
 			},
-			konya : {
+			Konya : {
 				population : 1220795,
 				position : {
 					lat : 37.874643,
 					lon : 32.493155
 				}
 			},
-			antalya : {
+			Antalya : {
 				population : 1978333,
 				position : {
 					lat : 36.896891,
@@ -2033,35 +2033,35 @@ var Countries = {
 
 	USA : {
 		cities : {
-			newyork : {
+			NewYork : {
 				population : 20630000,
 				position : {
 					lat : 40.712784,
 					lon : -74.005941
 				}
 			},
-			losangeles : {
+			LosAngeles : {
 				population : 15058000,
 				position : {
 					lat : 34.052234,
 					lon : -118.243685
 				}
 			},
-			chicago : {
+			Chicago : {
 				population : 9156000,
 				position : {
 					lat : 41.878114,
 					lon : -87.629798
 				}
 			},
-			houston : {
+			Houston : {
 				population : 5764000,
 				position : {
 					lat : 29.760427,
 					lon : -95.369803
 				}
 			},
-			philadelphia : {
+			Philadelphia : {
 				population : 5570000,
 				position : {
 					lat : 39.952584,
@@ -2073,35 +2073,35 @@ var Countries = {
 
 	Russia : {
 		cities : {
-			moscow : {
+			Moscow : {
 				population : 16170000,
 				position : {
 					lat : 55.755826,
 					lon : 37.617300
 				}
 			},
-			stpetersburg : {
+			StPetersburg : {
 				population : 5126000,
 				position : {
 					lat : 59.934280,
 					lon : 30.335099
 				}
 			},
-			omsk : {
+			Omsk : {
 				population : 1154116,
 				position : {
 					lat : 54.988480,
 					lon : 73.324236
 				}
 			},
-			kazan : {
+			Kazan : {
 				population : 1216965,
 				position : {
 					lat : 55.830431,
 					lon : 49.066081
 				}
 			},
-			perm : {
+			Perm : {
 				population : 991162,
 				position : {
 					lat : 58.029681,
@@ -2114,35 +2114,35 @@ var Countries = {
 
 	China : {
 		cities : {
-			guangzhou : {
+			Guangzhou : {
 				population : 20597000,
 				position : {
 					lat : 23.129110,
 					lon : 113.264385
 				}
 			},
-			shanghai : {
+			Shanghai : {
 				population : 23416000,
 				position : {
 					lat : 31.230416,
 					lon : 121.473701
 				}
 			},
-			beijing : {
+			Beijing : {
 				population : 21009000,
 				position : {
 					lat : 39.904211,
 					lon : 116.407395
 				}
 			},
-			wuhan : {
+			Wuhan : {
 				population : 7509000,
 				position : {
 					lat : 30.593099,
 					lon : 114.305393
 				}
 			},
-			xian : {
+			Xian : {
 				population : 5977000,
 				position : {
 					lat : 34.341575,
@@ -2155,35 +2155,35 @@ var Countries = {
 
 	Canada : {
 		cities : {
-			toronto : {
+			Toronto : {
 				population : 6456000,
 				position : {
 					lat : 43.653226,
 					lon : -79.383184
 				}
 			},
-			montreal : {
+			Montreal : {
 				population : 3407963,
 				position : {
 					lat : 45.501689,
 					lon : -73.567256
 				}
 			},
-			vancouver : {
+			Vancouver : {
 				population : 603512,
 				position : {
 					lat : 49.282729,
 					lon : -123.120738
 				}
 			},
-			calgary : {
+			Calgary : {
 				population : 1235171,
 				position : {
 					lat : 51.048615,
 					lon : -114.070846
 				}
 			},
-			edmonton : {
+			Edmonton : {
 				population : 1159869,
 				position : {
 					lat : 53.544389,
@@ -2196,35 +2196,35 @@ var Countries = {
 
 	India : {
 		cities : {
-			mumbai : {
+			Mumbai : {
 				population : 17712000,
 				position : {
 					lat : 19.075984,
 					lon : 72.877656
 				}
 			},
-			delhi : {
+			Delhi : {
 				population : 24998000,
 				position : {
 					lat : 28.704059,
 					lon : 77.102490
 				}
 			},
-			bangalore : {
+			Bangalore : {
 				population : 8728906,
 				position : {
 					lat : 12.971599,
 					lon : 77.594563
 				}
 			},
-			chennai : {
+			Chennai : {
 				population : 9714000,
 				position : {
 					lat : 13.082680,
 					lon : 80.270718
 				}
 			},
-			ahmedabad : {
+			Ahmedabad : {
 				population : 7186000,
 				position : {
 					lat : 23.022505,
@@ -2237,35 +2237,35 @@ var Countries = {
 
 	EU : {
 		cities : {
-			london : {
+			London : {
 				population : 10236000,
 				position : {
 					lat : 51.507351,
 					lon : -0.127758
 				}
 			},
-			paris : {
+			Paris : {
 				population : 10858000,
 				position : {
 					lat : 48.856614,
 					lon : 2.352222
 				}
 			},
-			berlin : {
+			Berlin : {
 				population : 4069000,
 				position : {
 					lat : 52.520007,
 					lon : 13.404954
 				}
 			},
-			brussels : {
+			Brussels : {
 				population : 1830000,
 				position : {
 					lat : 50.850346,
 					lon : 4.351721
 				}
 			},
-			stockholm : {
+			Stockholm : {
 				population : 789024,
 				position : {
 					lat : 59.329323,
@@ -2278,35 +2278,35 @@ var Countries = {
 
 	Australia : {
 		cities : {
-			sydney : {
+			Sydney : {
 				population : 4036000,
 				position : {
 					lat : -33.868820,
 					lon : 151.209296
 				}
 			},
-			melbourne : {
+			Melbourne : {
 				population : 3906000,
 				position : {
 					lat : -37.813611,
 					lon : 144.963056
 				}
 			},
-			darwin : {
+			Darwin : {
 				population : 142312,
 				position : {
 					lat : -12.463440,
 					lon : 130.845642
 				}
 			},
-			perth : {
+			Perth : {
 				population : 1834563,
 				position : {
 					lat : -31.950527,
 					lon : 115.860457
 				}
 			},
-			mullewa : {
+			Mullewa : {
 				population : 729,
 				position : {
 					lat : -28.536944,
@@ -2319,35 +2319,35 @@ var Countries = {
 
 	Brazil : {
 		cities : {
-			saopaulo : {
+			SaoPaulo : {
 				population : 20365000,
 				position : {
 					lat : -23.550520,
 					lon : -46.633309
 				}
 			},
-			rio : {
+			Rio : {
 				population : 11727000,
 				position : {
 					lat : -22.906847,
 					lon : -43.172896
 				}
 			},
-			recife : {
+			Recife : {
 				population : 3347000,
 				position : {
 					lat : -8.047562,
 					lon : -34.876964
 				}
 			},
-			fortaleza : {
+			Fortaleza : {
 				population : 3401000,
 				position : {
 					lat : -3.731862,
 					lon : -38.526670
 				}
 			},
-			manaus : {
+			Manaus : {
 				population : 1793143,
 				position : {
 					lat : -3.119028,
@@ -2360,35 +2360,35 @@ var Countries = {
 
 	Africa : {
 		cities : {
-			lagos : {
+			Lagos : {
 				population : 13123000,
 				position : {
 					lat : 6.524379,
 					lon : 3.379206
 				}
 			},
-			cairo : {
+			Cairo : {
 				population : 15600000,
 				position : {
 					lat : 30.044420,
 					lon : 31.235712
 				}
 			},
-			luanda : {
+			Luanda : {
 				population : 5899000,
 				position : {
 					lat : -8.839988,
 					lon : 13.289437
 				}
 			},
-			johannesburg : {
+			Johannesburg : {
 				population : 8432000,
 				position : {
 					lat : -26.204103,
 					lon : 28.047305
 				}
 			},
-			capetown : {
+			CapeTown : {
 				population : 3812000,
 				position : {
 					lat : -33.924869,
@@ -2406,9 +2406,13 @@ Lang.prototype.pack.tr = {
         "Type a nickname" : "Takma ad giriniz",
         "Play" : "Oyna",
         "type a message" : "mesaj yaz",
-        "Do not wait for 10 players" : "10 oyuncuyu bekleme"
+        "Do not wait for 10 players" : "10 oyuncuyu beklemeden başla",
+        "Game will start in 10 second" : "Oyun 10 sn içinde başlayacaktır",
+        "Welcome" : "Hoşgeldin",
+        "Game will start automatically with 10 players" : "Oyun 10 oyuncu ile otomatik olarak başlayacaktır"
     },
-    "regex": []
+    "regex": [
+    ]
 };
 	// Bir WebGL renderi oluştur
 
@@ -2681,6 +2685,12 @@ Lang.prototype.pack.tr = {
 
 		rockets : [],
 
+		deleteAll : function(){
+			while(RocketController.rockets.length != 0){
+				RocketController.rockets[0].remove();
+			}
+		},
+
 		update : function(Time){
 
 			RocketController.rockets.forEach(function(rocket){
@@ -2817,6 +2827,13 @@ Lang.prototype.pack.tr = {
 				resetCountries();
 				break;
 
+			case 'game':
+				InterfaceSetState(state);
+
+				RocketController.deleteAll();
+
+				break;
+
 			default:
 				alert("undefined state");
 		}
@@ -2827,8 +2844,10 @@ Lang.prototype.pack.tr = {
 	});
 
 	socket.on('message',function(data){
-		console.log(data);
-		$("#messages").append("<message><username>"+data.username+"</username><post>"+data.message+"</post></message>");
+		if(data.username == "*#SERVER#*"){
+			$("#messages").append("<message><notice>"+data.message+"</notice></message>");
+		}else
+			$("#messages").append("<message><username>"+data.username+"</username><post>"+data.message+"</post></message>");
 		$('#messages').scrollTop($('#messages')[0].scrollHeight);
 	});
 
@@ -2845,7 +2864,9 @@ Lang.prototype.pack.tr = {
 		for(lobby in lobbies){
 			var src = $("lang[value='"+lobby+"'] img").attr("src");
 			html += "<lobby><img src='"+src+"'/>";
+			var usercount = 0;
 			lobbies[lobby].forEach(function(user){
+				usercount++;
 				var a;
 				if(user.id == socket.id){
 					a="<b>"+user.username+"</b> , ";
@@ -2859,9 +2880,13 @@ Lang.prototype.pack.tr = {
 
 				html+=a;
 			});
-			html += "</lobby>";
+			html += "["+usercount+"/10]</lobby>";
 		}
 		$("#lobby_list").html(html);
+	});
+
+	socket.on('global data', function(data){
+		console.log(data);
 	});
 
 
@@ -3031,6 +3056,12 @@ Lang.prototype.pack.tr = {
 
 			camera.GoTo(new GPos(-20,120));
 
+		}else if( state == 'game' ){
+
+			InterfaceOpenPanels(["chat","world","status","statics"],100);
+
+			InterfaceClosePanels(["lobby","languages","start","control"],100);
+
 		}
 
 	}
@@ -3102,7 +3133,7 @@ Lang.prototype.pack.tr = {
 
 
 	function translate(string){
-		return string;
+		return window.lang.translate(string);
 	}
 
 	$(function(){

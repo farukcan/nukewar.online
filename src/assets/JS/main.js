@@ -269,6 +269,12 @@
 
 		rockets : [],
 
+		deleteAll : function(){
+			while(RocketController.rockets.length != 0){
+				RocketController.rockets[0].remove();
+			}
+		},
+
 		update : function(Time){
 
 			RocketController.rockets.forEach(function(rocket){
@@ -405,6 +411,13 @@
 				resetCountries();
 				break;
 
+			case 'game':
+				InterfaceSetState(state);
+
+				RocketController.deleteAll();
+
+				break;
+
 			default:
 				alert("undefined state");
 		}
@@ -415,8 +428,10 @@
 	});
 
 	socket.on('message',function(data){
-		console.log(data);
-		$("#messages").append("<message><username>"+data.username+"</username><post>"+data.message+"</post></message>");
+		if(data.username == "*#SERVER#*"){
+			$("#messages").append("<message><notice>"+data.message+"</notice></message>");
+		}else
+			$("#messages").append("<message><username>"+data.username+"</username><post>"+data.message+"</post></message>");
 		$('#messages').scrollTop($('#messages')[0].scrollHeight);
 	});
 
@@ -433,7 +448,9 @@
 		for(lobby in lobbies){
 			var src = $("lang[value='"+lobby+"'] img").attr("src");
 			html += "<lobby><img src='"+src+"'/>";
+			var usercount = 0;
 			lobbies[lobby].forEach(function(user){
+				usercount++;
 				var a;
 				if(user.id == socket.id){
 					a="<b>"+user.username+"</b> , ";
@@ -447,9 +464,13 @@
 
 				html+=a;
 			});
-			html += "</lobby>";
+			html += "["+usercount+"/10]</lobby>";
 		}
 		$("#lobby_list").html(html);
+	});
+
+	socket.on('global data', function(data){
+		console.log(data);
 	});
 
 
@@ -619,6 +640,12 @@
 
 			camera.GoTo(new GPos(-20,120));
 
+		}else if( state == 'game' ){
+
+			InterfaceOpenPanels(["chat","world","status","statics"],100);
+
+			InterfaceClosePanels(["lobby","languages","start","control"],100);
+
 		}
 
 	}
@@ -690,7 +717,7 @@
 
 
 	function translate(string){
-		return string;
+		return window.lang.translate(string);
 	}
 
 	$(function(){

@@ -64,6 +64,13 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 		NukeGameServer.io.to(this.room).emit(name,value);
 	}
 
+	socket.Notice = function(msg){
+		this.emit('message',{
+			username : "*#SERVER#*",
+			message : msg
+		});
+	}
+
 	socket.JoinRoom("main");
 
 	socket.emit('state','main');
@@ -84,12 +91,18 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		NukeGameServer.SendLobbyUsers();
 
+		socket.Notice('<b lang="en">Welcome</b> '+socket.username);
+		socket.Notice('<i lang="en">Game will start automatically with 10 players</i>');
+
 	});
 
 	socket.on('change wait status',function(new_value){
 		// [ERR] Güvenlik
 		socket.wait = new_value;
-		socket.stoppedWaiting = Date.now();
+		if(!socket.wait){
+			socket.stoppedWaiting = Date.now();
+			socket.Notice('<b lang="en">Game will start in 10 second</b>');
+		}
 		NukeGameServer.SendLobbyUsers();
 	});
 
@@ -120,6 +133,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 	socket.on('disconnect',function(){
 		NukeGameServer.SendLobbyUsers();
 		NukeGameServer.online--;
+		// oyundaydsa oyundan at kaybetsin
 	});
 
 });
@@ -128,11 +142,26 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 // 1sc loop
 setInterval(function(){
 	var lobby_sockets = NukeGameServer.getLobbySockets();
-	lobby_sockets.forEach(function(socket){
-		if(!socket.wait){
-			console.log(Date.now()-socket.stoppedWaiting);
 
-			// eğer 10snden uzun bekleyen socket bulunursa, diğer bekleyenlerle beraber bir oyun oluşturulur.
+	var GameCreateLimit = false;
+	lobby_sockets.forEach(function(socket){
+
+		if(GameCreateLimit) return;
+
+		if(!socket.wait){
+			if( (Date.now()-socket.stoppedWaiting) > 10000 ){
+				GameCreateLimit = true;
+				var sockets_for_game = [];
+				lobby_sockets.forEach(function(soc){
+					if(!soc.wait){
+						if(socket.lang == soc.lang){
+							sockets_for_game.push(soc);
+						}
+					}
+				});
+
+				NukeGameManager.CreateGame(sockets_for_game);
+			}
 		}
 	});
 },1000);
@@ -150,6 +179,8 @@ setInterval(function(){
 	iki şey ile oyun oluşturulma tetiklenir.
 	* lobinin bir ülkesinde 10 oyuncuya ulaşılır
 	* lobinin bir aceleci üyesi 10snden fazla beklerse, diğer acelecilerle beraber botlu oyun oluşturulur
+
+	CreateGame( [ ...sockets... ])
 	
 	--- algoritma
 
@@ -157,6 +188,47 @@ setInterval(function(){
 	* bir oyuncu ya bot olur ya insan
 	* oyunculara rastgele ülkeler verir
 	* oyuncuların nükleeri ve komuta merkezi o ülkenin rastgele şehirlerine verilir 3 şehir boşta kalır.
+
+	Games : [ .. game .. ]
+
+	Game {
+		room : "room7893",
+		Countries : {
+			x {
+				... 
+				name //global
+				isBot :
+				busy : -time- // private
+				socket : {} 
+				lose : false // global
+				kills // private
+			}
+			...
+		},
+		Moves : [
+			{
+				type : 'nuke'
+				end : ''
+
+			}
+
+		]
+	}
+
+	MakeMove(type,target,from)
+
+
+	city {
+		bombed : false // global
+		build : { // private
+			type : 'center'
+
+			or
+
+			type : "nuke"
+			usable : -time-
+		}
+	}
 
 
 */
