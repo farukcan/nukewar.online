@@ -71,6 +71,20 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 		});
 	}
 
+	socket.lose=function(){
+		// şuanlık lose değilde maine gönderelim
+		socket.Notice("lose");
+		socket.Game = null;
+		socket.JoinRoom("main");
+		socket.emit('state','main');
+	};
+	socket.win=function(){
+		// şuanlık lose değilde maine gönderelim
+		socket.Notice("win");
+		socket.Game = null;
+		socket.JoinRoom("main");
+		socket.emit('state','main');
+	};
 	socket.JoinRoom("main");
 
 	socket.emit('state','main');
@@ -93,6 +107,28 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		socket.Notice('<b lang="en">Welcome</b> '+socket.username);
 		socket.Notice('<i lang="en">Game will start automatically with 10 players</i>');
+
+
+		// [ERR] test edilmeli
+		// Bir ülkeden 10 kişi olunca o soketler ile oda kur
+
+		var lobby_sockets = NukeGameServer.getLobbySockets();
+		var langs = {};
+
+		lobby_sockets.forEach(function(soc){
+			if(langs[soc.lang])
+				langs[soc.lang].push(soc);
+			else
+				langs[soc.lang] = [soc];
+		});
+
+		for(var i in langs){
+			if(langs[i].length==10){
+				NukeGameManager.CreateGame(langs[i]);
+				break;
+			}
+		}
+
 
 	});
 
@@ -123,6 +159,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 	});
 
 	socket.on('exit',function(lang){
+		socket.stoppedWaiting = Date.now();
 		socket.JoinRoom("main");
 		socket.emit('state',"main");
 
@@ -135,6 +172,89 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 		NukeGameServer.online--;
 		// oyundaydsa oyundan at kaybetsin
 	});
+
+	socket.on('launch nuclear missile',function(config){
+
+		if(!config || (typeof(config.target) != 'string') || (typeof(config.from) != 'string') ) return socket.Notice("ERR");
+
+		if( (typeof(Cities[config.target]) == "undefined") || (typeof(Cities[config.from]) == "undefined") ) return socket.Notice("ERR");
+
+		if(typeof(socket.Game) == 'undefined' || typeof(socket.Game) == 'null' ) return socket.Notice("ERR");
+
+		var target = socket.getCity(config.target);
+		var from = socket.getCity(config.from);
+		var Country = socket.Game.Countries[socket.country];
+
+		// kendi şehri değilse
+		if(socket.isYours(config.target)) return socket.Notice("<err lang='en'>City is yours</err>");
+
+		// o şehir bombalanmadıysa
+		if(target.bombed) return socket.Notice("<err lang='en'>City is already bombed</err>");
+
+		// ülke meşgul değilse
+		if( Country.busy > Date.now() ) return socket.Notice("<err lang='en'>Country is busy, please wait</err>");
+
+		// from geçerliyse ve orada nuke varsa
+		if(!from.build || from.build.type != "nuclear" ) return socket.Notice("<err lang='en'>City has not nuclear launcher</err>");
+
+		// nuke varsa bir sonraki zamanı uygunsa
+		if(from.build.usable > Date.now() ) return socket.Notice("<err lang='en'>Nuclear launcher is not ready, please wait</err>");
+
+		// busy yap
+		var cost = RocketController.calcTime(from,target);
+		Country.busy = Date.now() + cost;
+
+		from.build.usable = Date.now() + NukewarStandarts.ReloadCost;;
+
+		var move = {
+			type : "rocket",
+			target : config.target,
+			from : config.from,
+			ends : (Date.now() + cost )
+		};
+
+		socket.Game.Moves.push(move);
+		socket.ToRoom('move',move);
+		socket.SendPrivateData();
+
+	} );
+
+	socket.on('clear area',function(target){
+
+		socket.Notice(JSON.stringify(target));
+
+		// kendi şehriyse
+		// şehir bombalandıysa
+		// ülke meşgül değilse
+
+		// busy yap
+		// timer ile şehri bombed=false yap ve update
+	} );
+
+	socket.on('transport',function(config){
+
+		socket.Notice(JSON.stringify(config));
+
+		// iki şehirde kendi şehriyse
+		// iki şehirde bombalanmadıysa
+		// ülke meşgul değilse
+
+		// busy yap
+		// timer ile şehirlerin buildlerini replace et ve update
+
+	} );
+	socket.on('build missile launcher',function(target){
+
+		socket.Notice(JSON.stringify(target));
+
+		// kendi şehriyse
+		// bombalanmadıysa
+		// boşsa
+		// ülke meşgul değilse
+
+		// busy yap
+		// timer ile şehre bir nuke build et ve update
+	} );
 
 });
 
@@ -164,6 +284,15 @@ setInterval(function(){
 			}
 		}
 	});
+
+	var i = NukeGameManager.games.length;
+	while(i--){
+		if(NukeGameManager.games[i].over)
+			NukeGameManager.games.splice(i,1);
+		else
+			NukeGameManager.games[i].update();
+	}
+
 },1000);
 
 
@@ -201,7 +330,6 @@ setInterval(function(){
 				busy : -time- // private
 				socket : {} 
 				lose : false // global
-				kills // private
 			}
 			...
 		},
@@ -216,7 +344,6 @@ setInterval(function(){
 	}
 
 	MakeMove(type,target,from)
-
 
 	city {
 		bombed : false // global

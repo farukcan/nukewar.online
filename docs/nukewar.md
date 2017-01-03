@@ -19,12 +19,26 @@ Sonra unitye dök
 - [x] Dünyayı atmosferi ile oluştur.
 - [x] Dünyanın üzerinde cisimler oluştur
 - [x] Roket ekle ve hareketlendir.
-- [ ] arayüz eklenecek. chat , hamle seçimi ve hamlelerin kaybettireceği süre.
-- [ ] sunucu tarafı yazılacak
+- [x] arayüz eklenecek. chat , hamle seçimi ve hamlelerin kaybettireceği süre.
+- [x] sunucu tarafı yazılacak
+- [x] hata : darwinden losangelese atınca lerp fonksiyonu sapıtıyor galba
+- [x] Meşguliyet durumu interface yansımalı
+- [x] patlamadan sonra ayrı şehirin zaten bombalanmış olduğu gözükmüyo
+- [x] status barda gönderilen füze için status gösterilecek
+- [x] oyun başlayınca başkente go to yap
+- [x] Giden rokette odaklan ve roket statuslarına basınca rokede git
+- [x] citiesde kaçtane şehri kaldığı ve kaybedip etmediği gözükmeli
+- [x] Nuke butonun inf de gerekli süre gözükmeli
+- [x] nukenin bir sonraki kullanılabilir zamanını göster
+- [x] bir şehirde patlamaların ölü sayılarını göster
+- [x] roketin yeniden kullanım süresi gösterilmeli
+- [ ] çarpı işareti patlamadan sonra gösterilmeli
+- [ ] Interfacede nüükleer füzemiz yok ise pasif olacak
 - [ ] Atom bombası hakkında bilgi ve sözler eklenecek
 - [ ] Şehirlerin popülasyonu öğren ve skor tablosunda göster. Kaç insan öldüğünü
 - [ ] optimizasyon gerekli çok kasıyo
-- [ ] resize olayları kontrol edilmelidir
+- [x] resize olayları kontrol edilmelidir
+- [ ] chat şeyine tıklayınca seçim yapmasının önüne geç **işe yaramadı**
 
 ## İlham
 

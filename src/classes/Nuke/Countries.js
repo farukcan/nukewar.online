@@ -69,13 +69,13 @@ var Countries = {
 					lon : -95.369803
 				}
 			},
-			Philadelphia : {
-				population : 5570000,
+			Juneau : {
+				population : 32660,
 				position : {
-					lat : 39.952584,
-					lon : -75.165222
+					lat : 58.3019,
+					lon : -134.4197
 				}
-			},
+			}
 		}
 	},
 
@@ -122,6 +122,13 @@ var Countries = {
 
 	China : {
 		cities : {
+			Beijing : {
+				population : 21009000,
+				position : {
+					lat : 39.904211,
+					lon : 116.407395
+				}
+			},
 			Guangzhou : {
 				population : 20597000,
 				position : {
@@ -134,13 +141,6 @@ var Countries = {
 				position : {
 					lat : 31.230416,
 					lon : 121.473701
-				}
-			},
-			Beijing : {
-				population : 21009000,
-				position : {
-					lat : 39.904211,
-					lon : 116.407395
 				}
 			},
 			Wuhan : {
@@ -204,18 +204,18 @@ var Countries = {
 
 	India : {
 		cities : {
-			Mumbai : {
-				population : 17712000,
-				position : {
-					lat : 19.075984,
-					lon : 72.877656
-				}
-			},
 			Delhi : {
 				population : 24998000,
 				position : {
 					lat : 28.704059,
 					lon : 77.102490
+				}
+			},
+			Mumbai : {
+				population : 17712000,
+				position : {
+					lat : 19.075984,
+					lon : 72.877656
 				}
 			},
 			Bangalore : {
@@ -404,5 +404,14 @@ var Countries = {
 				}
 			},
 		}
+	}
+}
+
+
+var Cities = {};
+
+for(country in Countries){
+	for(cityname in Countries[country].cities){
+		Cities[cityname] = Countries[country].cities[cityname];
 	}
 }

@@ -53,21 +53,32 @@ GPos.prototype = {
 
 	lerp : function(g,delta){
 
-		var lerped = new GPos(0,0);
+	    var φ1 = this.lat * Math.PI / 180;
+	    var λ1 = this.lon * Math.PI / 180;
+	    var φ2 = g.lat * Math.PI / 180;
+	    var λ2 = g.lon * Math.PI / 180;
+
+	    var sinφ1 = Math.sin(φ1), cosφ1 = Math.cos(φ1), sinλ1 = Math.sin(λ1), cosλ1 = Math.cos(λ1);
+	    var sinφ2 = Math.sin(φ2), cosφ2 = Math.cos(φ2), sinλ2 = Math.sin(λ2), cosλ2 = Math.cos(λ2);
+
+	    var Δφ = φ2 - φ1;
+	    var Δλ = λ2 - λ1;
+	    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2)
+	        + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+	    var δ = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+	    var A = Math.sin((1-delta)*δ) / Math.sin(δ);
+	    var B = Math.sin(delta*δ) / Math.sin(δ);
+
+	    var x = A * cosφ1 * cosλ1 + B * cosφ2 * cosλ2;
+	    var y = A * cosφ1 * sinλ1 + B * cosφ2 * sinλ2;
+	    var z = A * sinφ1 + B * sinφ2;
+
+	    var φ3 = Math.atan2(z, Math.sqrt(x*x + y*y));
+	    var λ3 = Math.atan2(y, x);
 
 
-		lerped.lat = (1-delta)*this.lat + delta*g.lat;
-
-		if(Math.abs(this.lon-g.lon)>180){
-			var v = 180-Math.abs(this.lon) + 180-Math.abs(g.lon);
-			var a = (this.lon>0) ? 1 : -1;
-			lerped.lon = this.lon+a*v*delta;
-		}
-		else
-			lerped.lon = (1-delta)*this.lon + delta*g.lon;
-
-
-		return lerped.fit();
+		return (new GPos( φ3/Math.PI*180 , λ3/Math.PI*180 )).fit();
 	},
 
 	fit : function(){

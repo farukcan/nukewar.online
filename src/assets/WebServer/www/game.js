@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Sun Dec 25 2016 13:02:20 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Tue Jan 03 2017 12:39:00 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -1958,21 +1958,32 @@ GPos.prototype = {
 
 	lerp : function(g,delta){
 
-		var lerped = new GPos(0,0);
+	    var φ1 = this.lat * Math.PI / 180;
+	    var λ1 = this.lon * Math.PI / 180;
+	    var φ2 = g.lat * Math.PI / 180;
+	    var λ2 = g.lon * Math.PI / 180;
+
+	    var sinφ1 = Math.sin(φ1), cosφ1 = Math.cos(φ1), sinλ1 = Math.sin(λ1), cosλ1 = Math.cos(λ1);
+	    var sinφ2 = Math.sin(φ2), cosφ2 = Math.cos(φ2), sinλ2 = Math.sin(λ2), cosλ2 = Math.cos(λ2);
+
+	    var Δφ = φ2 - φ1;
+	    var Δλ = λ2 - λ1;
+	    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2)
+	        + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+	    var δ = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+	    var A = Math.sin((1-delta)*δ) / Math.sin(δ);
+	    var B = Math.sin(delta*δ) / Math.sin(δ);
+
+	    var x = A * cosφ1 * cosλ1 + B * cosφ2 * cosλ2;
+	    var y = A * cosφ1 * sinλ1 + B * cosφ2 * sinλ2;
+	    var z = A * sinφ1 + B * sinφ2;
+
+	    var φ3 = Math.atan2(z, Math.sqrt(x*x + y*y));
+	    var λ3 = Math.atan2(y, x);
 
 
-		lerped.lat = (1-delta)*this.lat + delta*g.lat;
-
-		if(Math.abs(this.lon-g.lon)>180){
-			var v = 180-Math.abs(this.lon) + 180-Math.abs(g.lon);
-			var a = (this.lon>0) ? 1 : -1;
-			lerped.lon = this.lon+a*v*delta;
-		}
-		else
-			lerped.lon = (1-delta)*this.lon + delta*g.lon;
-
-
-		return lerped.fit();
+		return (new GPos( φ3/Math.PI*180 , λ3/Math.PI*180 )).fit();
 	},
 
 	fit : function(){
@@ -2061,13 +2072,13 @@ var Countries = {
 					lon : -95.369803
 				}
 			},
-			Philadelphia : {
-				population : 5570000,
+			Juneau : {
+				population : 32660,
 				position : {
-					lat : 39.952584,
-					lon : -75.165222
+					lat : 58.3019,
+					lon : -134.4197
 				}
-			},
+			}
 		}
 	},
 
@@ -2114,6 +2125,13 @@ var Countries = {
 
 	China : {
 		cities : {
+			Beijing : {
+				population : 21009000,
+				position : {
+					lat : 39.904211,
+					lon : 116.407395
+				}
+			},
 			Guangzhou : {
 				population : 20597000,
 				position : {
@@ -2126,13 +2144,6 @@ var Countries = {
 				position : {
 					lat : 31.230416,
 					lon : 121.473701
-				}
-			},
-			Beijing : {
-				population : 21009000,
-				position : {
-					lat : 39.904211,
-					lon : 116.407395
 				}
 			},
 			Wuhan : {
@@ -2196,18 +2207,18 @@ var Countries = {
 
 	India : {
 		cities : {
-			Mumbai : {
-				population : 17712000,
-				position : {
-					lat : 19.075984,
-					lon : 72.877656
-				}
-			},
 			Delhi : {
 				population : 24998000,
 				position : {
 					lat : 28.704059,
 					lon : 77.102490
+				}
+			},
+			Mumbai : {
+				population : 17712000,
+				position : {
+					lat : 19.075984,
+					lon : 72.877656
 				}
 			},
 			Bangalore : {
@@ -2398,6 +2409,78 @@ var Countries = {
 		}
 	}
 }
+
+
+var Cities = {};
+
+for(country in Countries){
+	for(cityname in Countries[country].cities){
+		Cities[cityname] = Countries[country].cities[cityname];
+	}
+}
+
+var NukewarStandarts = {
+	SwapCost : (3*60*1000) ,
+	ReloadCost : (0.1*5*60*1000) ,
+	BuildCost : (4*60*1000) ,
+	ClearCost : (1*60*1000)
+};
+	var RocketController = {
+		rocketCount : 0,
+
+		standarts : {
+			realWorld : 6371,
+			maxAltitude : 0.75,
+			speed : 0.1
+		},
+
+		calcTime : function(startCity,targetCity){
+			return (new GPos(startCity.position.lat,startCity.position.lon)).distanceBetween((new GPos(targetCity.position.lat,targetCity.position.lon)),RocketController.standarts.realWorld)/RocketController.standarts.speed;
+		},
+
+		rockets : [],
+
+		deleteAll : function(){
+			while(RocketController.rockets.length != 0){
+				RocketController.rockets[0].remove();
+			}
+		},
+
+		update : function(Time){
+
+			RocketController.rockets.forEach(function(rocket){
+
+				if( rocket.arriveTime<Date.now() ) return rocket.remove();
+
+				var d = ( 1 - (rocket.arriveTime-Date.now() ) / (rocket.arriveTime-rocket.launchTime) ); // yolun oransal gidilme miktarı
+
+				var position = rocket.startPoint.lerp(rocket.targetPoint , d ); // global olarak şuanki konum
+
+
+
+				rocket.currentDistance = position.distanceBetween(rocket.targetPoint,RocketController.standarts.realWorld); // şuanki hedefe mesafe
+
+
+				if(rocket.currentDistance<0)
+					rocket.currentDistance = 0;
+
+				rocket.position = position;
+
+				position = position.toVector3(world_r + Math.abs(d*d-d) * RocketController.standarts.maxAltitude); // meshin konum ve yüksekliği
+
+				rocket.mesh.lookAt(position); // hareket noktasına bak
+
+				rocket.mesh.position.copy(position); // meshi konumunu set
+
+
+				rocket.flare.position.copy( rocket.mesh.position ); // flare set
+
+				new Smoke(rocket.mesh.position); // duman çıkart
+
+			});
+
+		}
+	};
 Lang.prototype.pack.tr = {
     "token": {
         "Please select your language" : "Lütfen dilinizi seçiniz",
@@ -2409,7 +2492,30 @@ Lang.prototype.pack.tr = {
         "Do not wait for 10 players" : "10 oyuncuyu beklemeden başla",
         "Game will start in 10 second" : "Oyun 10 sn içinde başlayacaktır",
         "Welcome" : "Hoşgeldin",
-        "Game will start automatically with 10 players" : "Oyun 10 oyuncu ile otomatik olarak başlayacaktır"
+        "Game will start automatically with 10 players" : "Oyun 10 oyuncu ile otomatik olarak başlayacaktır",
+        "Exit" : "Çıkış",
+        "Target" : "Hedef",
+        "Launch nuclear missile from" : "Nükleer füze ile vur. Kalkış konunumu :",
+        "Clear Area" : "Şehri temizle",
+        "Transport to" : "Şehri şuraya taşı :",
+        "Build missile launcher" : "Nükleer füze fırlatıcı inşa et",
+        "City is not damaged" : "Şehir hasar almamış",
+        "City is already bombed" : "Şehir zaten bombalanmış",
+        "City is bombed" : "Şehir bombalanmış",
+        "City is not empty" : "Şehir boş değil",
+        "City is yours" : "Şehir sana ait",
+        "It is not your city" : "Şehir sana ait değil",
+        "Country is busy, please wait" : "Ülke şuan meşgul, lütfen bekleyiniz",
+        "City has not nuclear launcher" : "Şehirde nükleer fırlatıcı yok",
+        "Nuclear launcher is not ready, please wait" : "Nükleer fırlatıcı hazır değil, lütfen bekleyiniz",
+        "is destroyed" : "yokedildi",
+        "is defeated" : "kaybetti",
+        "Nuclear weapon destroyed in" : "Nükleer silah yokedildi. Yer: ",
+        "Missile launched from" : "Roket fırlatıldı :",
+        "City Left" : "Şehir kaldı",
+        "Defeated" : "Kaybetti",
+        "Missile launcher is not ready" : "Roket rampası hazır değil",
+        "Select a city and make your move" : "Bir şehir seçin ve hamlenizi yapın"
     },
     "regex": [
     ]
@@ -2422,16 +2528,13 @@ Lang.prototype.pack.tr = {
 	// Tam ekran yap
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize( window.innerWidth, window.innerHeight );
+
+
 	var loop = {
 		functions : []
 	};
 	// Dom elementini oluştur
 	document.body.appendChild( renderer.domElement );
-
-	
-
-
-
 
 	var scene	= new THREE.Scene();
 
@@ -2439,20 +2542,48 @@ Lang.prototype.pack.tr = {
 	camera.position.z = 1;
 
 	var textureLoader = new THREE.TextureLoader();
+	var raycaster = new THREE.Raycaster();
+
+	window.addEventListener( 'resize', onWindowResize, false );
+
+	function onWindowResize(){
+
+	    camera.aspect = window.innerWidth / window.innerHeight;
+	    camera.updateProjectionMatrix();
+
+	    renderer.setSize( window.innerWidth, window.innerHeight );
+
+	}
+
+	function lerp(a,b,d){
+		return (1-d) * a + d * b;
+	}
+
+/// lights
 
 	scene.add( new THREE.AmbientLight( 0x222222 ) );
 
-	var light	= new THREE.DirectionalLight( 0xffffff, 0.5 );
-	light.position.set(5,5,5)
-	scene.add( light )
+
+
+
+
 	
+	// globel ui
 
 	// Countries
 
 	var city_list = {};
 
 	var city_cube_list = [];
+	var city_flag_list = [];
+	var city_cross_list = [];
+
+	var mapB = textureLoader.load( "images/cross.png" );	
+	var materialB = new THREE.SpriteMaterial( { map: mapB,  fog: true } );
 	for(country in Countries){
+		var mapA = textureLoader.load( "flags/16/"+country+".png" );
+		var materialA = new THREE.SpriteMaterial( { map: mapA,  fog: true } );
+
 		for(cityname in Countries[country].cities){
 			var city = Countries[country].cities[cityname];
 			city_list[cityname] = city;
@@ -2461,9 +2592,28 @@ Lang.prototype.pack.tr = {
 			var cube = new THREE.Mesh( new THREE.CubeGeometry(  0.004, 0.004, 0.00000002*city.population ), new THREE.MeshNormalMaterial() );
 			cube.gPos = new GPos(city.position.lat,city.position.lon);
 			cube.position.copy(cube.gPos.toVector3(0.50));
+			cube.city = cityname;
 			cube.lookAt(new THREE.Vector3(0,0,0));
 			scene.add( cube );
 			city_cube_list.push( cube );
+
+			// bilboard flag
+			var sprite = new THREE.Sprite( materialA );
+			sprite.position.copy(cube.gPos.toVector3(0.515));
+			sprite.scale.set(.016,.016,.016);
+			sprite.country = country;
+			sprite.city = cityname;
+			scene.add(sprite);
+			city_flag_list.push(sprite);			
+
+			// bilboard cross
+			var sprite = new THREE.Sprite( materialB );
+			sprite.position.copy(cube.gPos.toVector3(0.5152));
+			sprite.scale.set(.015,.015,.015);
+			sprite.country = country;
+			sprite.city = cityname;
+			scene.add(sprite);
+			city_cross_list.push(sprite);
 		}
 	}
 
@@ -2475,7 +2625,105 @@ Lang.prototype.pack.tr = {
 		city_cube_list.forEach(function(cube){cube.visible=false;});
 	}
 
+	// ülkesi yenilmişlerin bayrak ve çarpı gözükmez
+	// yıkılmış şehirlerde bayrak gözükmez çarpı gözükür
+	function setFlagsOn(){
+		city_flag_list.forEach(function(flag){ flag.visible= (!Countries[flag.country].lose && !city_list[flag.city].bombed); });
+	}	
+
+	function setFlagsOff(){
+		city_flag_list.forEach(function(flag){flag.visible=false;});
+	}
+
+	function setCrossesOn(){
+		city_cross_list.forEach(function(flag){
+			flag.visible=(!Countries[flag.country].lose && city_list[flag.city].bombed);
+			flag.time = 0;
+		});
+	}	
+
+	function setCrossesOff(){
+		city_cross_list.forEach(function(flag){
+			flag.visible=false;
+			flag.time = 0;
+		});
+	}
+
+	function blackoffCross(city){
+		city_cross_list.forEach(function(flag){
+			if(flag.city == city){
+				flag.time = Date.now() + 5000;
+			}
+		});
+	}
+
+	function updateBillboards(){
+		setFlagsOn();
+		setCrossesOn();
+	}
+
+	// ---------------------------------------------------------------------------------
+
+	function getCountryOfCity(cityname){
+		for(var country in Countries){
+			for(var ct in Countries[country].cities){ 
+				if(cityname == ct){
+					return country;
+				}
+			}
+		}
+	}
+
+
+	// ---------------------------------------------------------------------------------
+
+	setFlagsOff();
 	setPopulationsOff();
+	setCrossesOff();
+
+	var block_window_click=false;
+	$(window).click(function(){
+			if(block_window_click){
+				block_window_click=false;
+				return;
+			}
+			var maus = new THREE.Vector2(mouse.position.x*2,-mouse.position.y*2);
+			raycaster.setFromCamera( maus, camera );
+			var intersects = raycaster.intersectObjects( scene.children ,true);
+			intersects.forEach(function(i){
+				if(i.object.name == "earth"){
+					if(mouse.downPosition.equals(mouse.position)){
+						var min = "Istanbul";
+						var minD = 9999999;
+						for(var n in city_cube_list){
+							var d = city_cube_list[n].position.distanceTo(i.point);
+							if(d<minD){
+								min = city_cube_list[n].city;
+								minD = d;
+							}
+						}
+
+						if(currentState == 'main'){
+							new Explosion({
+								lat : city_list[min].position.lat,
+								lon : city_list[min].position.lon
+							});
+						}
+						else{
+							selected_city = min;
+							InterfaceOnSelectCity();
+						}
+
+					}
+				}
+			});
+
+	});
+
+
+
+
+
 
 	//
 	// Flares
@@ -2531,19 +2779,92 @@ Lang.prototype.pack.tr = {
 			}
 
 
+
+
+
 	//
 	// Sun
 	//
 
-	addFlare( 0.55, 0.9, 0.5, new THREE.Vector3(50,50,50), 1 );
+	var sunFlare = addFlare( 0.55, 0.9, 0.5, new THREE.Vector3(50,50,50), 1 );
+
+
+	var light	= new THREE.DirectionalLight( 0xffffff, 0.5 );
+	light.position.set(5,5,5)
+	scene.add( light )
+	
+
+
 
 	//
-	// Cube
+	// World 
 	//
 
 	world_pos = new THREE.Vector3(0,0,0);
 	world_r = 0.5;
 	gpos_sample = new GPos(0,0);
+
+
+
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		added starfield							//
+	//////////////////////////////////////////////////////////////////////////////////
+	
+	var starSphere	= THREEx.Planets.createStarfield()
+	scene.add(starSphere)
+
+
+
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add an object and make it move					//
+	//////////////////////////////////////////////////////////////////////////////////
+
+
+	var containerEarth	= new THREE.Object3D()
+	containerEarth.position.z	= 0
+	scene.add(containerEarth)
+
+	var earthMesh	= THREEx.Planets.createEarth()
+
+	containerEarth.add(earthMesh)
+
+	earthMesh.name = "earth";
+
+	var geometry	= new THREE.SphereGeometry(0.5, 32, 32)
+	var material	= THREEx.createAtmosphereMaterial()
+	material.uniforms.glowColor.value.set(0x00b3ff)
+	material.uniforms.coeficient.value	= 0.8
+	material.uniforms.power.value		= 2.0
+	var mesh	= new THREE.Mesh(geometry, material );
+	mesh.scale.multiplyScalar(1.01);
+	containerEarth.add( mesh );
+
+	var geometry	= new THREE.SphereGeometry(0.5, 32, 32)
+	var material	= THREEx.createAtmosphereMaterial()
+	material.side	= THREE.BackSide
+	material.uniforms.glowColor.value.set(0x00b3ff)
+	material.uniforms.coeficient.value	= 0.5
+	material.uniforms.power.value		= 4.0
+	var mesh	= new THREE.Mesh(geometry, material );
+	mesh.scale.multiplyScalar(1.15);
+	containerEarth.add( mesh );
+	// new THREEx.addAtmosphereMaterial2DatGui(material, datGUI)
+
+	var earthCloud	= THREEx.Planets.createEarthCloud()
+	earthCloud.receiveShadow	= true
+	earthCloud.castShadow	= true
+	containerEarth.add(earthCloud)
+	loop.functions.push(function(Time){
+		earthCloud.rotation.y += 1/32 * Time.deltaTime;		
+	});
+
+
+
+
 
 	//
 	// Smoke
@@ -2634,14 +2955,23 @@ Lang.prototype.pack.tr = {
 
 
 
+
+
 	//
 	//	Rocket
 	//
 
 
 	function Rocket( config ){
-		this.startPoint = config.start; // gpos
-		this.targetPoint = config.target ; // gpos
+		if( typeof(config.start) == 'string' ){
+			this.startPoint = new GPos(city_list[config.start].position.lat,city_list[config.start].position.lon);
+			this.targetPoint = new GPos(city_list[config.target].position.lat,city_list[config.target].position.lon);
+			this.start = config.start;
+			this.target = config.target;
+		}else{
+			this.startPoint = config.start; // gpos
+			this.targetPoint = config.target ; // gpos
+		}
 		this.distance = this.startPoint.distanceBetween(this.targetPoint,RocketController.standarts.realWorld);
 		this.currentDistance = this.distance; // gpos.distance(gpos)
 		this.launchTime = Date.now(); // date
@@ -2660,6 +2990,27 @@ Lang.prototype.pack.tr = {
 
 	Rocket.prototype = {
 		remove : function(){
+
+			// istatiklere ekle
+			if(this.target){
+				$("#totalkill").attr("enabled",1);
+				var dead = city_list[this.target].population + Math.floor(Math.random()*10);
+				var t = Number($("#totalkill").attr("target")) + dead;
+				$("#totalkill").attr("target",t);
+
+				if(getCountryOfCity(this.target) == your_county){
+					$("#yourlose").attr("enabled",1);
+					t = Number($("#yourlose").attr("target")) + dead;
+					$("#yourlose").attr("target",t);
+				}
+			}
+
+			// buum
+			new Explosion({
+				lat : this.targetPoint.lat,
+				lon : this.targetPoint.lon
+			});	
+
 			// meshi
 			scene.remove(this.mesh);
 			// flaresi
@@ -2670,80 +3021,110 @@ Lang.prototype.pack.tr = {
 					RocketController.rockets.splice(index,1);
 					break;
 				}
-			}	
-		}
-	};
-
-	RocketController = {
-		rocketCount : 0,
-
-		standarts : {
-			realWorld : 6371,
-			maxAltitude : 0.75,
-			speed : 0.1
-		},
-
-		rockets : [],
-
-		deleteAll : function(){
-			while(RocketController.rockets.length != 0){
-				RocketController.rockets[0].remove();
 			}
-		},
-
-		update : function(Time){
-
-			RocketController.rockets.forEach(function(rocket){
-
-				if( rocket.arriveTime<Date.now() ) return rocket.remove();
-
-				var d = ( 1 - (rocket.arriveTime-Date.now() ) / (rocket.arriveTime-rocket.launchTime) ); // yolun oransal gidilme miktarı
-
-				var position = rocket.startPoint.lerp(rocket.targetPoint , d ); // global olarak şuanki konum
-
-
-
-				rocket.currentDistance = position.distanceBetween(rocket.targetPoint,RocketController.standarts.realWorld); // şuanki hedefe mesafe
-
-
-				if(rocket.currentDistance<0)
-					rocket.currentDistance = 0;
-
-				rocket.position = position;
-
-				position = position.toVector3(world_r + Math.abs(d*d-d) * RocketController.standarts.maxAltitude); // meshin konum ve yüksekliği
-
-				rocket.mesh.lookAt(position); // hareket noktasına bak
-
-				rocket.mesh.position.copy(position); // meshi konumunu set
-
-
-				rocket.flare.position.copy( rocket.mesh.position ); // flare set
-
-				new Smoke(rocket.mesh.position); // duman çıkart
-
-			});
 
 		}
 	};
+
 	loop.functions.push(RocketController.update);
 
+	function getOutComingRockets(){
+		var missiles = [];
+		
+		RocketController.rockets.forEach(function(rocket){
+			if(rocket.start){
+				if(isYourCity(rocket.start))
+					missiles.push(rocket);
+			}
+		});
+
+		return missiles;
+	}
+
+	function getInComingRockets(){
+		var missiles = [];
+		
+		RocketController.rockets.forEach(function(rocket){
+			if(rocket.target){
+				if(isYourCity(rocket.target))
+					missiles.push(rocket);
+			}
+		});
+
+		return missiles;
+	}
+
+
+	function getRocketById(id){
+		for(var r in RocketController.rockets){
+			if(RocketController.rockets[r].id == id)
+				return RocketController.rockets[r];
+		}
+		return false;
+	}
+
+
+	//
+	// Explosion
+	//
+
+	function Explosion( config ){
+		this.gpos = new GPos(config.lat,config.lon);
+
+		this.flare = addFlare( 0.55, 0.9, 0.5, this.gpos.toVector3(world_r+.03) , 4	 );
+		this.flare.lensFlares.forEach(function(f){
+			f.sizeMax = f.size;
+		});
+		this.startTime = Date.now();
+		this.endTime = this.startTime+2000;
+		this.id = ExplosionController.explosionCount++;
+		ExplosionController.explosions.push(this);
+	}
+
+	Explosion.prototype = {
+		remove : function(){
+
+			scene.remove(this.flare);
+			// ve diziden silinmeli
+			for (var index in ExplosionController.explosions){
+				if(ExplosionController.explosions[index].id == this.id){
+					ExplosionController.explosions.splice(index,1);
+					break;
+				}
+			}	
+
+		}
+	};
+
+	var ExplosionController = {
+		explosionCount : 0,
+		explosions : [],
+		update : function(Time) {
+			ExplosionController.explosions.forEach(function(explosion){
+				if( explosion.endTime<Date.now() ) return explosion.remove();
+
+				var d = ( 1 - (explosion.endTime-Date.now() ) / (explosion.endTime-explosion.startTime) );
+
+				explosion.flare.lensFlares.forEach(function(f){
+					f.size=lerp(0,f.sizeMax,Math.abs(d*d-d)*2);
+				});
+
+
+				
+				var d = Math.random()*0.02;
+				var smokepos = explosion.gpos.toVector3(world_r+d);
+				new Smoke(smokepos,0.005+d*0.15,0.3);
+
+				
+			});
+		}
+
+	};
+
+	loop.functions.push(ExplosionController.update);
 
 
 
-
-
-	var exampleRocketA = new Rocket({
-			start : new GPos(90,0),
-			target : new GPos(-90,0)
-	});
-	var exampleRocketB = new Rocket({
-			start : new GPos(45,0),
-			target : new GPos(0,180)
-	});
-
-	camera.follow = true;
-	camera.target = exampleRocketB;
 
 	//
 	// Efects
@@ -2760,53 +3141,9 @@ Lang.prototype.pack.tr = {
     },1000);
     composer.addPass(glitchPass);
 	
-	//////////////////////////////////////////////////////////////////////////////////
-	//		added starfield							//
-	//////////////////////////////////////////////////////////////////////////////////
-	
-	var starSphere	= THREEx.Planets.createStarfield()
-	scene.add(starSphere)
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		add an object and make it move					//
-	//////////////////////////////////////////////////////////////////////////////////
 
 
-	var containerEarth	= new THREE.Object3D()
-	containerEarth.position.z	= 0
-	scene.add(containerEarth)
 
-	var earthMesh	= THREEx.Planets.createEarth()
-
-	containerEarth.add(earthMesh)
-
-	var geometry	= new THREE.SphereGeometry(0.5, 32, 32)
-	var material	= THREEx.createAtmosphereMaterial()
-	material.uniforms.glowColor.value.set(0x00b3ff)
-	material.uniforms.coeficient.value	= 0.8
-	material.uniforms.power.value		= 2.0
-	var mesh	= new THREE.Mesh(geometry, material );
-	mesh.scale.multiplyScalar(1.01);
-	containerEarth.add( mesh );
-
-	var geometry	= new THREE.SphereGeometry(0.5, 32, 32)
-	var material	= THREEx.createAtmosphereMaterial()
-	material.side	= THREE.BackSide
-	material.uniforms.glowColor.value.set(0x00b3ff)
-	material.uniforms.coeficient.value	= 0.5
-	material.uniforms.power.value		= 4.0
-	var mesh	= new THREE.Mesh(geometry, material );
-	mesh.scale.multiplyScalar(1.15);
-	containerEarth.add( mesh );
-	// new THREEx.addAtmosphereMaterial2DatGui(material, datGUI)
-
-	var earthCloud	= THREEx.Planets.createEarthCloud()
-	earthCloud.receiveShadow	= true
-	earthCloud.castShadow	= true
-	containerEarth.add(earthCloud)
-	loop.functions.push(function(Time){
-		earthCloud.rotation.y += 1/32 * Time.deltaTime;		
-	});
 
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -2820,11 +3157,31 @@ Lang.prototype.pack.tr = {
 			case 'main':
 				InterfaceSetState(state);
 				socket.emit("set language",lang.currentLang);
+				RocketController.deleteAll();
+				var exampleRocketA = new Rocket({
+						start : new GPos(90,0),
+						target : new GPos(90-Math.random()*180,180-Math.random()*360)
+				});
+				var exampleRocketB = new Rocket({
+						start : new GPos(45,0),
+						target : new GPos(90-Math.random()*180,180-Math.random()*360)
+				});
+				setFlagsOff();
+				setPopulationsOff();
+				setCrossesOff();
+				camera_r = camera_r_default;
+				camera.follow = true;
+				camera.target = exampleRocketB;
 				break;
 
 			case 'lobby':
 				InterfaceSetState(state);
 				resetCountries();
+				camera_r = camera_r_default;
+				camera.GoTo(new GPos(-20,120));
+				setFlagsOff();
+				setPopulationsOff();
+				setCrossesOff();
 				break;
 
 			case 'game':
@@ -2885,8 +3242,54 @@ Lang.prototype.pack.tr = {
 		$("#lobby_list").html(html);
 	});
 
+
 	socket.on('global data', function(data){
-		console.log(data);
+		Countries = $.extend(true,Countries,data.Countries);
+		InterfaceUpdateCities();
+		updateBillboards();
+	});
+	
+	socket.on('private data', function(data){
+		Countries[your_county] = $.extend(true,Countries[your_county],data);
+		var diff = ( Countries[your_county].date - Date.now() );
+		Countries[your_county].busy = Countries[your_county].busy - diff; // zaman farkını yok et;
+		for( var ct in Countries[your_county].cities ){
+			var city = Countries[your_county].cities[ct];
+			if(city.build && city.build.type=="nuclear"){
+				city.build.usable = city.build.usable - diff;
+			}
+		} 
+		InterfaceUpdateCities(); 
+
+	});
+		
+	socket.on('you are', function(c){
+		your_county = c;
+		Countries[your_county].isYou = true;
+		for(var i in Countries[your_county].cities){
+			camera.GoTo(new GPos(Countries[your_county].cities[i].position.lat,Countries[your_county].cities[i].position.lon));
+			break;
+		}
+	});
+
+	socket.on('move',function(Move){
+		if(Move.type == "rocket"){
+				var rocket = new Rocket({
+						start : Move.from,
+						target : Move.target
+				});
+
+				Notice("<b lang='en'>Missile launched from</b> "+Move.from+" <b lang='en'>Target</b>: "+Move.target);
+
+
+				if(getCountryOfCity(Move.from) == your_county){
+					// bu hamleyi sen yaptıysa
+					camera.follow = true;
+					camera.target = rocket;
+				}
+		}
+
+		InterfaceUpdateCities();
 	});
 
 
@@ -2902,7 +3305,6 @@ Lang.prototype.pack.tr = {
 		for(country in Countries){
 			Countries[country].lose = false;
 			Countries[country].isYou = false;
-			Countries[country].kills = 0;
 		}
 
 		resetCities();
@@ -2916,6 +3318,19 @@ Lang.prototype.pack.tr = {
 		}
 	}
 
+	function Notice(data){
+		$("#messages").append("<message><notice>"+data+"</notice></message>");
+		$('#messages').scrollTop($('#messages')[0].scrollHeight);
+	}
+		$.fn.setProgressBar = function(val,label){
+			if(val>100) val=100;
+			$(this).find(".progress").css("width",val+"%");
+			if(label)
+				$(this).find(".progresslabel").html(label);
+			else
+				$(this).find(".progresslabel").html(val+"%");
+		}
+
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		interface
@@ -2926,7 +3341,7 @@ Lang.prototype.pack.tr = {
 	var your_county = "Turkey";
 
 	for(country in Countries){
-		w_html+="<table><tr><td><img src='flags/16/"+country+".png'/></td><td>"+country+"</td></tr></table>";
+		w_html+="<table><tr><td><img src='flags/16/"+country+".png'/></td><td id='countryname_"+country+"'>"+country+"</td></tr></table>";
 		w_html+="<select class='city_select' id='cityselect_"+country+"'>";
 		w_html+="<option value='none'>information</option>";
 		for(cityname in Countries[country].cities){
@@ -2949,6 +3364,8 @@ Lang.prototype.pack.tr = {
 
 	});
 
+
+
 	function getCity(city_name){
 		return city_list[city_name];
 	}
@@ -2965,48 +3382,78 @@ Lang.prototype.pack.tr = {
 		});
 	}
 
-	function InterfaceOnSelectCity(){
-		InterfaceGOTOCity(selected_city);
+	function InterfaceOnSelectCity(dontgo){
+		if(dontgo){}
+		else {
+			InterfaceGOTOCity(selected_city);
+		}
+		if(currentState != 'game') return;
+
 		InterfaceResetWorld();
 		$("target").html(selected_city);
 		$("#control").fadeIn();
 
-		
-		InterfaceMakeCardDisabled();
 
-		var city = getCity(selected_city);
 
-		if(isYourCity(selected_city)){
-			if(city.bombed){
-				InterfaceMakeCardActive("clear");
-				InterfaceSetInfo('clear',translate('60 sec'));
-			}
-			else{
-				InterfaceMakeCardPassive("clear");
-				InterfaceSetInfo('clear',translate('City is not damaged'));
-			}
+			InterfaceMakeCardDisabled();
 
-			InterfaceMakeCardActive("swap");
+			var city = getCity(selected_city);
 
-			if(city.build){
-				InterfaceMakeCardPassive("build");
-				InterfaceSetInfo('build',translate('City is not empty'));
+			if(isYourCity(selected_city)){
+				if(city.bombed){
+					InterfaceMakeCardActive("clear");
+					InterfaceSetInfo('clear','1:00');
+				}
+				else{
+					InterfaceMakeCardPassive("clear");
+					InterfaceSetInfo('clear',translate('City is not damaged'));
+
+
+					InterfaceMakeCardActive("swap");
+					InterfaceSetInfo('swap','3:00');
+
+					if(city.build){
+						InterfaceMakeCardPassive("build");
+						InterfaceSetInfo('build',translate('City is not empty'));
+					}else{
+						InterfaceMakeCardActive("build");
+						InterfaceSetInfo('build','4:00');
+					}
+
+					InterfaceSetInfo('nuke',translate('City is yours'));
+					
+				}
+
 			}else{
-				InterfaceMakeCardActive("build");
+
+				// targete göre mesefa
+				// froma göre uygunluk
+				if(!city.bombed){
+					var from = getCity($("#missilefrom option").val());
+					if(from.build.usable < Date.now()){
+						InterfaceMakeCardActive("nuke");
+						InterfaceSetInfo('nuke',RemainTime(RocketController.calcTime(from,city)));
+					}else{
+						InterfaceSetInfo('nuke',translate('Missile launcher is not ready'));
+					}
+				}else{
+					InterfaceMakeCardPassive("nuke");
+					InterfaceSetInfo('nuke',translate('City is bombed'));
+				}
+
+
+
+				InterfaceSetInfo('clear',translate('It is not your city'));
+				InterfaceSetInfo('swap',translate('It is not your city'));
+				InterfaceSetInfo('build',translate('It is not your city'));
 			}
 
-			InterfaceSetInfo('nuke',translate('City is yours'));
-		}else{
+		
 
-			// bombalanmadıysa?
-			InterfaceMakeCardPassive("nuke");
-			InterfaceSetInfo('nuke',translate('x sec'));
+		
 
 
-			InterfaceSetInfo('clear',translate('It is not your city'));
-			InterfaceSetInfo('swap',translate('It is not your city'));
-			InterfaceSetInfo('build',translate('It is not your city'));
-		}
+		InterfaceUpdateCities();
 	}
 
 	function isYourCity(name){
@@ -3037,14 +3484,23 @@ Lang.prototype.pack.tr = {
 		$("#"+card+"Td inf").html(info);
 	}
 
+	function InterfaceHideCards(){
+		$(".card").hide();
+	}
+
+	function InterfaceShowCards(){
+		$(".card").fadeIn();
+	}
+
+	var currentState = 'main';
 	function InterfaceSetState(state){
 		var delay=3000;
-
+		currentState = state;
 		if( state == 'main' ) {
 
 			InterfaceOpenPanels(["start","languages"],delay);
 
-			InterfaceClosePanels(["lobby","chat","world","control","status","statics"],delay);
+			InterfaceClosePanels(["mycities","lobby","chat","world","control","status","statics"],100);
 
 			$("#nick").focus();
 
@@ -3052,15 +3508,16 @@ Lang.prototype.pack.tr = {
 
 			InterfaceOpenPanels(["chat","lobby","languages"],100);
 
-			InterfaceClosePanels(["start","world","control","status","statics"],100);
+			InterfaceClosePanels(["mycities","start","world","control","status","statics"],100);
 
-			camera.GoTo(new GPos(-20,120));
+			
 
 		}else if( state == 'game' ){
 
-			InterfaceOpenPanels(["chat","world","status","statics"],100);
+			InterfaceOpenPanels(["mycities","chat","world","status","statics"],100);
 
 			InterfaceClosePanels(["lobby","languages","start","control"],100);
+
 
 		}
 
@@ -3078,6 +3535,138 @@ Lang.prototype.pack.tr = {
 		});
 	}
 
+	function InterfaceUpdateCities(){
+		$("#mycities").html("");
+		var missiles = [];
+		var cities = [];
+
+		// global dataya göre güncelleme yap
+		for(country in Countries){
+			var Country = Countries[country];
+			$("#countryname_"+country).html(Country.name);
+
+			if(Country.lose)
+				$("#countryname_"+country).css('text-decoration','line-through');
+			else
+				$("#countryname_"+country).css('text-decoration','none');
+
+			var citynum = 0;
+			for(var cityname in Country.cities){
+				var city = Country.cities[cityname];
+			
+				if(Country.isYou){
+
+					if(city.bombed)
+						var html="<citycard class='citybombed' for='"+cityname+"'>";	
+					else{
+						var html="<citycard for='"+cityname+"'>";
+						if(city.build && city.build.type=="nuclear")
+							missiles.push(cityname);
+						if(cityname != selected_city)
+							cities.push(cityname);
+					}
+
+					html+= "<h1>"+cityname+"</h1>";
+					if(city.build){
+						if( city.build.type=="nuclear" && city.build.usable > Date.now() ){
+							html += "<countdown to='"+city.build.usable+"' trigger='InterfaceOnSelectCity(true)'></countdown>";
+						}else{
+							html+= '<img src="images/'+city.build.type+'.svg" width="18px" />';
+						}
+					}else{
+						html+= '<img src="images/city.svg" width="18px" />';
+					}
+					html+="</citycard>";
+					$("#mycities").append(html);
+				}
+
+				if(!city.bombed)
+					citynum++;
+
+			}
+
+			if(citynum!=0)
+				$("#cityselect_"+country).find("option[value='none']").html(citynum+" "+translate("City Left"));
+			else
+				$("#cityselect_"+country).find("option[value='none']").html(translate("Defeated"));				
+
+		}
+
+
+		$("citycard").click(function(){
+			block_window_click = true;
+			selected_city = $(this).attr('for');
+			InterfaceOnSelectCity();
+		});
+
+		$("missileselector").each(function(){
+			var e = $(this);
+			var html="<select>";
+			missiles.forEach(function(m){
+				html+="<option value='"+m+"'>"+m+"</option>"
+			});
+			html+="</select>";
+			e.html(html);
+		});
+
+		$("cityselector").each(function(){
+			var e = $(this);
+			var html="<select>";
+			cities.forEach(function(c){
+				html+="<option value='"+c+"'>"+c+"</option>"
+			});
+			html+="</select>";
+			e.html(html);
+		});	
+
+
+		if(Countries[your_county].busy > Date.now() )
+			InterfaceHideCards();
+		else
+			InterfaceShowCards();
+
+		InterfaceUpdateStatus();
+
+	}
+
+	function InterfaceUpdateStatus(){
+		if(Countries[your_county].busy < Date.now() )
+			$("#status").html('<span lang="en">Select a city and make your move</span>');
+		else
+			$("#status").html('');
+
+
+		var outcoming = getOutComingRockets();
+		var incoming = getInComingRockets();
+
+		outcoming.forEach(function(rocket){
+			$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress"><div class="progresslabel">-</div></div></div>');
+			
+			$("#rocket"+rocket.id).click(function(){
+				block_window_click = true;
+				camera.follow = true;
+				camera.target = rocket;
+			});
+
+		});
+		incoming.forEach(function(rocket){
+			$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress" style="background-color:red"><div class="progresslabel">-</div></div></div>');
+		
+			$("#rocket"+rocket.id).click(function(){
+				block_window_click = true;
+				camera.follow = true;
+				camera.target = rocket;
+			});
+		});		
+
+
+		InterfaceLoop();
+	}
+
+	function Exit(){
+		socket.emit('exit');
+	}
+
 	$(function(){
 		
 
@@ -3090,7 +3679,91 @@ Lang.prototype.pack.tr = {
 		$('#cbWait').change(function() {
 	        socket.emit('change wait status',!$(this).is(":checked"));      
    		});
+
+
+		$("#nukeButton").click(function(){
+			block_window_click = true;
+			socket.emit('launch nuclear missile',{
+				target : selected_city,
+				from : $("#missilefrom option").val()
+			});
+		});
+
+		$("#clearButton").click(function(){
+			block_window_click = true;
+			socket.emit('clear area',selected_city);
+		});
+
+		$("#swapButton").click(function(){
+			block_window_click = true;
+			socket.emit('transport',{
+				target : selected_city,
+				from : $("#cityfrom option").val()
+			});
+		});
+
+		$("#buildButton").click(function(){
+			block_window_click = true;
+			socket.emit('build missile launcher',selected_city);
+		});
+
+
+		$("missileselector").click(function(){
+			block_window_click = true;
+		});
+
+		$("cityselector").click(function(){
+			block_window_click = true;
+		});
+		$("#chat").click(function(){
+			block_window_click = true;
+		});
+
+		$("#world").click(function(){
+			block_window_click = true;
+		});
+		
+		setInterval(InterfaceLoop,1000);
 	});
+
+	function RemainTime(mili){
+		if(mili<0) mili = 0;
+		var sec = Math.round(mili/1000);
+		var s=(sec%60);
+		if(s<10)
+			s="0"+s;
+		return Math.floor(sec/60)+":"+s;
+	}
+
+
+	function InterfaceLoop(){
+		$(".progressbar").each(function(){
+			var e = $(this);
+
+			var rocket = getRocketById(Number(e.attr("id").replace('rocket','')));
+
+			if(rocket==false) return;
+
+			var p = Math.round(( 1 - (rocket.arriveTime-Date.now() ) / (rocket.arriveTime-rocket.launchTime) )*100);
+
+			e.setProgressBar(p,rocket.target+" "+RemainTime(rocket.arriveTime-Date.now()));
+
+		});
+
+		$("countdown").each(function(){
+			var e = $(this);
+
+			var to = Number(e.attr('to'));
+
+			var remain = to-Date.now();
+
+			e.html(RemainTime(remain));
+
+			if(remain<0)
+				eval(e.attr('trigger'));
+		});
+	}
+
 
 
 	//
@@ -3101,34 +3774,12 @@ Lang.prototype.pack.tr = {
 
     lang.init({
         defaultLang: 'en',
-
-	    /**
-	     * This object is only required if you want to override the default
-	     * settings for cookies.
-	     */
 	    cookie: {
-	        /**
-	         * Overrides the default cookie name to something else. The default
-	         * is "langCookie".
-	         * @type String
-	         * @optional
-	         */
 	        name: 'langCookie',
-
 	        expiry: 365,
 	        path: '/'
 	    },
-
-	    /**
-	     * If true, cookies will override the "currentLang" option if the
-	     * cookie is set. You usually shouldn't need to specify this option
-	     * at all unless your JavaScript lang.init() method is being
-	     * dynamically generated by PHP or other server-side processor.
-	     * @type Boolean
-	     * @optional 
-	     */
 	    allowCookieOverride: true
-
     });
 
 
@@ -3142,6 +3793,9 @@ Lang.prototype.pack.tr = {
 			socket.emit("set language",lang.currentLang);
 		});
 	});
+
+
+
 
 	//
 	// Statics
@@ -3168,13 +3822,6 @@ Lang.prototype.pack.tr = {
 		});
 	});
 
-
-
-	function lerp(a,b,d){
-		return (1-d) * a + d * b;
-	}
-
-	
 
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -3232,7 +3879,9 @@ Lang.prototype.pack.tr = {
 	var old_mouse_pos = new THREE.Vector2();
 	var camera_gpos = new GPos(41.008238,28.978359);
 	var camera_sens = 5000;
-	var camera_r=2.2;
+	var camera_r_default = 2.2;
+	var camera_r=camera_r_default;
+
 	camera.GoTo = function(loc){
 		camera.follow = false;
 		camera_gpos = loc;
@@ -3268,13 +3917,16 @@ Lang.prototype.pack.tr = {
 		camera.lookAt( scene.position )
 	})
 
-
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the scene						//
 	//////////////////////////////////////////////////////////////////////////////////
+
 	loop.functions.push(function(){
 		composer.render();
 	});
+
+
+
 	
 	//////////////////////////////////////////////////////////////////////////////////
 	//		loop runner							//
