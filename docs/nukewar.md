@@ -32,13 +32,26 @@ Sonra unitye dök
 - [x] nukenin bir sonraki kullanılabilir zamanını göster
 - [x] bir şehirde patlamaların ölü sayılarını göster
 - [x] roketin yeniden kullanım süresi gösterilmeli
-- [ ] çarpı işareti patlamadan sonra gösterilmeli
-- [ ] Interfacede nüükleer füzemiz yok ise pasif olacak
+- [x] çarpı işareti patlamadan sonra gösterilmeli
+- [x] nükleer füze inşa etme
+- [x] nükleer füze seçme şeysi düzgün çalışmıyo ve en yakın/aktif olan seçilmeli daima rağmen diğerini görmezden geliyo
+- [x] Interfacede nüükleer füzemiz yok ise pasif olacak
+- [x] bombalanmış bir şehiri temizleme eklenecek
+- [x] Swap hamlesi eklenecek
+- [x] Hamle yapıldığında Notice gönder 
+- [x] Socketler çok geciktiği zaman, ZAMAN algısı sapıtıyor. roketlere now eklendi
+- [ ] oyun başlangıcında bilgilendirme ekranı [Türkçeleştirilmeli]
+- [x] kazanma kaybetme ekranları
+- [x] Botlar eklenecek
+- [x] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
 - [ ] Atom bombası hakkında bilgi ve sözler eklenecek
-- [ ] Şehirlerin popülasyonu öğren ve skor tablosunda göster. Kaç insan öldüğünü
-- [ ] optimizasyon gerekli çok kasıyo
+- [ ] Şehirlerin popülasyonu öğren
+- [ ] optimizasyon gerekli çok kasıyo. hem server hem client ram israfı yapılmamalı
 - [x] resize olayları kontrol edilmelidir
+- [ ] socket disconnet olduğunda bazı şeyler check edilmeli kazanma şeyide check et
 - [ ] chat şeyine tıklayınca seçim yapmasının önüne geç **işe yaramadı**
+- [ ] Güvenlik önlemleri alınacak
+- [ ] panellerin geçmişte kalma sorunu çöz
 
 ## İlham
 
@@ -65,9 +78,11 @@ https://www.transparenttextures.com/
 * Çok oyuncu veya bot ile oynanır. Zaman tabanlı strateji oyunudur
 * Ülkeler, dünyanın çeşitli yerlerinde bulunmak üzere 5 şehre sahip olur.
 * Ülkeler 1 komuta merkezi ve 1 nükleer silaha sahip başlar. 
-* Komuta merkezi vurulursa oyunu kaybeder. 
+* * Komuta merkezi vurulursa oyunu kaybeder. 
+  * Bütün ülkeler düşmandır
+  * Hayatta kalan ülke oyunu kazanır
 * Nükleer silah vurulursa , yenisini inşaa etmek zorunda kalır.
-* Uzağa atılan nükleer hedefi geç yok edecektir. (1 turda)
+* Uzağa atılan nükleer daha hedefi geç yok edecektir. (1 turda)
 * Her el komuta merkezi ve nükleer silahın yerini değiştirebilir. Nükleer olarak vurulmuş yeri seçemez.
 * yeni nükleer silah inşaa edebilir.
 * 3 el sonra nükleer olarak vurulmuş yer kullanılabilir.
@@ -85,6 +100,16 @@ https://www.transparenttextures.com/
 * socket.io kullanılacak
 * odalar olacak
 
+
+### Yapay zeka
+
+Sürekli saldıran bir yapay zekadır.
+
+Saldır -> Nüke yoksa ve müsaitse inşa et OK
+
+Saldır -> Düşman seç(en az şehri olanlardan rastgele) -> Düşman ölü değilse 
+
+Saldır -> Herhangi bir şehrine rastgele
 
 ## Ülkeler
 

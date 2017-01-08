@@ -27,6 +27,7 @@
 				camera_r = camera_r_default;
 				camera.follow = true;
 				camera.target = exampleRocketB;
+				glitchPass.goWild = false;
 				break;
 
 			case 'lobby':
@@ -45,6 +46,16 @@
 				RocketController.deleteAll();
 
 				break;
+
+			case 'gameover':
+				InterfaceSetState(state);
+				glitchPass.goWild = true;
+				camera_r = camera_r_default;
+				setFlagsOff();
+				setPopulationsOff();
+				setCrossesOff();
+
+				break;	
 
 			default:
 				alert("undefined state");
@@ -101,17 +112,19 @@
 	socket.on('global data', function(data){
 		Countries = $.extend(true,Countries,data.Countries);
 		InterfaceUpdateCities();
+		InterfaceUpdateCards();
 		updateBillboards();
 	});
 	
+	var _diff = 0;
 	socket.on('private data', function(data){
 		Countries[your_county] = $.extend(true,Countries[your_county],data);
-		var diff = ( Countries[your_county].date - Date.now() );
-		Countries[your_county].busy = Countries[your_county].busy - diff; // zaman farkını yok et;
+		_diff = ( Countries[your_county].date - Date.now() );
+		Countries[your_county].busy = Countries[your_county].busy - _diff; // zaman farkını yok et;
 		for( var ct in Countries[your_county].cities ){
 			var city = Countries[your_county].cities[ct];
 			if(city.build && city.build.type=="nuclear"){
-				city.build.usable = city.build.usable - diff;
+				city.build.usable = city.build.usable - _diff;
 			}
 		} 
 		InterfaceUpdateCities(); 
@@ -127,11 +140,13 @@
 		}
 	});
 
+	var builds = [];
 	socket.on('move',function(Move){
 		if(Move.type == "rocket"){
 				var rocket = new Rocket({
 						start : Move.from,
-						target : Move.target
+						target : Move.target,
+						date : (Move.now-_diff)
 				});
 
 				Notice("<b lang='en'>Missile launched from</b> "+Move.from+" <b lang='en'>Target</b>: "+Move.target);
@@ -142,6 +157,19 @@
 					camera.follow = true;
 					camera.target = rocket;
 				}
+		}else if(Move.type == "build" || Move.type == "clear"){
+			Move.ends -= _diff;
+			builds.push(Move);
+		}else if(Move.type == "swap"){
+			Move.ends -= _diff;
+			builds.push({
+				target : Move.target,
+				ends : Move.ends
+			});
+			builds.push({
+				target : Move.from,
+				ends : Move.ends
+			});
 		}
 
 		InterfaceUpdateCities();

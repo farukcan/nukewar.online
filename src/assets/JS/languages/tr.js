@@ -32,7 +32,17 @@ Lang.prototype.pack.tr = {
         "City Left" : "Şehir kaldı",
         "Defeated" : "Kaybetti",
         "Missile launcher is not ready" : "Roket rampası hazır değil",
-        "Select a city and make your move" : "Bir şehir seçin ve hamlenizi yapın"
+        "Select a city and make your move" : "Bir şehir seçin ve hamlenizi yapın",
+        "Nuclear launcher successfully built to" : "Nükleer fırlatıcı başarıyla inşa edildi : ",
+        "City successfully cleared :" : "Şehir başarıyla temizlendi :",
+        "Cities successfully swapped :" : "Şehirler başarıyla yer değiştirdi :",
+        "is clearing" : "temizleniyor",
+        "is transporting to" : "şuraya taşınıyor :",
+        "Building nuclear launcher to" : "Şu şehre nükleer roket rapması inşa ediliyor :",
+        "Game Over" : "Oyun Bitti",
+        "You are defeated" : "Oyunu kaybettiniz",
+        "You are winner" : "Oyunu siz kazandınız",
+        "Play Again" : "Tekrar oyna"
     },
     "regex": [
     ]

@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Tue Jan 03 2017 12:39:00 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Sun Jan 08 2017 20:08:53 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2422,7 +2422,7 @@ for(country in Countries){
 var NukewarStandarts = {
 	SwapCost : (3*60*1000) ,
 	ReloadCost : (0.1*5*60*1000) ,
-	BuildCost : (4*60*1000) ,
+	BuildCost : (0.1*4*60*1000) ,
 	ClearCost : (1*60*1000)
 };
 	var RocketController = {
@@ -2515,7 +2515,17 @@ Lang.prototype.pack.tr = {
         "City Left" : "Şehir kaldı",
         "Defeated" : "Kaybetti",
         "Missile launcher is not ready" : "Roket rampası hazır değil",
-        "Select a city and make your move" : "Bir şehir seçin ve hamlenizi yapın"
+        "Select a city and make your move" : "Bir şehir seçin ve hamlenizi yapın",
+        "Nuclear launcher successfully built to" : "Nükleer fırlatıcı başarıyla inşa edildi : ",
+        "City successfully cleared :" : "Şehir başarıyla temizlendi :",
+        "Cities successfully swapped :" : "Şehirler başarıyla yer değiştirdi :",
+        "is clearing" : "temizleniyor",
+        "is transporting to" : "şuraya taşınıyor :",
+        "Building nuclear launcher to" : "Şu şehre nükleer roket rapması inşa ediliyor :",
+        "Game Over" : "Oyun Bitti",
+        "You are defeated" : "Oyunu kaybettiniz",
+        "You are winner" : "Oyunu siz kazandınız",
+        "Play Again" : "Tekrar oyna"
     },
     "regex": [
     ]
@@ -2550,7 +2560,7 @@ Lang.prototype.pack.tr = {
 
 	    camera.aspect = window.innerWidth / window.innerHeight;
 	    camera.updateProjectionMatrix();
-
+	    
 	    renderer.setSize( window.innerWidth, window.innerHeight );
 
 	}
@@ -2611,6 +2621,7 @@ Lang.prototype.pack.tr = {
 			sprite.position.copy(cube.gPos.toVector3(0.5152));
 			sprite.scale.set(.015,.015,.015);
 			sprite.country = country;
+			sprite.lock = false;
 			sprite.city = cityname;
 			scene.add(sprite);
 			city_cross_list.push(sprite);
@@ -2637,22 +2648,25 @@ Lang.prototype.pack.tr = {
 
 	function setCrossesOn(){
 		city_cross_list.forEach(function(flag){
-			flag.visible=(!Countries[flag.country].lose && city_list[flag.city].bombed);
-			flag.time = 0;
+			flag.visible=(!Countries[flag.country].lose && city_list[flag.city].bombed && !flag.lock);
 		});
 	}	
 
 	function setCrossesOff(){
 		city_cross_list.forEach(function(flag){
 			flag.visible=false;
-			flag.time = 0;
 		});
 	}
 
 	function blackoffCross(city){
 		city_cross_list.forEach(function(flag){
 			if(flag.city == city){
-				flag.time = Date.now() + 5000;
+				flag.lock = true;
+				flag.visible = false;
+				setTimeout(function(){
+					flag.visible = true;
+					flag.lock = false;
+				},10000);
 			}
 		});
 	}
@@ -2963,19 +2977,21 @@ Lang.prototype.pack.tr = {
 
 
 	function Rocket( config ){
+		var date = Date.now();
 		if( typeof(config.start) == 'string' ){
 			this.startPoint = new GPos(city_list[config.start].position.lat,city_list[config.start].position.lon);
 			this.targetPoint = new GPos(city_list[config.target].position.lat,city_list[config.target].position.lon);
 			this.start = config.start;
 			this.target = config.target;
+			date = config.date;
 		}else{
 			this.startPoint = config.start; // gpos
 			this.targetPoint = config.target ; // gpos
 		}
 		this.distance = this.startPoint.distanceBetween(this.targetPoint,RocketController.standarts.realWorld);
 		this.currentDistance = this.distance; // gpos.distance(gpos)
-		this.launchTime = Date.now(); // date
-		this.arriveTime = Date.now()+this.distance/RocketController.standarts.speed;
+		this.launchTime = date; // date
+		this.arriveTime = date+this.distance/RocketController.standarts.speed;
 		this.mesh = new THREE.Mesh( new THREE.BoxGeometry( 0.0005, 0.0005, 0.005 ), new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } ) );
 		this.flare = addFlare( 0.55, 0.9, 0.5, zeropoint );
 
@@ -2994,7 +3010,7 @@ Lang.prototype.pack.tr = {
 			// istatiklere ekle
 			if(this.target){
 				$("#totalkill").attr("enabled",1);
-				var dead = city_list[this.target].population + Math.floor(Math.random()*10);
+				var dead = city_list[this.target].population + Math.floor(Math.random()*1000);
 				var t = Number($("#totalkill").attr("target")) + dead;
 				$("#totalkill").attr("target",t);
 
@@ -3003,6 +3019,8 @@ Lang.prototype.pack.tr = {
 					t = Number($("#yourlose").attr("target")) + dead;
 					$("#yourlose").attr("target",t);
 				}
+
+				blackoffCross(this.target);
 			}
 
 			// buum
@@ -3172,6 +3190,7 @@ Lang.prototype.pack.tr = {
 				camera_r = camera_r_default;
 				camera.follow = true;
 				camera.target = exampleRocketB;
+				glitchPass.goWild = false;
 				break;
 
 			case 'lobby':
@@ -3190,6 +3209,16 @@ Lang.prototype.pack.tr = {
 				RocketController.deleteAll();
 
 				break;
+
+			case 'gameover':
+				InterfaceSetState(state);
+				glitchPass.goWild = true;
+				camera_r = camera_r_default;
+				setFlagsOff();
+				setPopulationsOff();
+				setCrossesOff();
+
+				break;	
 
 			default:
 				alert("undefined state");
@@ -3246,17 +3275,19 @@ Lang.prototype.pack.tr = {
 	socket.on('global data', function(data){
 		Countries = $.extend(true,Countries,data.Countries);
 		InterfaceUpdateCities();
+		InterfaceUpdateCards();
 		updateBillboards();
 	});
 	
+	var _diff = 0;
 	socket.on('private data', function(data){
 		Countries[your_county] = $.extend(true,Countries[your_county],data);
-		var diff = ( Countries[your_county].date - Date.now() );
-		Countries[your_county].busy = Countries[your_county].busy - diff; // zaman farkını yok et;
+		_diff = ( Countries[your_county].date - Date.now() );
+		Countries[your_county].busy = Countries[your_county].busy - _diff; // zaman farkını yok et;
 		for( var ct in Countries[your_county].cities ){
 			var city = Countries[your_county].cities[ct];
 			if(city.build && city.build.type=="nuclear"){
-				city.build.usable = city.build.usable - diff;
+				city.build.usable = city.build.usable - _diff;
 			}
 		} 
 		InterfaceUpdateCities(); 
@@ -3272,11 +3303,13 @@ Lang.prototype.pack.tr = {
 		}
 	});
 
+	var builds = [];
 	socket.on('move',function(Move){
 		if(Move.type == "rocket"){
 				var rocket = new Rocket({
 						start : Move.from,
-						target : Move.target
+						target : Move.target,
+						date : (Move.now-_diff)
 				});
 
 				Notice("<b lang='en'>Missile launched from</b> "+Move.from+" <b lang='en'>Target</b>: "+Move.target);
@@ -3287,6 +3320,19 @@ Lang.prototype.pack.tr = {
 					camera.follow = true;
 					camera.target = rocket;
 				}
+		}else if(Move.type == "build" || Move.type == "clear"){
+			Move.ends -= _diff;
+			builds.push(Move);
+		}else if(Move.type == "swap"){
+			Move.ends -= _diff;
+			builds.push({
+				target : Move.target,
+				ends : Move.ends
+			});
+			builds.push({
+				target : Move.from,
+				ends : Move.ends
+			});
 		}
 
 		InterfaceUpdateCities();
@@ -3337,7 +3383,7 @@ Lang.prototype.pack.tr = {
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var w_html="";
-	var selected_city;
+	var selected_city="Ankara";
 	var your_county = "Turkey";
 
 	for(country in Countries){
@@ -3393,16 +3439,23 @@ Lang.prototype.pack.tr = {
 		$("target").html(selected_city);
 		$("#control").fadeIn();
 
+		InterfaceUpdateSelectors();
+		InterfaceUpdateCities();
+		InterfaceUpdateCards();
 
 
-			InterfaceMakeCardDisabled();
+
+	}
+
+	function InterfaceUpdateCards(){
+		InterfaceMakeCardDisabled();
 
 			var city = getCity(selected_city);
 
 			if(isYourCity(selected_city)){
 				if(city.bombed){
 					InterfaceMakeCardActive("clear");
-					InterfaceSetInfo('clear','1:00');
+					InterfaceSetInfo('clear',RemainTime(NukewarStandarts.ClearCost));
 				}
 				else{
 					InterfaceMakeCardPassive("clear");
@@ -3410,14 +3463,14 @@ Lang.prototype.pack.tr = {
 
 
 					InterfaceMakeCardActive("swap");
-					InterfaceSetInfo('swap','3:00');
+					InterfaceSetInfo('swap',RemainTime(NukewarStandarts.SwapCost));
 
 					if(city.build){
 						InterfaceMakeCardPassive("build");
 						InterfaceSetInfo('build',translate('City is not empty'));
 					}else{
 						InterfaceMakeCardActive("build");
-						InterfaceSetInfo('build','4:00');
+						InterfaceSetInfo('build',RemainTime(NukewarStandarts.BuildCost));
 					}
 
 					InterfaceSetInfo('nuke',translate('City is yours'));
@@ -3429,8 +3482,8 @@ Lang.prototype.pack.tr = {
 				// targete göre mesefa
 				// froma göre uygunluk
 				if(!city.bombed){
-					var from = getCity($("#missilefrom option").val());
-					if(from.build.usable < Date.now()){
+					var from = getCity($("#missilefrom select").val());
+					if(from && from.build && from.build.usable < Date.now()){
 						InterfaceMakeCardActive("nuke");
 						InterfaceSetInfo('nuke',RemainTime(RocketController.calcTime(from,city)));
 					}else{
@@ -3447,13 +3500,6 @@ Lang.prototype.pack.tr = {
 				InterfaceSetInfo('swap',translate('It is not your city'));
 				InterfaceSetInfo('build',translate('It is not your city'));
 			}
-
-		
-
-		
-
-
-		InterfaceUpdateCities();
 	}
 
 	function isYourCity(name){
@@ -3500,7 +3546,7 @@ Lang.prototype.pack.tr = {
 
 			InterfaceOpenPanels(["start","languages"],delay);
 
-			InterfaceClosePanels(["mycities","lobby","chat","world","control","status","statics"],100);
+			InterfaceClosePanels(["mycities","lobby","chat","world","control","status","statics","gameover","info"],100);
 
 			$("#nick").focus();
 
@@ -3508,16 +3554,22 @@ Lang.prototype.pack.tr = {
 
 			InterfaceOpenPanels(["chat","lobby","languages"],100);
 
-			InterfaceClosePanels(["mycities","start","world","control","status","statics"],100);
+			InterfaceClosePanels(["mycities","start","world","control","status","statics","gameover","info"],100);
 
 			
 
 		}else if( state == 'game' ){
 
-			InterfaceOpenPanels(["mycities","chat","world","status","statics"],100);
+			InterfaceOpenPanels(["mycities","chat","world","status","statics","info"],100);
 
-			InterfaceClosePanels(["lobby","languages","start","control"],100);
+			InterfaceClosePanels(["lobby","languages","start","control","gameover"],100);
 
+
+		}else if( state == 'gameover'){
+
+			InterfaceOpenPanels(["chat","statics","gameover"],100);
+
+			InterfaceClosePanels(["world","status","mycities","lobby","languages","start","control","info"],100);
 
 		}
 
@@ -3537,8 +3589,6 @@ Lang.prototype.pack.tr = {
 
 	function InterfaceUpdateCities(){
 		$("#mycities").html("");
-		var missiles = [];
-		var cities = [];
 
 		// global dataya göre güncelleme yap
 		for(country in Countries){
@@ -3560,21 +3610,31 @@ Lang.prototype.pack.tr = {
 						var html="<citycard class='citybombed' for='"+cityname+"'>";	
 					else{
 						var html="<citycard for='"+cityname+"'>";
-						if(city.build && city.build.type=="nuclear")
-							missiles.push(cityname);
-						if(cityname != selected_city)
-							cities.push(cityname);
 					}
 
 					html+= "<h1>"+cityname+"</h1>";
-					if(city.build){
+
+					var buiding = false;
+					var ends;
+					builds.forEach(function(b){
+						if(b.target == cityname){
+							if(b.ends > Date.now()){
+								buiding = true;
+								ends = b.ends;
+							}
+						}
+					});
+
+					if(buiding){
+						html += "<countdown class='bcount' to='"+ends+"' trigger='InterfaceOnSelectCity(true)'></countdown>";
+					}else if(city.build){
 						if( city.build.type=="nuclear" && city.build.usable > Date.now() ){
-							html += "<countdown to='"+city.build.usable+"' trigger='InterfaceOnSelectCity(true)'></countdown>";
+							html += "<countdown class='ncount' to='"+city.build.usable+"' trigger='InterfaceOnSelectCity(true)'></countdown>";
 						}else{
 							html+= '<img src="images/'+city.build.type+'.svg" width="18px" />';
 						}
 					}else{
-						html+= '<img src="images/city.svg" width="18px" />';
+							html+= '<img src="images/city.svg" width="18px" />';
 					}
 					html+="</citycard>";
 					$("#mycities").append(html);
@@ -3598,26 +3658,6 @@ Lang.prototype.pack.tr = {
 			selected_city = $(this).attr('for');
 			InterfaceOnSelectCity();
 		});
-
-		$("missileselector").each(function(){
-			var e = $(this);
-			var html="<select>";
-			missiles.forEach(function(m){
-				html+="<option value='"+m+"'>"+m+"</option>"
-			});
-			html+="</select>";
-			e.html(html);
-		});
-
-		$("cityselector").each(function(){
-			var e = $(this);
-			var html="<select>";
-			cities.forEach(function(c){
-				html+="<option value='"+c+"'>"+c+"</option>"
-			});
-			html+="</select>";
-			e.html(html);
-		});	
 
 
 		if(Countries[your_county].busy > Date.now() )
@@ -3663,6 +3703,66 @@ Lang.prototype.pack.tr = {
 		InterfaceLoop();
 	}
 
+	function InterfaceUpdateSelectors(){
+
+		var missiles_with_distance = [];
+		var cities = [];
+
+		var selectedCity = getCity(selected_city);
+
+		for(country in Countries){
+			var Country = Countries[country];
+
+			if(Country.isYou){
+
+				for(var cityname in Country.cities){
+					if(cityname == selected_city) continue;
+
+					var city = Country.cities[cityname];
+
+					if(!city.bombed){
+						if(city.build && city.build.type == "nuclear" && city.build.usable < Date.now()){
+							missiles_with_distance.push({
+								name : cityname,
+								distance : ((new GPos(city.position.lat,city.position.lon)).distanceBetween((new GPos(selectedCity.position.lat,selectedCity.position.lon))))
+							});
+						}
+						cities.push(cityname);
+					}
+
+
+				}
+					
+			}
+
+		}
+
+		missiles_with_distance.sort(function(a,b){ return a.distance - b.distance });
+
+		var missiles = [];
+		missiles_with_distance.forEach(function(m){ missiles.push(m.name) });
+
+		$("missileselector").each(function(){
+			var e = $(this);
+			var html="<select>";
+			missiles.forEach(function(m){
+				html+="<option value='"+m+"'>"+m+"</option>"
+			});
+			html+="</select>";
+			e.html(html);
+		});
+
+		$("cityselector").each(function(){
+			var e = $(this);
+			var html="<select>";
+			cities.forEach(function(c){
+				html+="<option value='"+c+"'>"+c+"</option>"
+			});
+			html+="</select>";
+			e.html(html);
+		});
+	}
+
 	function Exit(){
 		socket.emit('exit');
 	}
@@ -3685,7 +3785,7 @@ Lang.prototype.pack.tr = {
 			block_window_click = true;
 			socket.emit('launch nuclear missile',{
 				target : selected_city,
-				from : $("#missilefrom option").val()
+				from : $("#missilefrom select").val()
 			});
 		});
 
@@ -3698,7 +3798,7 @@ Lang.prototype.pack.tr = {
 			block_window_click = true;
 			socket.emit('transport',{
 				target : selected_city,
-				from : $("#cityfrom option").val()
+				from : $("#cityfrom select").val()
 			});
 		});
 

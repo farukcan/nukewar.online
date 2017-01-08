@@ -44,6 +44,7 @@
 			sprite.position.copy(cube.gPos.toVector3(0.5152));
 			sprite.scale.set(.015,.015,.015);
 			sprite.country = country;
+			sprite.lock = false;
 			sprite.city = cityname;
 			scene.add(sprite);
 			city_cross_list.push(sprite);
@@ -70,22 +71,25 @@
 
 	function setCrossesOn(){
 		city_cross_list.forEach(function(flag){
-			flag.visible=(!Countries[flag.country].lose && city_list[flag.city].bombed);
-			flag.time = 0;
+			flag.visible=(!Countries[flag.country].lose && city_list[flag.city].bombed && !flag.lock);
 		});
 	}	
 
 	function setCrossesOff(){
 		city_cross_list.forEach(function(flag){
 			flag.visible=false;
-			flag.time = 0;
 		});
 	}
 
 	function blackoffCross(city){
 		city_cross_list.forEach(function(flag){
 			if(flag.city == city){
-				flag.time = Date.now() + 5000;
+				flag.lock = true;
+				flag.visible = false;
+				setTimeout(function(){
+					flag.visible = true;
+					flag.lock = false;
+				},10000);
 			}
 		});
 	}

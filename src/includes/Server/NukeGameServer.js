@@ -73,17 +73,17 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 	socket.lose=function(){
 		// şuanlık lose değilde maine gönderelim
-		socket.Notice("lose");
+		socket.Notice('<b lang="en">You are defeated</b>');
 		socket.Game = null;
-		socket.JoinRoom("main");
-		socket.emit('state','main');
+		socket.JoinRoom("gameover");
+		socket.emit('state','gameover');
 	};
 	socket.win=function(){
 		// şuanlık lose değilde maine gönderelim
-		socket.Notice("win");
+		socket.Notice('<b lang="en">You are winner</b>');
 		socket.Game = null;
-		socket.JoinRoom("main");
-		socket.emit('state','main');
+		socket.JoinRoom("gameover");
+		socket.emit('state','gameover');
 	};
 	socket.JoinRoom("main");
 
@@ -187,6 +187,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		// kendi şehri değilse
 		if(socket.isYours(config.target)) return socket.Notice("<err lang='en'>City is yours</err>");
+		if(!socket.isYours(config.from)) return socket.Notice("<err lang='en'>It is not your city</err>");
 
 		// o şehir bombalanmadıysa
 		if(target.bombed) return socket.Notice("<err lang='en'>City is already bombed</err>");
@@ -210,6 +211,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 			type : "rocket",
 			target : config.target,
 			from : config.from,
+			now : Date.now(),
 			ends : (Date.now() + cost )
 		};
 
@@ -221,39 +223,124 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 	socket.on('clear area',function(target){
 
-		socket.Notice(JSON.stringify(target));
+		if((typeof(target) != 'string')) return socket.Notice("ERR");
+
+		if( (typeof(Cities[target]) == "undefined") ) return socket.Notice("ERR");
+
+		if(typeof(socket.Game) == 'undefined' || typeof(socket.Game) == 'null' ) return socket.Notice("ERR");
+
+		var Target = socket.getCity(target);
+		var Country = socket.Game.Countries[socket.country];
+
 
 		// kendi şehriyse
-		// şehir bombalandıysa
+		if(!socket.isYours(target)) return socket.Notice("<err lang='en'>It is not your city</err>");
+
+		// bombalandıyysa
+		if(!Target.bombed) return socket.Notice("<err lang='en'>City is not damaged</err>");
+
 		// ülke meşgül değilse
+		if( Country.busy > Date.now() ) return socket.Notice("<err lang='en'>Country is busy, please wait</err>");
 
 		// busy yap
+		Country.busy = Date.now() + NukewarStandarts.ClearCost;
+
 		// timer ile şehri bombed=false yap ve update
+		var move = {
+			type : "clear",
+			target : target,
+			ends : Country.busy
+		};
+
+		socket.Game.Moves.push(move);
+		socket.emit('move',move);
+		socket.SendPrivateData();
+
+		socket.Notice(target+" <b lang='en'>is clearing</b>");
+
 	} );
 
 	socket.on('transport',function(config){
 
-		socket.Notice(JSON.stringify(config));
+		if(!config || (typeof(config.target) != 'string') || (typeof(config.from) != 'string') ) return socket.Notice("ERR");
+
+		if( (typeof(Cities[config.target]) == "undefined") || (typeof(Cities[config.from]) == "undefined") ) return socket.Notice("ERR");
+
+		if(typeof(socket.Game) == 'undefined' || typeof(socket.Game) == 'null' ) return socket.Notice("ERR");
+
+		var target = socket.getCity(config.target);
+		var from = socket.getCity(config.from);
+		var Country = socket.Game.Countries[socket.country];
 
 		// iki şehirde kendi şehriyse
+		if(!socket.isYours(config.target)) return socket.Notice("<err lang='en'>It is not your city</err>");
+		if(!socket.isYours(config.from)) return socket.Notice("<err lang='en'>It is not your city</err>");
+
 		// iki şehirde bombalanmadıysa
+		if(target.bombed || from.bombed ) return socket.Notice("<err lang='en'>City is bombed</err>");
+
 		// ülke meşgul değilse
+		if( Country.busy > Date.now() ) return socket.Notice("<err lang='en'>Country is busy, please wait</err>");
 
 		// busy yap
+		Country.busy = Date.now() + NukewarStandarts.SwapCost;
+
 		// timer ile şehirlerin buildlerini replace et ve update
+		var move = {
+			type : "swap",
+			target : config.target,
+			from : config.from,
+			ends : Country.busy
+		};
+
+		socket.Game.Moves.push(move);
+		socket.emit('move',move);
+		socket.SendPrivateData();
+
+		socket.Notice(config.target+" <b lang='en'>is transporting to</b> "+config.from);
+
 
 	} );
 	socket.on('build missile launcher',function(target){
 
-		socket.Notice(JSON.stringify(target));
+		if((typeof(target) != 'string')) return socket.Notice("ERR");
+
+		if( (typeof(Cities[target]) == "undefined") ) return socket.Notice("ERR");
+
+		if(typeof(socket.Game) == 'undefined' || typeof(socket.Game) == 'null' ) return socket.Notice("ERR");
+
+		var Target = socket.getCity(target);
+		var Country = socket.Game.Countries[socket.country];
 
 		// kendi şehriyse
+		if(!socket.isYours(target)) return socket.Notice("<err lang='en'>It is not your city</err>");
+
 		// bombalanmadıysa
+		if(Target.bombed) return socket.Notice("<err lang='en'>City is bombed</err>");
+
 		// boşsa
+		if(Target.build) return socket.Notice("<err lang='en'>City is not empty</err>");
+
 		// ülke meşgul değilse
+		if( Country.busy > Date.now() ) return socket.Notice("<err lang='en'>Country is busy, please wait</err>");
 
 		// busy yap
+		Country.busy = Date.now() + NukewarStandarts.BuildCost;
+
 		// timer ile şehre bir nuke build et ve update
+		var move = {
+			type : "build",
+			target : target,
+			ends : Country.busy
+		};
+
+		socket.Game.Moves.push(move);
+		socket.emit('move',move);
+		socket.SendPrivateData();
+
+		socket.Notice("<b lang='en'>Building nuclear launcher to</b> "+target);
+
+
 	} );
 
 });

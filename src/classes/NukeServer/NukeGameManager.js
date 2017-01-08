@@ -53,16 +53,22 @@ var NukeGameManager = {
 			},
 			update : function(){
 
+			this.updateBots();	
+
 			var i = this.Moves.length;
 			while(i--){
 
-				if(this.Moves[i].ends < Date.now()){
+				if(this.Moves[i].canceled){
+					this.Moves.splice(i,1);
+				}
+				else if(this.Moves[i].ends < Date.now()){
 					var Move = this.Moves[i];
 
 					if(Move.type == "rocket"){
 
 						var target = this.getCity(Move.target);
-						this.Notice(Move.target+" <b lang='en'>is destroyed</b>");
+						if(!target.bombed)
+							this.Notice(Move.target+" <b lang='en'>is destroyed</b>");
 						target.bombed = true; // bombalandı
 						
 
@@ -134,16 +140,218 @@ var NukeGameManager = {
 						if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
 							this.Countries[c].socket.SendPrivateData();
 						}
+					
+					}else if(Move.type == "build"){
+
+						var target = this.getCity(Move.target);
+						var c = this.getCountryOfCity(Move.target);
+
+						if(!target.bombed){
+							target.build = {
+								type : "nuclear",
+								usable : 0
+							};
+							if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
+								this.Countries[c].socket.Notice('<b lang="en">Nuclear launcher successfully built to</b> '+Move.target);
+								this.Countries[c].socket.SendPrivateData();
+							}
+						}
+
+					}else if(Move.type == "clear"){
+						var target = this.getCity(Move.target);
+						var c = this.getCountryOfCity(Move.target);
+
+						target.bombed = false;
+
+						if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
+							this.Countries[c].socket.Notice('<b lang="en">City successfully cleared :</b> '+Move.target);
+							this.Countries[c].socket.SendPrivateData();
+						}
+
+						this.SendGlobalData();
+
+					}else if(Move.type == "swap"){
+						var target = this.getCity(Move.target);
+						var from = this.getCity(Move.from);
+						var c = this.getCountryOfCity(Move.target);
+
+						if(!from.bombed && !target.bombed){
+							var swap = target.build;
+							target.build = from.build;
+							from.build = swap;
+
+							if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
+								this.Countries[c].socket.Notice('<b lang="en">Cities successfully swapped :</b> '+Move.target+" & "+Move.from);
+								this.Countries[c].socket.SendPrivateData();
+							}
+						}
+
 					}
 
-					this.Moves.splice(i,1);
-				}else if(this.Moves[i].canceled){
+
 					this.Moves.splice(i,1);
 				}
 
 			}
 
 
+
+			},
+			getEnemy : function(countryname){
+				if(this.Countries[countryname].enemy){
+					if(!this.Countries[this.Countries[countryname].enemy].lose)
+						return this.Countries[countryname].enemy;
+				}
+				var enemies001 = [];
+				var min = 5;
+				// yaşayanlardan
+				for(var c in this.Countries){
+					if(!this.Countries[c].lose){
+						var citynum = 0;
+						for(var ii in this.Countries[c].cities){
+							if(!this.Countries[c].cities[ii].bombed){
+								citynum++;
+							}
+						}
+						enemies001.push({
+							name : c,
+							num : citynum
+						});
+
+						if(citynum<min)
+							min = citynum;
+					}
+				}
+
+				if(enemies001.length==0) return "none";
+
+				var enemies002 = [];
+
+				enemies001.forEach(function(enemy){
+					if(enemy.num == min)
+						enemies002.push(enemy);
+				});
+
+				shuffle(enemies002);
+
+				var enemy = enemies002[0].name;
+				this.Countries[countryname].enemy = enemy;
+				return enemy;
+			},
+			getEnemyCity : function(enemy){
+				var cities = [];
+				for(var i in this.Countries[enemy].cities){
+					if( !this.Countries[enemy].cities[i].bombed )
+						cities.push(i);
+				}
+				shuffle(cities);
+				return cities[0];
+			},
+			updateBots : function(){
+				for(var countryname in this.Countries){
+					var Country = this.Countries[countryname];
+					if(Country.isBot && !Country.lose && Country.busy<Date.now()){
+						// botsa ve kaybetmediyse ve meşgul değilse
+
+						if(Country.zombie) continue;
+
+						if(Math.random() > 0.5 ) continue; // bot bekleyebilir hamle yapmasın
+
+						var nuke = "none";
+
+						// nuke bul ()
+						for(var n in Country.cities){
+							if(!Country.cities[n].bombed && Country.cities[n].build && Country.cities[n].build.type=="nuclear"){
+								nuke = n;
+								break;
+							}
+						}
+
+						if(nuke!="none"){
+
+							if(Country.cities[nuke].build.usable < Date.now()){ // füze hazırsa
+
+								// saldır
+								var enemy = this.getEnemy(countryname);
+
+								if(enemy != "none"){
+
+									var to = this.getEnemyCity(enemy);
+
+									var from = Country.cities[nuke];
+									var target = this.Countries[enemy].cities[to];
+
+									// busy yap
+									var cost = RocketController.calcTime(from,target);
+									Country.busy = Date.now() + cost;
+
+									from.build.usable = Date.now() + NukewarStandarts.ReloadCost;;
+
+									var move = {
+										type : "rocket",
+										target : to,
+										from : nuke,
+										now : Date.now(),
+										ends : (Date.now() + cost )
+									};
+
+									this.Moves.push(move);
+									NukeGameServer.io.to(this.room).emit('move',move);
+
+									// FIN
+									console.log("nuke atıldı");
+
+
+								}else{
+									Country.zombie = true; // düşman bulamazsa zombi olur
+									console.log("düşman bulamazsa zombi olur");
+									// FIN
+								}
+
+							}else{
+								// FIN
+								console.log("nuke kullanılamaz");
+							}
+
+						}else{
+
+							var emptycity = "none";
+
+							// boş şehir bul ()
+							for(var n in Country.cities){
+								if(!Country.cities[n].bombed && Country.cities[n].build==false){
+									emptycity = n;
+									break;
+								}
+							}
+
+							if(emptycity != "none"){
+								// inşa et
+								Country.busy = Date.now() + NukewarStandarts.BuildCost;
+
+								// timer ile şehre bir nuke build et ve update
+								var move = {
+									type : "build",
+									target : emptycity,
+									ends : Country.busy
+								};
+
+								this.Moves.push(move);
+								// FIN
+								console.log("yeni nuke");
+							}else{
+								Country.zombie = true; //nuke yok ve boş şehir kalmadıysa bot zombi olur
+								console.log("nuke yok ve boş şehir kalmadıysa bot zombi olur");
+								// FIN
+								
+							}
+
+						}
+						
+
+
+					}
+				}
 
 			}
 		}
