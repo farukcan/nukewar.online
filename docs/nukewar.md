@@ -44,6 +44,8 @@ Sonra unitye dök
 - [x] kazanma kaybetme ekranları
 - [x] Botlar eklenecek
 - [x] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
+- [x] bazen nükleer rocket patlamıyor?
+- [x] max oyun süresi 1 saat
 - [ ] Atom bombası hakkında bilgi ve sözler eklenecek
 - [ ] Şehirlerin popülasyonu öğren
 - [ ] optimizasyon gerekli çok kasıyo. hem server hem client ram israfı yapılmamalı

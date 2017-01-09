@@ -232,6 +232,8 @@ var NukeGameManager = {
 						enemies002.push(enemy);
 				});
 
+				if(Math.random() > 0.7 ) enemies002 = enemies001; // illada en zayıfa saldırmak zorunda değil
+
 				shuffle(enemies002);
 
 				var enemy = enemies002[0].name;
@@ -255,7 +257,7 @@ var NukeGameManager = {
 
 						if(Country.zombie) continue;
 
-						if(Math.random() > 0.5 ) continue; // bot bekleyebilir hamle yapmasın
+						if(Math.random() > 0.75 ) continue; // bot bekleyebilir hamle yapmasın
 
 						var nuke = "none";
 
@@ -299,18 +301,14 @@ var NukeGameManager = {
 									NukeGameServer.io.to(this.room).emit('move',move);
 
 									// FIN
-									console.log("nuke atıldı");
-
 
 								}else{
 									Country.zombie = true; // düşman bulamazsa zombi olur
-									console.log("düşman bulamazsa zombi olur");
 									// FIN
 								}
 
 							}else{
 								// FIN
-								console.log("nuke kullanılamaz");
 							}
 
 						}else{
@@ -338,10 +336,8 @@ var NukeGameManager = {
 
 								this.Moves.push(move);
 								// FIN
-								console.log("yeni nuke");
 							}else{
 								Country.zombie = true; //nuke yok ve boş şehir kalmadıysa bot zombi olur
-								console.log("nuke yok ve boş şehir kalmadıysa bot zombi olur");
 								// FIN
 								
 							}
