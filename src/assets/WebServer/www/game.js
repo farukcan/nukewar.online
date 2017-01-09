@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Mon Jan 09 2017 13:27:50 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Mon Jan 09 2017 20:49:56 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2525,7 +2525,17 @@ Lang.prototype.pack.tr = {
         "Game Over" : "Oyun Bitti",
         "You are defeated" : "Oyunu kaybettiniz",
         "You are winner" : "Oyunu siz kazandınız",
-        "Play Again" : "Tekrar oyna"
+        "Play Again" : "Tekrar oyna",
+        "Close" : "Kapat",
+        "How to play?" : "Nasıl Oynanır?",
+        "Country that command center is destroyed lose the game" : "Komuta merkezi yok edilen ülke oyunu kaybeder",
+        "All countries are each other's enemy" : "Bütün ülkeler birbirinin düşmanıdır",
+        "Only survived country wins the game" : "Sadece hayatta kalan ülke oyunu kazanır",
+        "You can release nuclear bomb from city that has nuclear launcher" : "Nükleer fırlatıcı olan şehirden atom bombası fırlatılabilir",
+        "Command Center : You can transport cities" : "Komuta merkezi : Şehirleri taşıyabilirsin",
+        "Nuclear launcher : You can destroy enemy cities" : "Nükleer fırlatıcı : Düşman şehirleri yokedebilirsin",
+        "Civilian city : You can build new nuclear launcher" : "Sivil şehir : Yeni bir nükleer fırlatıcı daha inşa edebilirsin"
+
     },
     "regex": [
     ]
@@ -3190,6 +3200,7 @@ Lang.prototype.pack.tr = {
 				camera_r = camera_r_default;
 				camera.follow = true;
 				camera.target = exampleRocketB;
+				glitchPass.active = true;
 				glitchPass.goWild = false;
 				break;
 
@@ -3207,11 +3218,12 @@ Lang.prototype.pack.tr = {
 				InterfaceSetState(state);
 
 				RocketController.deleteAll();
-
+				glitchPass.active = false;
 				break;
 
 			case 'gameover':
 				InterfaceSetState(state);
+				glitchPass.active = true;
 				glitchPass.goWild = true;
 				camera_r = camera_r_default;
 				setFlagsOff();

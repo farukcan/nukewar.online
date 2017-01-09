@@ -1,4 +1,4 @@
-const Project = {
+var Project = {
 	name : "Kâtip",
 	version : "alpha"
 };

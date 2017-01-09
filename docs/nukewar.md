@@ -40,12 +40,13 @@ Sonra unitye dök
 - [x] Swap hamlesi eklenecek
 - [x] Hamle yapıldığında Notice gönder 
 - [x] Socketler çok geciktiği zaman, ZAMAN algısı sapıtıyor. roketlere now eklendi
-- [ ] oyun başlangıcında bilgilendirme ekranı [Türkçeleştirilmeli]
+- [x] oyun başlangıcında bilgilendirme ekranı [Türkçeleştirilmeli]
+- [x] efekt sinir bozucuynuş ona kaldırmanın yolunu bulmak gerek
 - [x] kazanma kaybetme ekranları
 - [x] Botlar eklenecek
-- [x] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
-- [x] bazen nükleer rocket patlamıyor?
-- [x] max oyun süresi 1 saat
+- [ ] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
+- [ ] bazen nükleer rocket şehri uçurmuyor
+- [ ] max oyun süresi 1 saat
 - [ ] Atom bombası hakkında bilgi ve sözler eklenecek
 - [ ] Şehirlerin popülasyonu öğren
 - [ ] optimizasyon gerekli çok kasıyo. hem server hem client ram israfı yapılmamalı
@@ -54,6 +55,7 @@ Sonra unitye dök
 - [ ] chat şeyine tıklayınca seçim yapmasının önüne geç **işe yaramadı**
 - [ ] Güvenlik önlemleri alınacak
 - [ ] panellerin geçmişte kalma sorunu çöz
+- [ ] mesaj spamı engellenmeli
 
 ## İlham
 

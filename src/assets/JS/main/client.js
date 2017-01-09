@@ -27,6 +27,7 @@
 				camera_r = camera_r_default;
 				camera.follow = true;
 				camera.target = exampleRocketB;
+				glitchPass.active = true;
 				glitchPass.goWild = false;
 				break;
 
@@ -44,11 +45,12 @@
 				InterfaceSetState(state);
 
 				RocketController.deleteAll();
-
+				glitchPass.active = false;
 				break;
 
 			case 'gameover':
 				InterfaceSetState(state);
+				glitchPass.active = true;
 				glitchPass.goWild = true;
 				camera_r = camera_r_default;
 				setFlagsOff();

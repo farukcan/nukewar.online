@@ -206,7 +206,7 @@ var NukeGameManager = {
 				var min = 5;
 				// yaşayanlardan
 				for(var c in this.Countries){
-					if(!this.Countries[c].lose){
+					if(!this.Countries[c].lose && c!=countryname){
 						var citynum = 0;
 						for(var ii in this.Countries[c].cities){
 							if(!this.Countries[c].cities[ii].bombed){

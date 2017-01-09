@@ -42,7 +42,17 @@ Lang.prototype.pack.tr = {
         "Game Over" : "Oyun Bitti",
         "You are defeated" : "Oyunu kaybettiniz",
         "You are winner" : "Oyunu siz kazandınız",
-        "Play Again" : "Tekrar oyna"
+        "Play Again" : "Tekrar oyna",
+        "Close" : "Kapat",
+        "How to play?" : "Nasıl Oynanır?",
+        "Country that command center is destroyed lose the game" : "Komuta merkezi yok edilen ülke oyunu kaybeder",
+        "All countries are each other's enemy" : "Bütün ülkeler birbirinin düşmanıdır",
+        "Only survived country wins the game" : "Sadece hayatta kalan ülke oyunu kazanır",
+        "You can release nuclear bomb from city that has nuclear launcher" : "Nükleer fırlatıcı olan şehirden atom bombası fırlatılabilir",
+        "Command Center : You can transport cities" : "Komuta merkezi : Şehirleri taşıyabilirsin",
+        "Nuclear launcher : You can destroy enemy cities" : "Nükleer fırlatıcı : Düşman şehirleri yokedebilirsin",
+        "Civilian city : You can build new nuclear launcher" : "Sivil şehir : Yeni bir nükleer fırlatıcı daha inşa edebilirsin"
+
     },
     "regex": [
     ]
