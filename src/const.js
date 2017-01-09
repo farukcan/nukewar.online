@@ -3,7 +3,7 @@ const Project = {
 	version : "alpha"
 };
 
-const Settings = {
+var Settings = {
 	WebServer : {
 		Port : 1337,
 		Dir : "src/assets/WebServer/"
