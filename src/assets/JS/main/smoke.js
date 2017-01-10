@@ -13,22 +13,18 @@
 		if(fadeSpeed)
 			this.fadeSpeed = fadeSpeed;
 
-		this.mesh= new THREE.Mesh(new THREE.IcosahedronGeometry(this.scale,1), this.mat);
+		this.rad = 1;
 
-		if(position)
-			this.mesh.position.copy(position);
-
-		this.noise();
-
-		scene.add(this.mesh);
 
 		if(SmokeController.array.length<SmokeController.arrayMeta.limit){
-
+			this.mesh= new THREE.Mesh(new THREE.IcosahedronGeometry(this.scale,1), this.mat);
+			scene.add(this.mesh);
 			SmokeController.array.push(this);
 
 		} else {
 
-			scene.remove(SmokeController.array[SmokeController.arrayMeta.index].mesh);
+			this.mesh = SmokeController.array[SmokeController.arrayMeta.index].mesh;
+			this.rad = this.scale / this.mesh.geometry.parameters.radius;
 			delete SmokeController.array[SmokeController.arrayMeta.index];
 			SmokeController.array[SmokeController.arrayMeta.index] = this;
 
@@ -36,6 +32,10 @@
 
 		SmokeController.arrayMeta.index = (SmokeController.arrayMeta.index+1) % SmokeController.arrayMeta.limit;
 
+		if(position)
+			this.mesh.position.copy(position);
+
+		this.noise();
 	}
 
 	Smoke.prototype = {
@@ -54,9 +54,9 @@
 			this.mesh.position.x += this.random();
 			this.mesh.position.y += this.random();
 			this.mesh.position.z += this.random();			
-			this.mesh.scale.x = Math.random()/2+0.75;
-			this.mesh.scale.y = Math.random()/2+0.75;
-			this.mesh.scale.z = Math.random()/2+0.75;
+			this.mesh.scale.x = (Math.random()/2+0.75)*this.rad;
+			this.mesh.scale.y = (Math.random()/2+0.75)*this.rad;
+			this.mesh.scale.z = (Math.random()/2+0.75)*this.rad;
 		},
 
 		random : function(){

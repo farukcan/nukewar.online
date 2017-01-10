@@ -45,6 +45,7 @@ Sonra unitye dök
 - [x] kazanma kaybetme ekranları
 - [x] Botlar eklenecek
 - [ ] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
+- [ ] 2 roket vardı biri müsait olmasına rağmen rampa hazır değil dedi?
 - [ ] bazen nükleer rocket şehri uçurmuyor
 - [ ] max oyun süresi 1 saat
 - [ ] Atom bombası hakkında bilgi ve sözler eklenecek
@@ -56,6 +57,7 @@ Sonra unitye dök
 - [ ] Güvenlik önlemleri alınacak
 - [ ] panellerin geçmişte kalma sorunu çöz
 - [ ] mesaj spamı engellenmeli
+- [ ] 10sn bekleme şeyi tikini kaldır
 
 ## İlham
 

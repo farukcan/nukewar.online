@@ -1,8 +1,8 @@
 	// Bir WebGL renderi oluştur
 
-	var renderer	= new THREE.WebGLRenderer({
+	var renderer	= new THREE.WebGLRenderer(/*{
 		antialias	: true
-	});
+	}*/);
 	// Tam ekran yap
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize( window.innerWidth, window.innerHeight );

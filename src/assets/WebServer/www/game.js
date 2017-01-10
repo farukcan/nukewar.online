@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Tue Jan 10 2017 14:32:57 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Tue Jan 10 2017 18:40:11 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2544,9 +2544,9 @@ Lang.prototype.pack.tr = {
 };
 	// Bir WebGL renderi oluştur
 
-	var renderer	= new THREE.WebGLRenderer({
+	var renderer	= new THREE.WebGLRenderer(/*{
 		antialias	: true
-	});
+	}*/);
 	// Tam ekran yap
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -2903,22 +2903,18 @@ Lang.prototype.pack.tr = {
 		if(fadeSpeed)
 			this.fadeSpeed = fadeSpeed;
 
-		this.mesh= new THREE.Mesh(new THREE.IcosahedronGeometry(this.scale,1), this.mat);
+		this.rad = 1;
 
-		if(position)
-			this.mesh.position.copy(position);
-
-		this.noise();
-
-		scene.add(this.mesh);
 
 		if(SmokeController.array.length<SmokeController.arrayMeta.limit){
-
+			this.mesh= new THREE.Mesh(new THREE.IcosahedronGeometry(this.scale,1), this.mat);
+			scene.add(this.mesh);
 			SmokeController.array.push(this);
 
 		} else {
 
-			scene.remove(SmokeController.array[SmokeController.arrayMeta.index].mesh);
+			this.mesh = SmokeController.array[SmokeController.arrayMeta.index].mesh;
+			this.rad = this.scale / this.mesh.geometry.parameters.radius;
 			delete SmokeController.array[SmokeController.arrayMeta.index];
 			SmokeController.array[SmokeController.arrayMeta.index] = this;
 
@@ -2926,6 +2922,10 @@ Lang.prototype.pack.tr = {
 
 		SmokeController.arrayMeta.index = (SmokeController.arrayMeta.index+1) % SmokeController.arrayMeta.limit;
 
+		if(position)
+			this.mesh.position.copy(position);
+
+		this.noise();
 	}
 
 	Smoke.prototype = {
@@ -2944,9 +2944,9 @@ Lang.prototype.pack.tr = {
 			this.mesh.position.x += this.random();
 			this.mesh.position.y += this.random();
 			this.mesh.position.z += this.random();			
-			this.mesh.scale.x = Math.random()/2+0.75;
-			this.mesh.scale.y = Math.random()/2+0.75;
-			this.mesh.scale.z = Math.random()/2+0.75;
+			this.mesh.scale.x = (Math.random()/2+0.75)*this.rad;
+			this.mesh.scale.y = (Math.random()/2+0.75)*this.rad;
+			this.mesh.scale.z = (Math.random()/2+0.75)*this.rad;
 		},
 
 		random : function(){
