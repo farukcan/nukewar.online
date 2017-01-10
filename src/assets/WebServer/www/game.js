@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Mon Jan 09 2017 20:49:56 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Tue Jan 10 2017 14:14:04 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2607,7 +2607,6 @@ Lang.prototype.pack.tr = {
 		for(cityname in Countries[country].cities){
 			var city = Countries[country].cities[cityname];
 			city_list[cityname] = city;
-			console.log(country,cityname,city.population);
 
 			var cube = new THREE.Mesh( new THREE.CubeGeometry(  0.004, 0.004, 0.00000002*city.population ), new THREE.MeshNormalMaterial() );
 			cube.gPos = new GPos(city.position.lat,city.position.lon);
@@ -4038,26 +4037,34 @@ Lang.prototype.pack.tr = {
 	});
 
 
+	THREE.DefaultLoadingManager.onProgress = function ( item, loaded, total ) {
+	    if(loaded == total){
+
+
+			//////////////////////////////////////////////////////////////////////////////////
+			//		loop runner							//
+			//////////////////////////////////////////////////////////////////////////////////
+			var lastTimeMsec= null
+			requestAnimationFrame(function animate(nowMsec){
+				// keep looping
+				requestAnimationFrame( animate );
+				// measure time
+				lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+				var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+				lastTimeMsec	= nowMsec
+
+				var Time = {
+					deltaTime : deltaMsec/1000,
+					time : nowMsec/1000
+				}
+				// call each update function
+				loop.functions.forEach(function(func){
+					func(Time)
+				})
+			})
+	
+
+	    }
+	};
 
 	
-	//////////////////////////////////////////////////////////////////////////////////
-	//		loop runner							//
-	//////////////////////////////////////////////////////////////////////////////////
-	var lastTimeMsec= null
-	requestAnimationFrame(function animate(nowMsec){
-		// keep looping
-		requestAnimationFrame( animate );
-		// measure time
-		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
-		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
-		lastTimeMsec	= nowMsec
-
-		var Time = {
-			deltaTime : deltaMsec/1000,
-			time : nowMsec/1000
-		}
-		// call each update function
-		loop.functions.forEach(function(func){
-			func(Time)
-		})
-	})

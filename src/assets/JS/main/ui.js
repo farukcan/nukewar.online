@@ -20,7 +20,6 @@
 		for(cityname in Countries[country].cities){
 			var city = Countries[country].cities[cityname];
 			city_list[cityname] = city;
-			console.log(country,cityname,city.population);
 
 			var cube = new THREE.Mesh( new THREE.CubeGeometry(  0.004, 0.004, 0.00000002*city.population ), new THREE.MeshNormalMaterial() );
 			cube.gPos = new GPos(city.position.lat,city.position.lon);
