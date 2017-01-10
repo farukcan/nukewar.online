@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Tue Jan 10 2017 14:14:04 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Tue Jan 10 2017 14:32:57 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2419,11 +2419,13 @@ for(country in Countries){
 	}
 }
 
+var _r$ = 60*1000*2/3;
+
 var NukewarStandarts = {
-	SwapCost : (3*60*1000) ,
-	ReloadCost : (5*60*1000) ,
-	BuildCost : (4*60*1000) ,
-	ClearCost : (1*60*1000)
+	SwapCost : (3*_r$) ,
+	ReloadCost : (5*_r$) ,
+	BuildCost : (4*_r$) ,
+	ClearCost : (1*_r$)
 };
 	var RocketController = {
 		rocketCount : 0,
@@ -2431,7 +2433,7 @@ var NukewarStandarts = {
 		standarts : {
 			realWorld : 6371,
 			maxAltitude : 0.75,
-			speed : 0.1
+			speed : 0.1*3/2
 		},
 
 		calcTime : function(startCity,targetCity){
