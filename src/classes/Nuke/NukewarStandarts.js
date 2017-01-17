@@ -1,4 +1,4 @@
-var _r$ = 60*1000*2/3;
+var _r$ = 60*1000*1/3;
 
 var NukewarStandarts = {
 	SwapCost : (3*_r$) ,

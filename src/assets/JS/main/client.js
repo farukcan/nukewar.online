@@ -140,16 +140,24 @@
 			camera.GoTo(new GPos(Countries[your_county].cities[i].position.lat,Countries[your_county].cities[i].position.lon));
 			break;
 		}
+		builds = [];
+		rocket_configrations = [];
 	});
 
 	var builds = [];
+	var rocket_configrations = [];
+	
 	socket.on('move',function(Move){
 		if(Move.type == "rocket"){
-				var rocket = new Rocket({
+				var configration = {
 						start : Move.from,
 						target : Move.target,
 						date : (Move.now-_diff)
-				});
+				};
+				var rocket = new Rocket(configration);
+				configration.id = rocket.id;
+				configration.date = rocket.arriveTime;
+				rocket_configrations.push(configration);
 
 				Notice("<b lang='en'>Missile launched from</b> "+Move.from+" <b lang='en'>Target</b>: "+Move.target);
 

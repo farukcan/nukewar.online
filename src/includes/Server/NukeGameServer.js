@@ -219,7 +219,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 		socket.ToRoom('move',move);
 		socket.SendPrivateData();
 
-	} );
+	});
 
 	socket.on('clear area',function(target){
 

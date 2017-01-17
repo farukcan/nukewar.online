@@ -374,7 +374,7 @@ var NukeGameManager = {
 			}
 
 
-			Game.Countries[c].busy = 0;
+			Game.Countries[c].busy = Date.now()+15000;
 			Game.Countries[c].lose = false;
 			Game.Countries[c].kills = 0;
 

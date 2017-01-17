@@ -4,7 +4,7 @@
 		standarts : {
 			realWorld : 6371,
 			maxAltitude : 0.75,
-			speed : 0.1*3/2
+			speed : 0.1*3/1
 		},
 
 		calcTime : function(startCity,targetCity){

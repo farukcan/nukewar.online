@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Tue Jan 10 2017 18:40:11 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Tue Jan 17 2017 14:00:31 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2419,7 +2419,7 @@ for(country in Countries){
 	}
 }
 
-var _r$ = 60*1000*2/3;
+var _r$ = 60*1000*1/3;
 
 var NukewarStandarts = {
 	SwapCost : (3*_r$) ,
@@ -2433,7 +2433,7 @@ var NukewarStandarts = {
 		standarts : {
 			realWorld : 6371,
 			maxAltitude : 0.75,
-			speed : 0.1*3/2
+			speed : 0.1*3/1
 		},
 
 		calcTime : function(startCity,targetCity){
@@ -2536,7 +2536,10 @@ Lang.prototype.pack.tr = {
         "You can release nuclear bomb from city that has nuclear launcher" : "Nükleer fırlatıcı olan şehirden atom bombası fırlatılabilir",
         "Command Center : You can transport cities" : "Komuta merkezi : Şehirleri taşıyabilirsin",
         "Nuclear launcher : You can destroy enemy cities" : "Nükleer fırlatıcı : Düşman şehirleri yokedebilirsin",
-        "Civilian city : You can build new nuclear launcher" : "Sivil şehir : Yeni bir nükleer fırlatıcı daha inşa edebilirsin"
+        "Civilian city : You can build new nuclear launcher" : "Sivil şehir : Yeni bir nükleer fırlatıcı daha inşa edebilirsin",
+        "Country" : "Ülke",
+        "Outcoming missiles" : "Giden roketler",
+        "Incoming missiles" : "Gelen roketler"
 
     },
     "regex": [
@@ -3314,16 +3317,24 @@ Lang.prototype.pack.tr = {
 			camera.GoTo(new GPos(Countries[your_county].cities[i].position.lat,Countries[your_county].cities[i].position.lon));
 			break;
 		}
+		builds = [];
+		rocket_configrations = [];
 	});
 
 	var builds = [];
+	var rocket_configrations = [];
+	
 	socket.on('move',function(Move){
 		if(Move.type == "rocket"){
-				var rocket = new Rocket({
+				var configration = {
 						start : Move.from,
 						target : Move.target,
 						date : (Move.now-_diff)
-				});
+				};
+				var rocket = new Rocket(configration);
+				configration.id = rocket.id;
+				configration.date = rocket.arriveTime;
+				rocket_configrations.push(configration);
 
 				Notice("<b lang='en'>Missile launched from</b> "+Move.from+" <b lang='en'>Target</b>: "+Move.target);
 
@@ -3453,8 +3464,8 @@ Lang.prototype.pack.tr = {
 		$("#control").fadeIn();
 
 		InterfaceUpdateSelectors();
-		InterfaceUpdateCities();
 		InterfaceUpdateCards();
+		InterfaceUpdateCities();
 
 
 
@@ -3513,6 +3524,74 @@ Lang.prototype.pack.tr = {
 				InterfaceSetInfo('swap',translate('It is not your city'));
 				InterfaceSetInfo('build',translate('It is not your city'));
 			}
+
+
+			var outcoming_old = "";
+			var outcoming_now = "";
+			var incoming_old = "";
+			var incoming_now = "";
+
+			var hasOut=false;
+			var hasIn=false;
+
+
+			rocket_configrations.forEach(function(conf){
+				if(conf.target == selected_city ){
+					// incoming
+					hasIn=true;
+					if(conf.date > Date.now() ){
+						incoming_now += '<div class="iprogressbar" text="'+conf.start+'" id="irocket'+conf.id+'"><div class="progress" style="background-color: rgba(255,55,77,0.5)"><div class="progresslabel">-</div></div></div>';
+					}else {
+						// old
+						incoming_old += conf.start + " ,";
+					}
+
+				}else if(conf.start == selected_city){
+					// outcoming
+					hasOut=true;
+					if(conf.date > Date.now() ){
+						// now
+						outcoming_now += '<div class="iprogressbar" text="'+conf.target+'" id="irocket'+conf.id+'"><div class="progress" style="background-color: rgba(0,44,142,0.5)"><div class="progresslabel">-</div></div></div>';
+					}else {
+						outcoming_old += conf.target + " ,";
+					}
+
+				}
+			});
+
+			var cc = getCountryOfCity(selected_city);
+
+			$("#selected_country").html("<img src='flags/16/"+cc+".png'/>"+Countries[cc].name);
+
+			$("#outcoming_old").html(outcoming_old);
+			$("#outcoming_now").html(outcoming_now);
+			$("#incoming_old").html(incoming_old);
+			$("#incoming_now").html(incoming_now);
+
+			if(hasOut)
+				$("#outmissiles_p").show();
+			else
+				$("#outmissiles_p").hide();
+
+			if(hasIn)
+				$("#inmissiles_p").show();
+			else
+				$("#inmissiles_p").hide();
+
+
+			$(".iprogressbar").click(function(){
+
+				var e = $(this);
+
+				var rocket = getRocketById(Number(e.attr("id").replace('irocket','')));
+
+				if(rocket==false) return;
+
+				block_window_click = true;
+				camera.follow = true;
+				camera.target = rocket;
+
+			});
 	}
 
 	function isYourCity(name){
@@ -3685,8 +3764,10 @@ Lang.prototype.pack.tr = {
 	function InterfaceUpdateStatus(){
 		if(Countries[your_county].busy < Date.now() )
 			$("#status").html('<span lang="en">Select a city and make your move</span>');
-		else
+		else{
 			$("#status").html('');
+			$("#status").append("<center><countdown class='tcount' to='"+Countries[your_county].busy+"' trigger='InterfaceOnSelectCity(true)'></countdown></center>") ;
+		}
 
 
 		var outcoming = getOutComingRockets();
@@ -3835,7 +3916,7 @@ Lang.prototype.pack.tr = {
 		$("#world").click(function(){
 			block_window_click = true;
 		});
-		
+
 		setInterval(InterfaceLoop,1000);
 	});
 
@@ -3860,6 +3941,19 @@ Lang.prototype.pack.tr = {
 			var p = Math.round(( 1 - (rocket.arriveTime-Date.now() ) / (rocket.arriveTime-rocket.launchTime) )*100);
 
 			e.setProgressBar(p,rocket.target+" "+RemainTime(rocket.arriveTime-Date.now()));
+
+		});
+
+		$(".iprogressbar").each(function(){
+			var e = $(this);
+
+			var rocket = getRocketById(Number(e.attr("id").replace('irocket','')));
+
+			if(rocket==false) return;
+
+			var p = Math.round(( 1 - (rocket.arriveTime-Date.now() ) / (rocket.arriveTime-rocket.launchTime) )*100);
+
+			e.setProgressBar(p,e.attr("text")+" "+RemainTime(rocket.arriveTime-Date.now()));
 
 		});
 

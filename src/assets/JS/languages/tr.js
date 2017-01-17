@@ -51,7 +51,10 @@ Lang.prototype.pack.tr = {
         "You can release nuclear bomb from city that has nuclear launcher" : "Nükleer fırlatıcı olan şehirden atom bombası fırlatılabilir",
         "Command Center : You can transport cities" : "Komuta merkezi : Şehirleri taşıyabilirsin",
         "Nuclear launcher : You can destroy enemy cities" : "Nükleer fırlatıcı : Düşman şehirleri yokedebilirsin",
-        "Civilian city : You can build new nuclear launcher" : "Sivil şehir : Yeni bir nükleer fırlatıcı daha inşa edebilirsin"
+        "Civilian city : You can build new nuclear launcher" : "Sivil şehir : Yeni bir nükleer fırlatıcı daha inşa edebilirsin",
+        "Country" : "Ülke",
+        "Outcoming missiles" : "Giden roketler",
+        "Incoming missiles" : "Gelen roketler"
 
     },
     "regex": [

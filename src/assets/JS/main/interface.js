@@ -70,8 +70,8 @@
 		$("#control").fadeIn();
 
 		InterfaceUpdateSelectors();
-		InterfaceUpdateCities();
 		InterfaceUpdateCards();
+		InterfaceUpdateCities();
 
 
 
@@ -130,6 +130,74 @@
 				InterfaceSetInfo('swap',translate('It is not your city'));
 				InterfaceSetInfo('build',translate('It is not your city'));
 			}
+
+
+			var outcoming_old = "";
+			var outcoming_now = "";
+			var incoming_old = "";
+			var incoming_now = "";
+
+			var hasOut=false;
+			var hasIn=false;
+
+
+			rocket_configrations.forEach(function(conf){
+				if(conf.target == selected_city ){
+					// incoming
+					hasIn=true;
+					if(conf.date > Date.now() ){
+						incoming_now += '<div class="iprogressbar" text="'+conf.start+'" id="irocket'+conf.id+'"><div class="progress" style="background-color: rgba(255,55,77,0.5)"><div class="progresslabel">-</div></div></div>';
+					}else {
+						// old
+						incoming_old += conf.start + " ,";
+					}
+
+				}else if(conf.start == selected_city){
+					// outcoming
+					hasOut=true;
+					if(conf.date > Date.now() ){
+						// now
+						outcoming_now += '<div class="iprogressbar" text="'+conf.target+'" id="irocket'+conf.id+'"><div class="progress" style="background-color: rgba(0,44,142,0.5)"><div class="progresslabel">-</div></div></div>';
+					}else {
+						outcoming_old += conf.target + " ,";
+					}
+
+				}
+			});
+
+			var cc = getCountryOfCity(selected_city);
+
+			$("#selected_country").html("<img src='flags/16/"+cc+".png'/>"+Countries[cc].name);
+
+			$("#outcoming_old").html(outcoming_old);
+			$("#outcoming_now").html(outcoming_now);
+			$("#incoming_old").html(incoming_old);
+			$("#incoming_now").html(incoming_now);
+
+			if(hasOut)
+				$("#outmissiles_p").show();
+			else
+				$("#outmissiles_p").hide();
+
+			if(hasIn)
+				$("#inmissiles_p").show();
+			else
+				$("#inmissiles_p").hide();
+
+
+			$(".iprogressbar").click(function(){
+
+				var e = $(this);
+
+				var rocket = getRocketById(Number(e.attr("id").replace('irocket','')));
+
+				if(rocket==false) return;
+
+				block_window_click = true;
+				camera.follow = true;
+				camera.target = rocket;
+
+			});
 	}
 
 	function isYourCity(name){
@@ -302,8 +370,10 @@
 	function InterfaceUpdateStatus(){
 		if(Countries[your_county].busy < Date.now() )
 			$("#status").html('<span lang="en">Select a city and make your move</span>');
-		else
+		else{
 			$("#status").html('');
+			$("#status").append("<center><countdown class='tcount' to='"+Countries[your_county].busy+"' trigger='InterfaceOnSelectCity(true)'></countdown></center>") ;
+		}
 
 
 		var outcoming = getOutComingRockets();
@@ -452,7 +522,7 @@
 		$("#world").click(function(){
 			block_window_click = true;
 		});
-		
+
 		setInterval(InterfaceLoop,1000);
 	});
 
@@ -477,6 +547,19 @@
 			var p = Math.round(( 1 - (rocket.arriveTime-Date.now() ) / (rocket.arriveTime-rocket.launchTime) )*100);
 
 			e.setProgressBar(p,rocket.target+" "+RemainTime(rocket.arriveTime-Date.now()));
+
+		});
+
+		$(".iprogressbar").each(function(){
+			var e = $(this);
+
+			var rocket = getRocketById(Number(e.attr("id").replace('irocket','')));
+
+			if(rocket==false) return;
+
+			var p = Math.round(( 1 - (rocket.arriveTime-Date.now() ) / (rocket.arriveTime-rocket.launchTime) )*100);
+
+			e.setProgressBar(p,e.attr("text")+" "+RemainTime(rocket.arriveTime-Date.now()));
 
 		});
 

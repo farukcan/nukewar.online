@@ -44,9 +44,11 @@ Sonra unitye dök
 - [x] efekt sinir bozucuynuş ona kaldırmanın yolunu bulmak gerek
 - [x] kazanma kaybetme ekranları
 - [x] Botlar eklenecek
-- [ ] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
+- [x] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
 - [ ] 2 roket vardı biri müsait olmasına rağmen rampa hazır değil dedi?
-- [ ] bazen nükleer rocket şehri uçurmuyor
+- [ ] **bazen nükleer rocket şehri uçurmuyor yok etmiyor**
+- [ ] 
+- [ ] azen nükleer rocket şehri uçurmuyor yok etmiyor
 - [ ] max oyun süresi 1 saat
 - [ ] Atom bombası hakkında bilgi ve sözler eklenecek
 - [ ] Şehirlerin popülasyonu öğren
@@ -58,6 +60,7 @@ Sonra unitye dök
 - [ ] panellerin geçmişte kalma sorunu çöz
 - [ ] mesaj spamı engellenmeli
 - [ ] 10sn bekleme şeyi tikini kaldır
+- [ ] komuta merkezi belli olmuyomuş
 
 ## İlham
 

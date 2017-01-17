@@ -273,6 +273,11 @@
 			color: white;
 		}
 
+		.tcount {
+			font-size: 30px;
+			color: white;
+		}
+
 		#chatinput {
 			font-family: 'Orbitron', sans-serif;
 		}
@@ -284,6 +289,15 @@
 		.progressbar {
 			position: relative;
 			width: 100%;
+			height: 20px;
+			background-color: rgba(50,50,50,0.7);
+			border-radius: 5px;
+			margin-top:10px;
+		}
+
+		.iprogressbar {
+			position: relative;
+			width: 200px;
 			height: 20px;
 			background-color: rgba(50,50,50,0.7);
 			border-radius: 5px;
@@ -444,6 +458,20 @@
 
 				<tr id="buildTd" class="card"><td><img id="buildButton" height="48px" src="images/build.svg"/></td><td><span lang="en">Build missile launcher</span><inf>240 sec</inf></td></tr>
 			</table>
+
+			<div>
+				<p>
+					<b lang="en">Country</b> : <span id="selected_country">[C*] Türkiye</span>
+				</p>
+				<p id="outmissiles_p"> <b lang="en">Outcoming missiles</b> : <span id="outcoming_old">newyork</span> </p>
+				<p>
+					<span id="outcoming_now">[ Gönderiliyor - Sarı ]</span>
+				</p>
+				<p id="inmissiles_p"><b lang="en">Incoming missiles</b> : <span id="incoming_old">losangeles</span></p>
+				<p>
+					<span id="incoming_now">[ Gönderiliyor - Turuncu ]</span>
+				</p>
+			</div>
 
 		</div>
 
