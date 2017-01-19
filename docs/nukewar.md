@@ -45,9 +45,10 @@ Sonra unitye dök
 - [x] kazanma kaybetme ekranları
 - [x] Botlar eklenecek
 - [x] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
+- [ ] istatistikleri çok dilleştir
+- [ ] zoom butonu ekle
 - [ ] 2 roket vardı biri müsait olmasına rağmen rampa hazır değil dedi?
 - [ ] **bazen nükleer rocket şehri uçurmuyor yok etmiyor**
-- [ ] 
 - [ ] azen nükleer rocket şehri uçurmuyor yok etmiyor
 - [ ] max oyun süresi 1 saat
 - [ ] Atom bombası hakkında bilgi ve sözler eklenecek

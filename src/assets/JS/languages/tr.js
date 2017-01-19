@@ -54,7 +54,9 @@ Lang.prototype.pack.tr = {
         "Civilian city : You can build new nuclear launcher" : "Sivil şehir : Yeni bir nükleer fırlatıcı daha inşa edebilirsin",
         "Country" : "Ülke",
         "Outcoming missiles" : "Giden roketler",
-        "Incoming missiles" : "Gelen roketler"
+        "Incoming missiles" : "Gelen roketler",
+        "dead" : "ölü",
+        "people is yours" : "kişi senin"
 
     },
     "regex": [
