@@ -62,6 +62,10 @@ Sonra unitye dök
 - [ ] mesaj spamı engellenmeli
 - [ ] 10sn bekleme şeyi tikini kaldır
 - [ ] komuta merkezi belli olmuyomuş
+- [ ] butonlar seçilmesi belli olmuyo
+- [ ] ülke seçilmesi
+- [ ] bilgilerin kullanıcı
+- [ ] Oyun bitti kazandığını belli etmiyor.
 
 ## İlham
 
