@@ -36,16 +36,6 @@
 
 			// istatiklere ekle
 			if(this.target){
-				$("#totalkill").attr("enabled",1);
-				var dead = city_list[this.target].population + Math.floor(Math.random()*1000);
-				var t = Number($("#totalkill").attr("target")) + dead;
-				$("#totalkill").attr("target",t);
-
-				if(getCountryOfCity(this.target) == your_county){
-					$("#yourlose").attr("enabled",1);
-					t = Number($("#yourlose").attr("target")) + dead;
-					$("#yourlose").attr("target",t);
-				}
 
 				blackoffCross(this.target);
 			}

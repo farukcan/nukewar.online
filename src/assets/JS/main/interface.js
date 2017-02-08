@@ -48,7 +48,9 @@
 
 	function InterfaceGOTOCity(city_name){
 		var city = getCity(city_name);
-		camera.GoTo(new GPos(city.position.lat,city.position.lon));
+		var pos = new GPos(city.position.lat,city.position.lon);
+		camera.GoTo(pos);
+		targeticon.position.copy(pos.toVector3(0.5152));
 	}
 
 	function InterfaceResetWorld(){
@@ -244,7 +246,7 @@
 
 			InterfaceOpenPanels(["start","languages"],delay);
 
-			InterfaceClosePanels(["mycities","lobby","chat","world","control","status","statics","gameover","info"],100);
+			InterfaceClosePanels(["mycities","lobby","chat","world","control","status","gameover","info"],100);
 
 			$("#nick").focus();
 
@@ -252,20 +254,20 @@
 
 			InterfaceOpenPanels(["chat","lobby","languages"],100);
 
-			InterfaceClosePanels(["mycities","start","world","control","status","statics","gameover","info"],100);
+			InterfaceClosePanels(["mycities","start","world","control","status","gameover","info"],100);
 
 			
 
 		}else if( state == 'game' ){
 
-			InterfaceOpenPanels(["mycities","chat","world","status","statics","info"],100);
+			InterfaceOpenPanels(["mycities","chat","world","status","info"],100);
 
 			InterfaceClosePanels(["lobby","languages","start","control","gameover"],100);
 
 
 		}else if( state == 'gameover'){
 
-			InterfaceOpenPanels(["chat","statics","gameover"],100);
+			InterfaceOpenPanels(["chat","gameover"],100);
 
 			InterfaceClosePanels(["world","status","mycities","lobby","languages","start","control","info"],100);
 

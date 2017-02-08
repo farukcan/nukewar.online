@@ -250,14 +250,15 @@ var NukeGameManager = {
 				return cities[0];
 			},
 			updateBots : function(){
-				for(var countryname in this.Countries){
+				// # Bilgisayarın insanlarla ve birbiriyle çatışmasını sağlayan fonksiyon
+				// taktik maktik yok bam bam bam
+				for(var countryname in this.Countries){ // her ülke için
 					var Country = this.Countries[countryname];
-					if(Country.isBot && !Country.lose && Country.busy<Date.now()){
-						// botsa ve kaybetmediyse ve meşgul değilse
+					if(Country.isBot && !Country.lose && Country.busy<Date.now()){ // botsa ve kaybetmediyse ve meşgul değilse
 
-						if(Country.zombie) continue;
+						if(Country.zombie) continue; // yarı ölüyse boşver
 
-						if(Math.random() > 0.75 ) continue; // bot bekleyebilir hamle yapmasın
+						if(Math.random() > 0.75 ) continue; // botun hamle zamanı ön görülemez olsun
 
 						var nuke = "none";
 
@@ -274,11 +275,11 @@ var NukeGameManager = {
 							if(Country.cities[nuke].build.usable < Date.now()){ // füze hazırsa
 
 								// saldır
-								var enemy = this.getEnemy(countryname);
+								var enemy = this.getEnemy(countryname); // rastgele bir düşman seç
 
 								if(enemy != "none"){
 
-									var to = this.getEnemyCity(enemy);
+									var to = this.getEnemyCity(enemy); // rastgele bir şehir seç
 
 									var from = Country.cities[nuke];
 									var target = this.Countries[enemy].cities[to];

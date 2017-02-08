@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Mon Jan 23 2017 15:46:39 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Wed Feb 08 2017 13:58:53 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2607,6 +2607,13 @@ Lang.prototype.pack.tr = {
 
 	var mapB = textureLoader.load( "images/cross.png" );	
 	var materialB = new THREE.SpriteMaterial( { map: mapB,  fog: true } );
+
+	var mapC = textureLoader.load( "images/target.png" );	
+	var materialC = new THREE.SpriteMaterial( { map: mapC,  fog: true } );
+	var targeticon = new THREE.Sprite( materialC );
+	targeticon.scale.set(.03,.03,.03);
+	scene.add(targeticon);
+
 	for(country in Countries){
 		var mapA = textureLoader.load( "flags/16/"+country+".png" );
 		var materialA = new THREE.SpriteMaterial( { map: mapA,  fog: true } );
@@ -2641,6 +2648,8 @@ Lang.prototype.pack.tr = {
 			sprite.city = cityname;
 			scene.add(sprite);
 			city_cross_list.push(sprite);
+
+
 		}
 	}
 
@@ -3025,16 +3034,6 @@ Lang.prototype.pack.tr = {
 
 			// istatiklere ekle
 			if(this.target){
-				$("#totalkill").attr("enabled",1);
-				var dead = city_list[this.target].population + Math.floor(Math.random()*1000);
-				var t = Number($("#totalkill").attr("target")) + dead;
-				$("#totalkill").attr("target",t);
-
-				if(getCountryOfCity(this.target) == your_county){
-					$("#yourlose").attr("enabled",1);
-					t = Number($("#yourlose").attr("target")) + dead;
-					$("#yourlose").attr("target",t);
-				}
 
 				blackoffCross(this.target);
 			}
@@ -3444,7 +3443,9 @@ Lang.prototype.pack.tr = {
 
 	function InterfaceGOTOCity(city_name){
 		var city = getCity(city_name);
-		camera.GoTo(new GPos(city.position.lat,city.position.lon));
+		var pos = new GPos(city.position.lat,city.position.lon);
+		camera.GoTo(pos);
+		targeticon.position.copy(pos.toVector3(0.5152));
 	}
 
 	function InterfaceResetWorld(){
@@ -3640,7 +3641,7 @@ Lang.prototype.pack.tr = {
 
 			InterfaceOpenPanels(["start","languages"],delay);
 
-			InterfaceClosePanels(["mycities","lobby","chat","world","control","status","statics","gameover","info"],100);
+			InterfaceClosePanels(["mycities","lobby","chat","world","control","status","gameover","info"],100);
 
 			$("#nick").focus();
 
@@ -3648,20 +3649,20 @@ Lang.prototype.pack.tr = {
 
 			InterfaceOpenPanels(["chat","lobby","languages"],100);
 
-			InterfaceClosePanels(["mycities","start","world","control","status","statics","gameover","info"],100);
+			InterfaceClosePanels(["mycities","start","world","control","status","gameover","info"],100);
 
 			
 
 		}else if( state == 'game' ){
 
-			InterfaceOpenPanels(["mycities","chat","world","status","statics","info"],100);
+			InterfaceOpenPanels(["mycities","chat","world","status","info"],100);
 
 			InterfaceClosePanels(["lobby","languages","start","control","gameover"],100);
 
 
 		}else if( state == 'gameover'){
 
-			InterfaceOpenPanels(["chat","statics","gameover"],100);
+			InterfaceOpenPanels(["chat","gameover"],100);
 
 			InterfaceClosePanels(["world","status","mycities","lobby","languages","start","control","info"],100);
 
@@ -4079,10 +4080,24 @@ Lang.prototype.pack.tr = {
 			camera_r/=1.05;
 		}
 
+		fixcamera_r();
 
+	}
+
+	function fixcamera_r(){
 		camera_r = Math.min(camera_r,2.6);
 		camera_r = Math.max(camera_r,world_r);
+	}
 
+	var zoomrate = 1.25;
+	function zoomin(){
+		camera_r/=zoomrate;
+		fixcamera_r();
+	}
+
+	function zoomout(){
+		camera_r*=zoomrate;
+		fixcamera_r();
 	}
 
 	var old_mouse_pos = new THREE.Vector2();

@@ -13,6 +13,13 @@
 
 	var mapB = textureLoader.load( "images/cross.png" );	
 	var materialB = new THREE.SpriteMaterial( { map: mapB,  fog: true } );
+
+	var mapC = textureLoader.load( "images/target.png" );	
+	var materialC = new THREE.SpriteMaterial( { map: mapC,  fog: true } );
+	var targeticon = new THREE.Sprite( materialC );
+	targeticon.scale.set(.03,.03,.03);
+	scene.add(targeticon);
+
 	for(country in Countries){
 		var mapA = textureLoader.load( "flags/16/"+country+".png" );
 		var materialA = new THREE.SpriteMaterial( { map: mapA,  fog: true } );
@@ -47,6 +54,8 @@
 			sprite.city = cityname;
 			scene.add(sprite);
 			city_cross_list.push(sprite);
+
+
 		}
 	}
 

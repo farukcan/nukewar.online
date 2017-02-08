@@ -45,8 +45,8 @@ Sonra unitye dök
 - [x] kazanma kaybetme ekranları
 - [x] Botlar eklenecek
 - [x] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
-- [ ] istatistikleri çok dilleştir
-- [ ] zoom butonu ekle
+- [x] istatistikleri çok dilleştir
+- [x] zoom butonu ekle
 - [ ] 2 roket vardı biri müsait olmasına rağmen rampa hazır değil dedi?
 - [ ] **bazen nükleer rocket şehri uçurmuyor yok etmiyor**
 - [ ] azen nükleer rocket şehri uçurmuyor yok etmiyor
@@ -62,10 +62,11 @@ Sonra unitye dök
 - [ ] mesaj spamı engellenmeli
 - [ ] 10sn bekleme şeyi tikini kaldır
 - [ ] komuta merkezi belli olmuyomuş
-- [ ] butonlar seçilmesi belli olmuyo
-- [ ] ülke seçilmesi
+- [x] butonlar seçilmesi belli olmuyo
+- [x] ülke seçilmesi
 - [ ] bilgilerin kullanıcı
 - [ ] Oyun bitti kazandığını belli etmiyor.
+- [ ] oyuna icon lazım
 
 ## İlham
 

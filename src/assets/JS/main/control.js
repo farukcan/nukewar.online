@@ -45,10 +45,24 @@
 			camera_r/=1.05;
 		}
 
+		fixcamera_r();
 
+	}
+
+	function fixcamera_r(){
 		camera_r = Math.min(camera_r,2.6);
 		camera_r = Math.max(camera_r,world_r);
+	}
 
+	var zoomrate = 1.25;
+	function zoomin(){
+		camera_r/=zoomrate;
+		fixcamera_r();
+	}
+
+	function zoomout(){
+		camera_r*=zoomrate;
+		fixcamera_r();
 	}
 
 	var old_mouse_pos = new THREE.Vector2();
