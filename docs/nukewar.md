@@ -49,13 +49,10 @@ Sonra unitye dök
 - [x] zoom butonu ekle
 - [ ] 2 roket vardı biri müsait olmasına rağmen rampa hazır değil dedi?
 - [ ] **bazen nükleer rocket şehri uçurmuyor yok etmiyor**
-- [ ] azen nükleer rocket şehri uçurmuyor yok etmiyor
-- [ ] max oyun süresi 1 saat
 - [ ] Atom bombası hakkında bilgi ve sözler eklenecek
-- [ ] Şehirlerin popülasyonu öğren
 - [ ] optimizasyon gerekli çok kasıyo. hem server hem client ram israfı yapılmamalı
 - [x] resize olayları kontrol edilmelidir
-- [ ] socket disconnet olduğunda bazı şeyler check edilmeli kazanma şeyide check et
+- [x] socket disconnet olduğunda bazı şeyler check edilmeli kazanma şeyide check et
 - [ ] chat şeyine tıklayınca seçim yapmasının önüne geç **işe yaramadı**
 - [ ] Güvenlik önlemleri alınacak
 - [ ] panellerin geçmişte kalma sorunu çöz
@@ -63,10 +60,11 @@ Sonra unitye dök
 - [ ] 10sn bekleme şeyi tikini kaldır
 - [ ] komuta merkezi belli olmuyomuş
 - [x] butonlar seçilmesi belli olmuyo
-- [x] ülke seçilmesi
-- [ ] bilgilerin kullanıcı
+- [ ] ülke seçilmesinde kendini seçince farklı icon göster
+- [ ] kullanıcıya oyunu anlatmak
 - [ ] Oyun bitti kazandığını belli etmiyor.
 - [ ] oyuna icon lazım
+- [ ] !!!SESLER EKLENMELİ!!!
 
 ## İlham
 

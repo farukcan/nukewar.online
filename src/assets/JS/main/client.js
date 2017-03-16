@@ -58,7 +58,14 @@
 				setCrossesOff();
 
 				break;	
+			case 'win':
+				InterfaceSetState(state);
+				camera_r = camera_r_default;
+				setFlagsOff();
+				setPopulationsOff();
+				setCrossesOff();
 
+				break;	
 			default:
 				alert("undefined state");
 		}

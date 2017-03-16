@@ -96,32 +96,7 @@ var NukeGameManager = {
 								this.Countries[c].cities[cty].build = false;
 							}
 
-							// kalan oyunculara göre son durum belirlenir
-							var remain = 0;
-							var remainPlayer = 0;
-							var winner;
-							for(var i in this.Countries){
-								var co = this.Countries[i];
-								if(!co.lose){
-									if(!co.isBot){
-										remainPlayer++; // kalan oyuncu sayısını arttır.
-										winner=co;	
-									}
-									remain++;
-								}
-							}
-
-
-							// remainPlayer = 0 ise oyun biter
-							// remainPlayer=remain=1 ise winner kazanır
-
-							if(remainPlayer==0){
-								this.over = true;
-							}
-							if(remainPlayer==1 && remain==1){
-								winner.socket.win();
-								this.over = true;
-							}
+							this.checkGame();
 						}
 
 						if(target.build && target.build.type=="nuclear"){
@@ -195,6 +170,35 @@ var NukeGameManager = {
 			}
 
 
+
+			},
+			checkGame : function(){
+							// kalan oyunculara göre son durum belirlenir
+							var remain = 0;
+							var remainPlayer = 0;
+							var winner;
+							for(var i in this.Countries){
+								var co = this.Countries[i];
+								if(!co.lose){
+									if(!co.isBot){
+										remainPlayer++; // kalan oyuncu sayısını arttır.
+										winner=co;	
+									}
+									remain++;
+								}
+							}
+
+
+							// remainPlayer = 0 ise oyun biter
+							// remainPlayer=remain=1 ise winner kazanır
+
+							if(remainPlayer==0){
+								this.over = true;
+							}
+							if(remainPlayer==1 && remain==1){
+								winner.socket.win();
+								this.over = true;
+							}
 
 			},
 			getEnemy : function(countryname){

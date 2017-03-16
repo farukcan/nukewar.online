@@ -83,7 +83,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 		socket.Notice('<b lang="en">You are winner</b>');
 		socket.Game = null;
 		socket.JoinRoom("gameover");
-		socket.emit('state','gameover');
+		socket.emit('state','win');
 	};
 	socket.JoinRoom("main");
 
@@ -168,6 +168,15 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 	});
 
 	socket.on('disconnect',function(){
+		if(socket.Game && socket.country && !socket.Game.Countries[socket.country].lose){
+			socket.Game.Countries[socket.country].lose = true;
+			socket.Game.checkGame();
+			socket.Game.SendGlobalData();
+		}
+		socket.ToRoom('message',{
+			username : "*#SERVER#*",
+			message : socket.username+' <b lang="en">disconnected</b>'
+		});
 		NukeGameServer.SendLobbyUsers();
 		NukeGameServer.online--;
 		// oyundaydsa oyundan at kaybetsin

@@ -48,7 +48,11 @@ io.on('connection', function(socket){
   	if(typeof console_cmds[x[0]] == "function"){
   		console_cmds[x[0]](socket,x[1]);
   	}else{
-  		socket.fb("<red>Wrong Command !!! </red>");
+      if(typeof console_cmds["-"] == "function"){
+        console_cmds["-"](socket,data);
+      }
+      else 
+  		  socket.fb("<red>Wrong Command !!! </red>");
   	}
   });
 

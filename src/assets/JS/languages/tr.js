@@ -56,7 +56,8 @@ Lang.prototype.pack.tr = {
         "Outcoming missiles" : "Giden roketler",
         "Incoming missiles" : "Gelen roketler",
         "dead" : "ölü",
-        "people is yours" : "kişi senin"
+        "people is yours" : "kişi senin",
+        "disconnected" : "çıktı"
 
     },
     "regex": [

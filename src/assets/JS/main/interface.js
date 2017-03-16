@@ -265,11 +265,17 @@
 			InterfaceClosePanels(["lobby","languages","start","control","gameover"],100);
 
 
-		}else if( state == 'gameover'){
+		}else if( state == 'gameover' || state == "win"){
 
 			InterfaceOpenPanels(["chat","gameover"],100);
 
 			InterfaceClosePanels(["world","status","mycities","lobby","languages","start","control","info"],100);
+
+			if(state == "win"){
+				$("#youwon").show();
+			}else{
+				$("#youwon").hide();
+			}
 
 		}
 

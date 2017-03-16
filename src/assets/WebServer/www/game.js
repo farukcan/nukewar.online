@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Wed Feb 08 2017 13:58:53 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Wed Mar 15 2017 17:49:18 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2541,7 +2541,8 @@ Lang.prototype.pack.tr = {
         "Outcoming missiles" : "Giden roketler",
         "Incoming missiles" : "Gelen roketler",
         "dead" : "ölü",
-        "people is yours" : "kişi senin"
+        "people is yours" : "kişi senin",
+        "disconnected" : "çıktı"
 
     },
     "regex": [
@@ -3236,7 +3237,14 @@ Lang.prototype.pack.tr = {
 				setCrossesOff();
 
 				break;	
+			case 'win':
+				InterfaceSetState(state);
+				camera_r = camera_r_default;
+				setFlagsOff();
+				setPopulationsOff();
+				setCrossesOff();
 
+				break;	
 			default:
 				alert("undefined state");
 		}
@@ -3660,11 +3668,17 @@ Lang.prototype.pack.tr = {
 			InterfaceClosePanels(["lobby","languages","start","control","gameover"],100);
 
 
-		}else if( state == 'gameover'){
+		}else if( state == 'gameover' || state == "win"){
 
 			InterfaceOpenPanels(["chat","gameover"],100);
 
 			InterfaceClosePanels(["world","status","mycities","lobby","languages","start","control","info"],100);
+
+			if(state == "win"){
+				$("#youwon").show();
+			}else{
+				$("#youwon").hide();
+			}
 
 		}
 
