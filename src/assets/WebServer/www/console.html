@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Console</title>
+</head>
+
+<style type="text/css">
+
+	body {
+		background-color: black;
+		padding: 30px;
+		font-size: 18px;
+	}	
+
+	#textarea{
+		width:100%;
+		background-color:black;
+		color:white;
+		border: dotted grey 1px;
+		font-size: 18px;
+		padding: 3px;
+	}
+
+	#data {
+		color : white;
+	}
+
+
+	red {
+		color: red;
+		font-weight: 300;
+	}
+
+	yellow {
+		color: yellow;
+	}
+
+	gr {
+		color: #B5E61D;
+	}
+
+
+
+</style>
+    <link href="css/jquery.json-viewer.css" type="text/css" rel="stylesheet" />
+<body>
+<span id="data" >
+Welcome <b>to</b> <red>Console</red>
+
+</span>
+
+<input type="text" id="textarea"></textarea>
+<script src="js/jquery.min.js"></script>
+<script src="js/socket.io.min.js"></script>
+<script type="text/javascript">
+  	var socket = io();
+
+  	$("#textarea").focus();
+	
+	$("#textarea").keydown(function(e){
+		 if (e.which == 13) {
+		    Send();
+		  }else if(e.which == 40){
+		  	hist_index = (hist_index+1) % hist.length;
+		  	$("#textarea").val(hist[hist_index]);
+		  	return false;
+		  }else if(e.which == 38){
+		  	hist_index = (hist_index-1) % hist.length;
+		  	$("#textarea").val(hist[hist_index]);
+		  	return false;
+		  }
+	});
+
+
+	var hist = [],hist_index=0;
+	function Send(){
+		$("#data").html($("#data").html()+"<br/> <yellow>"+$("#textarea").val()+"</yellow>");
+		socket.emit("cmd",$("#textarea").val());
+		hist.push($("#textarea").val());
+		hist_index = hist.length;
+		$("#textarea").val("");
+	}
+
+	var jsonViewIndex = 0;
+	socket.on("fb",function(fb){
+		if(typeof fb != "string") {
+			sc();
+			return;
+		}
+
+		if( (fb.split("")[0] == "{") || (fb.split("")[0] == '"') || (fb.split("")[0] == "[") ){
+			jsonViewIndex++;
+			$("#data").html($("#data").html()+"<pre id='json"+jsonViewIndex+"'></pre>");
+			try{
+				$('#json'+jsonViewIndex).jsonViewer(JSON.parse(fb));
+				sc();
+				return;
+			}
+			catch(e){}
+		}
+
+
+			$("#data").html($("#data").html()+"<br/>"+fb);
+			sc();
+			
+
+	});
+
+	function sc(){
+		$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+	}
+
+
+</script>
+
+    <script src="js/jquery.json-viewer.js"></script>
+
+
+</body>
+
+</html>
