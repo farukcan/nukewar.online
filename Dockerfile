@@ -8,7 +8,6 @@ COPY src /srv/src
 WORKDIR /srv
 
 RUN npm install
-
-EXPOSE 80
+RUN npm install forever -g
 
 CMD [ "npm", "start" ]
