@@ -1,4 +1,4 @@
-/* Builded by JSBuilder of katip-framework @Wed Mar 15 2017 17:49:18 GMT+0300 (Türkiye Standart Saati)*/
+/* Builded by JSBuilder of katip-framework @Tue Mar 21 2017 16:31:53 GMT+0300 (Türkiye Standart Saati)*/
 
 // threejs.org/license
 (function(l,oa){"object"===typeof exports&&"undefined"!==typeof module?oa(exports):"function"===typeof define&&define.amd?define(["exports"],oa):oa(l.THREE=l.THREE||{})})(this,function(l){function oa(){}function C(a,b){this.x=a||0;this.y=b||0}function ea(a,b,c,d,e,f,g,h,k,m){Object.defineProperty(this,"id",{value:Oe++});this.uuid=Q.generateUUID();this.name="";this.image=void 0!==a?a:ea.DEFAULT_IMAGE;this.mipmaps=[];this.mapping=void 0!==b?b:ea.DEFAULT_MAPPING;this.wrapS=void 0!==c?c:1001;this.wrapT=
@@ -2542,7 +2542,8 @@ Lang.prototype.pack.tr = {
         "Incoming missiles" : "Gelen roketler",
         "dead" : "ölü",
         "people is yours" : "kişi senin",
-        "disconnected" : "çıktı"
+        "disconnected" : "çıktı",
+        "Please wait for send message" : "Mesaj göndermek için bekleyiniz"
 
     },
     "regex": [

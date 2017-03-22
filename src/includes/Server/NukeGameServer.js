@@ -95,9 +95,11 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 	socket.wait = true;
 
+	socket.TimeLimitOfMessage = 0;
+
 	socket.on('nick',function(nick){
 		// [ERR] Güvenlik
-		socket.username = nick;
+		socket.username = EscapeMessage(nick.substring(0, 10));
 
 		socket.JoinRoom("lobby");
 
@@ -133,7 +135,8 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 	});
 
 	socket.on('change wait status',function(new_value){
-		// [ERR] Güvenlik
+		if(typeof(new_value)!="boolean") return;
+
 		socket.wait = new_value;
 		if(!socket.wait){
 			socket.stoppedWaiting = Date.now();
@@ -143,22 +146,31 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 	});
 
 	socket.on('sending message',function(msg){
-		// [ERR] Güvenlik
 		if(typeof msg != 'string') return;
-		socket.ToRoom('message',{
-			username : socket.username,
-			message : msg
-		});
+
+		if(socket.TimeLimitOfMessage < Date.now()){
+			socket.ToRoom('message',{
+				username : socket.username,
+				message : EscapeMessage(msg)
+			});
+			socket.TimeLimitOfMessage = Date.now()+500;
+		}else{
+			socket.TimeLimitOfMessage += 2000;
+			socket.Notice('<b lang="en">Please wait for send message</b>');
+		}
+
 	});
 
 	socket.on('set language',function(lang){
+		if(typeof lang != 'lang') return;
+		if(lang.length != 2 ) return;
 		// [ERR] Güvenlik
 		socket.lang = lang;
 		NukeGameServer.SendLobbyUsers();
 
 	});
 
-	socket.on('exit',function(lang){
+	socket.on('exit',function(){
 		socket.stoppedWaiting = Date.now();
 		socket.JoinRoom("main");
 		socket.emit('state',"main");

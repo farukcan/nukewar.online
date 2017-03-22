@@ -47,10 +47,10 @@ Sonra unitye dök
 - [x] Şehir üzerine bastığında ülkesini gelen,giden roketleri göster
 - [x] istatistikleri çok dilleştir
 - [x] zoom butonu ekle
-- [ ] 2 roket vardı biri müsait olmasına rağmen rampa hazır değil dedi?
+- [ ] **2 roket vardı biri müsait olmasına rağmen rampa hazır değil dedi?**
 - [ ] **bazen nükleer rocket şehri uçurmuyor yok etmiyor**
-- [ ] Atom bombası hakkında bilgi ve sözler eklenecek
-- [ ] optimizasyon gerekli çok kasıyo. hem server hem client ram israfı yapılmamalı
+- [ ] *Atom bombası hakkında bilgi ve sözler eklenecek*
+- [ ] *optimizasyon gerekli çok kasıyo. hem server hem client ram israfı yapılmamalı*
 - [x] resize olayları kontrol edilmelidir
 - [x] socket disconnet olduğunda bazı şeyler check edilmeli kazanma şeyide check et
 - [ ] chat şeyine tıklayınca seçim yapmasının önüne geç **işe yaramadı**
