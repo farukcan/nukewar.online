@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-  	"start": "forever start app.js"
+  	"start": "node app.js"
   },
   "author": "farukcan.net",
   "license": "ISC",
