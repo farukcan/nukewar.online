@@ -33,7 +33,7 @@ Settings.JSBuilder = {
 				"src/assets/JS/main/late.js",
 			],
 			to : "src/assets/WebServer/www/game.js",
-			UglifyJS : false
+			UglifyJS : true
 		}
 	],
 

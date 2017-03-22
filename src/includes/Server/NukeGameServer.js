@@ -162,7 +162,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 	});
 
 	socket.on('set language',function(lang){
-		if(typeof lang != 'lang') return;
+		if(typeof lang != 'string') return;
 		if(lang.length != 2 ) return;
 		// [ERR] Güvenlik
 		socket.lang = lang;
