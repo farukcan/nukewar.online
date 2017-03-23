@@ -58,7 +58,8 @@ Lang.prototype.pack.tr = {
         "dead" : "ölü",
         "people is yours" : "kişi senin",
         "disconnected" : "çıktı",
-        "Please wait for send message" : "Mesaj göndermek için bekleyiniz"
+        "Please wait for send message" : "Mesaj göndermek için bekleyiniz",
+        "You won" : "Siz kazandınız"
 
     },
     "regex": [

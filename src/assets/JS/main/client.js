@@ -39,6 +39,7 @@
 				setFlagsOff();
 				setPopulationsOff();
 				setCrossesOff();
+				glitchPass.active = false;
 				break;
 
 			case 'game':
@@ -52,6 +53,9 @@
 				InterfaceSetState(state);
 				glitchPass.active = true;
 				glitchPass.goWild = true;
+				setTimeout(function(){
+					glitchPass.goWild = false;
+				},5000);
 				camera_r = camera_r_default;
 				setFlagsOff();
 				setPopulationsOff();
