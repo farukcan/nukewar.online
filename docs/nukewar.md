@@ -54,6 +54,7 @@ Sonra unitye dök
 - [x] resize olayları kontrol edilmelidir
 - [x] socket disconnet olduğunda bazı şeyler check edilmeli kazanma şeyide check et
 - [ ] chat şeyine tıklayınca seçim yapmasının önüne geç **işe yaramadı**
+- [x] google analiz eklenmeli
 - [ ] Güvenlik önlemleri alınacak
 - [ ] panellerin geçmişte kalma sorunu çöz
 - [ ] mesaj spamı engellenmeli
