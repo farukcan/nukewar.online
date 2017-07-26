@@ -63,8 +63,12 @@ Sonra unitye dök
 - [x] butonlar seçilmesi belli olmuyo
 - [ ] ülke seçilmesinde kendini seçince farklı icon göster
 - [ ] kullanıcıya oyunu anlatmak
-- [ ] Oyun bitti kazandığını belli etmiyor.
+- [x] Oyun bitti kazandığını belli etmiyor.
 - [ ] oyuna icon lazım
+- [ ] X denen kişi 10sn sonra oyuna beklemden bailayacak onuyn için sizde beklemeden başlayın
+- [ ] chatte konuşulan şeyler not edilmeli
+- [ ] patlıyan şehirdeki yeşil işaretçiyide yok et
+- [ ] informasyon mesajlarının küçülerek yokolması
 - [ ] !!!SESLER EKLENMELİ!!!
 
 ## İlham
