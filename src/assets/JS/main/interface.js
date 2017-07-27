@@ -301,10 +301,15 @@
 			var Country = Countries[country];
 			$("#countryname_"+country).html(Country.name);
 
-			if(Country.lose)
+			if(Country.lose){
 				$("#countryname_"+country).css('text-decoration','line-through');
-			else
+				if($("#cityselect_"+country).is(":visible"))
+					$("#cityselect_"+country).fadeOut(10000);
+			}
+			else{
+				$("#cityselect_"+country).show();
 				$("#countryname_"+country).css('text-decoration','none');
+			}
 
 			var citynum = 0;
 			for(var cityname in Country.cities){
@@ -545,6 +550,7 @@
 
 
 	function InterfaceLoop(){
+		$("notice").fadeOut(20000);
 		$(".progressbar").each(function(){
 			var e = $(this);
 
@@ -584,3 +590,20 @@
 				eval(e.attr('trigger'));
 		});
 	}
+
+
+$(show_one_update);
+
+
+function show_one_update(){
+	$(".show_one_child").each(function(i,e){
+		var elem = $(e);
+
+		var childs = elem.children();
+		var i = Math.floor(Math.random()*childs.length);
+		childs.hide();
+		console.log(i,childs[i])
+		$(childs[i]).show();
+		setTimeout(show_one_update,10000);
+	});
+}

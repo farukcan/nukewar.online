@@ -49,11 +49,11 @@ Sonra unitye dök
 - [x] zoom butonu ekle
 - [ ] **2 roket vardı biri müsait olmasına rağmen rampa hazır değil dedi?**
 - [ ] **bazen nükleer rocket şehri uçurmuyor yok etmiyor**
-- [ ] *Atom bombası hakkında bilgi ve sözler eklenecek*
+- [x] *Atom bombası hakkında bilgi ve sözler eklenecek*
 - [ ] *optimizasyon gerekli çok kasıyo. hem server hem client ram israfı yapılmamalı*
 - [x] resize olayları kontrol edilmelidir
 - [x] socket disconnet olduğunda bazı şeyler check edilmeli kazanma şeyide check et
-- [ ] chat şeyine tıklayınca seçim yapmasının önüne geç **işe yaramadı**
+- [x] chat şeyine tıklayınca seçim yapmasının önüne geç **işe yaramadı**
 - [x] google analiz eklenmeli
 - [ ] Güvenlik önlemleri alınacak
 - [ ] panellerin geçmişte kalma sorunu çöz
@@ -68,7 +68,7 @@ Sonra unitye dök
 - [ ] X denen kişi 10sn sonra oyuna beklemden bailayacak onuyn için sizde beklemeden başlayın
 - [ ] chatte konuşulan şeyler not edilmeli
 - [ ] patlıyan şehirdeki yeşil işaretçiyide yok et
-- [ ] informasyon mesajlarının küçülerek yokolması
+- [x] informasyon mesajlarının küçülerek yokolması
 - [ ] !!!SESLER EKLENMELİ!!!
 
 ## İlham

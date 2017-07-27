@@ -51,7 +51,7 @@
 
 	function fixcamera_r(){
 		camera_r = Math.min(camera_r,2.6);
-		camera_r = Math.max(camera_r,world_r);
+		camera_r = Math.max(camera_r,world_r+0.3);
 	}
 
 	var zoomrate = 1.25;
