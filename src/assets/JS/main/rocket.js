@@ -28,23 +28,34 @@
 		scene.add(this.mesh);
 		this.id = RocketController.rocketCount++;
 		RocketController.rockets.push(this);
-
+		sound_missile.play();
 	}
 
 	Rocket.prototype = {
-		remove : function(){
+		remove : function(onAir){
 
 			// istatiklere ekle
-			if(this.target){
-
+			if(this.target && !onAir){
 				blackoffCross(this.target);
 			}
 
+			if(this.target==selected_city)
+				targeticon.position.copy(this.targetPoint.toVector3(0.00001));
+
 			// buum
-			new Explosion({
-				lat : this.targetPoint.lat,
-				lon : this.targetPoint.lon
-			});	
+			if(onAir){
+				new Explosion({
+						lat : this.position.lat,
+						lon : this.position.lon,
+						onAir : onAir
+					});	
+			}else{
+				new Explosion({
+					lat : this.targetPoint.lat,
+					lon : this.targetPoint.lon
+				});	
+			}
+
 
 			// meshi
 			scene.remove(this.mesh);

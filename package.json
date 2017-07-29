@@ -7,11 +7,12 @@
     "doc": "docs"
   },
   "scripts": {
-  	"start": "node app.js"
+    "start": "node app.js"
   },
   "author": "farukcan.net",
   "license": "ISC",
   "dependencies": {
+    "log4js": "^2.3.2",
     "mime-types": "^2.1.13",
     "socket.io": "^1.7.1",
     "syntax-error": "^1.1.6",

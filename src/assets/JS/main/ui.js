@@ -20,6 +20,31 @@
 	targeticon.scale.set(.03,.03,.03);
 	scene.add(targeticon);
 
+
+
+	var centericon = new THREE.Sprite( new THREE.SpriteMaterial( { map: textureLoader.load( "images/center.png" ),  fog: true } ) );
+	centericon.scale.set(.03,.03,.03);
+	scene.add(centericon);
+
+	var deficon={},nukeicon={};
+
+	for(var i=0;i<4;i++){
+		nukeicon[i] = new THREE.Sprite( new THREE.SpriteMaterial( { map: textureLoader.load( "images/mininuke.png" ),  fog: true } ) );
+		nukeicon[i].scale.set(.03,.03,.03);
+		scene.add(nukeicon[i]);
+		deficon[i] = new THREE.Sprite( new THREE.SpriteMaterial( { map: textureLoader.load( "images/minidef.png" ),  fog: true } ) );
+		deficon[i].scale.set(.03,.03,.03);
+		scene.add(deficon[i]);
+	}
+	function resetUIicons(){
+		var zero = new THREE.Vector3(0,0,0);
+		centericon.position.copy(zero);
+		for(var i=0;i<4;i++){
+			deficon[i].position.copy(zero);
+			nukeicon[i].position.copy(zero);
+		}
+	}
+
 	for(country in Countries){
 		var mapA = textureLoader.load( "flags/16/"+country+".png" );
 		var materialA = new THREE.SpriteMaterial( { map: mapA,  fog: true } );
@@ -127,11 +152,15 @@
 	setCrossesOff();
 
 	var block_window_click=false;
-	$(window).click(function(){
+	$(window).click(function(el){
+
 			if(block_window_click){
 				block_window_click=false;
 				return;
 			}
+
+			sound_click.play();
+
 			var maus = new THREE.Vector2(mouse.position.x*2,-mouse.position.y*2);
 			raycaster.setFromCamera( maus, camera );
 			var intersects = raycaster.intersectObjects( scene.children ,true);

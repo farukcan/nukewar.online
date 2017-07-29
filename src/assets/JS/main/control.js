@@ -94,7 +94,7 @@
 			camera_gpos.limit();
 		}
 
-		if(camera.follow){
+		if(camera.follow && camera.target){
 			camera.position.lerp(camera.target.position.toVector3(camera_r),Time.deltaTime);
 
 		}else{

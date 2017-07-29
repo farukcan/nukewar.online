@@ -100,9 +100,13 @@
 					if(city.build){
 						InterfaceMakeCardPassive("build");
 						InterfaceSetInfo('build',translate('City is not empty'));
+						InterfaceMakeCardPassive("defense");
+						InterfaceSetInfo('defense',translate('City is not empty'));
 					}else{
 						InterfaceMakeCardActive("build");
 						InterfaceSetInfo('build',RemainTime(NukewarStandarts.BuildCost));
+						InterfaceMakeCardActive("defense");
+						InterfaceSetInfo('defense',RemainTime(NukewarStandarts.AirDefenseCost));
 					}
 
 					InterfaceSetInfo('nuke',translate('City is yours'));
@@ -131,6 +135,7 @@
 				InterfaceSetInfo('clear',translate('It is not your city'));
 				InterfaceSetInfo('swap',translate('It is not your city'));
 				InterfaceSetInfo('build',translate('It is not your city'));
+				InterfaceSetInfo('defense',translate('It is not your city'));
 			}
 
 
@@ -256,7 +261,8 @@
 
 			InterfaceClosePanels(["mycities","start","world","control","status","gameover","info"],100);
 
-			
+			$('#cbWait').prop('checked', false);
+			$('#cbWait').change();
 
 		}else if( state == 'game' ){
 
@@ -393,7 +399,12 @@
 		var incoming = getInComingRockets();
 
 		outcoming.forEach(function(rocket){
-			$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress"><div class="progresslabel">-</div></div></div>');
+			if(rocket.blocked)
+				$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress" style="background-color:grey"><div class="progresslabel">-</div></div></div>');
+			else if(rocket.defense)
+				$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress" style="background-color:cyan"><div class="progresslabel">-</div></div></div>');
+			else
+				$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress"><div class="progresslabel">-</div></div></div>');
 			
 			$("#rocket"+rocket.id).click(function(){
 				block_window_click = true;
@@ -403,7 +414,12 @@
 
 		});
 		incoming.forEach(function(rocket){
-			$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress" style="background-color:red"><div class="progresslabel">-</div></div></div>');
+			if(rocket.blocked)
+				$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress" style="background-color:orange"><div class="progresslabel">-</div></div></div>');
+			else if(rocket.defense)
+				$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress" style="background-color:cyan"><div class="progresslabel">-</div></div></div>');
+			else	
+				$("#status").append('<div class="progressbar" id="rocket'+rocket.id+'"><div class="progress" style="background-color:red"><div class="progresslabel">-</div></div></div>');
 		
 			$("#rocket"+rocket.id).click(function(){
 				block_window_click = true;
@@ -519,7 +535,10 @@
 			block_window_click = true;
 			socket.emit('build missile launcher',selected_city);
 		});
-
+		$("#defenseButton").click(function(){
+			block_window_click = true;
+			socket.emit('build air defense',selected_city);
+		});
 
 		$("missileselector").click(function(){
 			block_window_click = true;
@@ -583,6 +602,11 @@
 			var to = Number(e.attr('to'));
 
 			var remain = to-Date.now();
+
+			if(remain<1000 && !sound_ready.playing() && e.attr('played')!="true"){
+				e.attr('played',"true")
+				sound_ready.play();
+			}
 
 			e.html(RemainTime(remain));
 

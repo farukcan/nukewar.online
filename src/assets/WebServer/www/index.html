@@ -42,6 +42,8 @@
 
 			<h2 id="youwon" lang="en">You won</h2>
 
+			<span lang="en">If this war actually was real, we would have lost all the world because of radiation and nuclear winter...</span>
+
 			<button onclick="Exit()" class="playagain" lang="en">Play Again</button>
 
 		</div>
@@ -137,6 +139,7 @@
 				<tr id="swapTd" class="card"><td><img id="swapButton" height="48px" src="images/swap.svg"/></td><td><span lang="en">Transport to</span> <cityselector id="cityfrom">[ ]</cityselector> <inf>180 sec</inf></td></tr>
 
 				<tr id="buildTd" class="card"><td><img id="buildButton" height="48px" src="images/build.svg"/></td><td><span lang="en">Build missile launcher</span><inf>240 sec</inf></td></tr>
+				<tr id="defenseTd" class="card"><td><img id="defenseButton" height="48px" src="images/airdefenseM.svg"/></td><td><span lang="en">Build air defense</span><inf>240 sec</inf></td></tr>
 			</table>
 
 			<div>
@@ -167,6 +170,7 @@
 	<script src="js/js.cookie.js"></script>
 	<script src="js/jquery-lang.js"></script>
 	<script src="js/socket.io.min.js"></script>
+	<script src="js/howler.min.js"></script>
 	<script src="game.js"></script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

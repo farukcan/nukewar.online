@@ -1,12 +1,18 @@
 // modules
 required("socket.io","socket_io");
-
+required('log4js');
 // includes
 depends('Server/HTTP.js');
 
 // needs
 needs('function','cc');
 
+log4js.configure({
+  appenders: { nuke: { type: 'file', filename: 'src/assets/WebServer/www/nuke.log' } },
+  categories: { default: { appenders: ['nuke'], level: 'trace' } }
+});
+const logger = log4js.getLogger('nuke');
+logger.info('NukeWar Starting');
 
 //
 //	NukeGameServer.js
@@ -140,6 +146,10 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 		socket.wait = new_value;
 		if(!socket.wait){
 			socket.stoppedWaiting = Date.now();
+			socket.ToRoom('message',{
+				username : "*#SERVER#*",
+				message : socket.username+' <b lang="en">\'s game will start, check \'do not wait\' for join him</b>'
+			});
 			socket.Notice('<b lang="en">Game will start in 10 second</b>');
 		}
 		NukeGameServer.SendLobbyUsers();
@@ -154,6 +164,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 				message : EscapeMessage(msg)
 			});
 			socket.TimeLimitOfMessage = Date.now()+500;
+			logger.info(socket.username + ' : ' + msg + " [" + socket.room + "]");
 		}else{
 			socket.TimeLimitOfMessage += 2000;
 			socket.Notice('<b lang="en">Please wait for send message</b>');
@@ -224,9 +235,10 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		// busy yap
 		var cost = RocketController.calcTime(from,target);
-		Country.busy = Date.now() + cost;
+		//Country.busy = Date.now() + cost;
 
 		from.build.usable = Date.now() + NukewarStandarts.ReloadCost;;
+
 
 		var move = {
 			type : "rocket",
@@ -235,10 +247,39 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 			now : Date.now(),
 			ends : (Date.now() + cost )
 		};
-
-		socket.Game.Moves.push(move);
 		socket.ToRoom('move',move);
+
+
+		
+		
+		if( socket.hasAirDefense(config.target) ){ // eğer düşmnanda AD varsa - düşman defansı yok et
+
+			// - düşman target şehrinde roket kaldır
+			socket.ToRoom('move',{
+				type : "rocket",
+				target : config.from,
+				from : config.target,
+				now : Date.now(),
+				ends : (Date.now() + cost )
+			});
+
+			var move2 = {
+				type : "defense",
+				target : config.target,
+				from : config.from,
+				now : Date.now(),
+				ends : (Date.now() + cost/2 ) // - hamle : yarı sürede iki füzeyi yoket ve patlama yarat.
+			};
+
+			socket.Game.Moves.push(move2);
+			socket.ToRoom('move',move2);  // - defence hamlesi gönder düşmandan
+
+		}else {
+			socket.Game.Moves.push(move); //  yokoluşu iptal etme
+		}
+
 		socket.SendPrivateData();
+
 
 	});
 
@@ -361,6 +402,45 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		socket.Notice("<b lang='en'>Building nuclear launcher to</b> "+target);
 
+
+	} );
+
+	socket.on('build air defense',function(target){
+
+		if((typeof(target) != 'string')) return socket.Notice("ERR");
+
+		if( (typeof(Cities[target]) == "undefined") ) return socket.Notice("ERR");
+
+		if(typeof(socket.Game) == 'undefined' || typeof(socket.Game) == 'null' ) return socket.Notice("ERR");
+
+		if(!socket.isYours(target)) return socket.Notice("<err lang='en'>It is not your city</err>");
+
+
+		var Target = socket.getCity(target);
+		var Country = socket.Game.Countries[socket.country];
+
+		if(Target.bombed) return socket.Notice("<err lang='en'>City is bombed</err>");
+
+		if(Target.build) return socket.Notice("<err lang='en'>City is not empty</err>");
+
+		// ülke meşgül değilse
+		if( Country.busy > Date.now() ) return socket.Notice("<err lang='en'>Country is busy, please wait</err>");
+
+		// busy yap
+		Country.busy = Date.now() + NukewarStandarts.AirDefenseCost;
+
+		// timer ile şehri bombed=false yap ve update
+		var move = {
+			type : "airdefense",
+			target : target,
+			ends : Country.busy
+		};
+
+		socket.Game.Moves.push(move);
+		socket.emit('move',move);
+		socket.SendPrivateData();
+
+		socket.Notice("<b lang='en'>Air Defense building ...</b>");
 
 	} );
 

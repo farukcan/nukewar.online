@@ -134,11 +134,28 @@
 		Countries[your_county] = $.extend(true,Countries[your_county],data);
 		_diff = ( Countries[your_county].date - Date.now() );
 		Countries[your_county].busy = Countries[your_county].busy - _diff; // zaman farkını yok et;
+		var nukeI=0,defI=0;
+		resetUIicons();
 		for( var ct in Countries[your_county].cities ){
 			var city = Countries[your_county].cities[ct];
-			if(city.build && city.build.type=="nuclear"){
-				city.build.usable = city.build.usable - _diff;
+			if(city.build){
+				var pos = new GPos(city.position.lat,city.position.lon);
+				if(city.build.type=="nuclear"){
+					city.build.usable = city.build.usable - _diff;
+					nukeicon[nukeI].position.copy(pos.toVector3(0.5152));
+					nukeI++;
+				}
+				else if(city.build.type=="airdefense"){
+					deficon[defI].position.copy(pos.toVector3(0.5152));
+					defI++;
+				}
+				else if(city.build.type=="center"){
+					centericon.position.copy(pos.toVector3(0.5152));
+				}
 			}
+
+
+			
 		} 
 		InterfaceUpdateCities(); 
 
@@ -178,7 +195,37 @@
 					camera.follow = true;
 					camera.target = rocket;
 				}
-		}else if(Move.type == "build" || Move.type == "clear"){
+
+		}else if(Move.type == "defense"){
+
+			Notice("<b lang='en'>Air defense missile launched from</b> "+Move.target);
+			var attacker = RocketController.rockets.find(function(rocket){
+				return (rocket.start == Move.from) && (rocket.target == Move.target);
+			});
+			var defenser = RocketController.rockets.find(function(rocket){
+				return (rocket.start == Move.target) && (rocket.target == Move.from);
+			});
+			attacker.blocked = true;
+			defenser.defense = true;
+
+			setTimeout(function(){
+				var attacker = RocketController.rockets.find(function(rocket){
+					return (rocket.start == Move.from) && (rocket.target == Move.target);
+				});
+				var defenser = RocketController.rockets.find(function(rocket){
+					return (rocket.start == Move.target) && (rocket.target == Move.from);
+				});
+
+
+				attacker.remove(true);
+				defenser.remove(true);
+				// iki füzeyi yok et
+				// orta noktayı patlat
+
+
+			},Move.ends-Move.now);
+
+		}else if(Move.type == "build" || Move.type == "clear" || Move.type == "airdefense"){
 			Move.ends -= _diff;
 			builds.push(Move);
 		}else if(Move.type == "swap"){

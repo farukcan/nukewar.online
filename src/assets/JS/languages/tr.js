@@ -66,7 +66,14 @@ Lang.prototype.pack.tr = {
         "In nuclear war all men are cremated equal. -Dexter Gordon" : "Nükleer savaşta her insan eşit olarak kül olur. -Dexter Gordon",
         "There are two problems for our species' survival - nuclear war and environmental catastrophe - and we're hurtling towards them. Knowingly. -Noam Chomsky" : "Türümüzün devamına karşı iki problem vardır. Nükleer savaş ve doğa felaketleri. Buna karşın bilerek hunharca sonumuzu hazırlamaktayız. -Noam Chomsk",
         "One nuclear war is going to be the last nuclear - the last war, frankly, if it really gets out of hand. And I just don't think we ought to be prepared to accept that sort of thing. -Lawrence Eagleburger" : "Bir nükleer savaş, son savaşımız olabilir. Bu bizim elimizde. -Lawrence Eagleburger",
-        "Life on Earth is at the ever-increasing risk of being wiped out by a disaster, such as sudden global nuclear war, a genetically engineered virus or other dangers we have not yet thought of. -Stephen Hawking" : "Dünya üzerindeki hayat, nükleer savaş, biyolojik savaş ve daha bilmediğimiz bir çok şey ile git gide artan risk altındadır. -Stephen Hawking"
+        "Life on Earth is at the ever-increasing risk of being wiped out by a disaster, such as sudden global nuclear war, a genetically engineered virus or other dangers we have not yet thought of. -Stephen Hawking" : "Dünya üzerindeki hayat, nükleer savaş, biyolojik savaş ve daha bilmediğimiz bir çok şey ile git gide artan risk altındadır. -Stephen Hawking",
+        "Air Defense building ..." : "Hava savunması inşa ediliyor",
+        "Air defense successfully built to" : "Hava savunması başarıyla inşa edildi",
+        "Air defense missile launched from" : "Hava savunma füzesi fırlatıldı : ",
+        "Our missile has been shot down by enemy" : "Nükleer füzemiz düşman tarafından vuruldu",
+        "Air defense successfully destroyed enemy missile" : "Hava savunmamız düşman füzesini başarıyla yoketti",
+        "\'s game will start, check \'do not wait\' for join him" : "'ın oyunu başlayacak, 'beklemeden başla' kutusu işaretleyek ona katılabilirsiniz.",
+        "If this war actually was real, we would have lost all the world because of radiation and nuclear winter..." : "Eğer bu savaş gerçekten yaşansaydı, bütün dünyayı radyasyon ve nükleer kış sebebeiyle kaybetmiştik..."
 
     },
     "regex": [

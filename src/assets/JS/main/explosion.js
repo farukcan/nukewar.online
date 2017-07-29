@@ -6,8 +6,11 @@
 
 	function Explosion( config ){
 		this.gpos = new GPos(config.lat,config.lon);
-
-		this.flare = addFlare( 0.55, 0.9, 0.5, this.gpos.toVector3(world_r+.03) , 4	 );
+		this.onAir = config.onAir;
+		this.h =  world_r+.03;
+		if(this.onAir)
+			this.h+=.18;
+		this.flare = addFlare( 0.55, 0.9, 0.5, this.gpos.toVector3(this.h) , 4	 );
 		this.flare.lensFlares.forEach(function(f){
 			f.sizeMax = f.size;
 		});
@@ -15,6 +18,8 @@
 		this.endTime = this.startTime+2000;
 		this.id = ExplosionController.explosionCount++;
 		ExplosionController.explosions.push(this);
+		sound_explosion.volume( Math.max((1-Math.min(1,camera_gpos.distanceBetween(this.gpos)))*2,Math.random()*0.4) );
+		sound_explosion.play();
 	}
 
 	Explosion.prototype = {
@@ -46,10 +51,12 @@
 				});
 
 
-				
-				var d = Math.random()*0.02;
-				var smokepos = explosion.gpos.toVector3(world_r+d);
-				new Smoke(smokepos,0.005+d*0.15,0.3);
+				if(!explosion.onAir){
+					var d = Math.random()*0.02;
+					var smokepos = explosion.gpos.toVector3(world_r+d);
+					new Smoke(smokepos,0.005+d*0.15,0.3);
+				}
+
 
 				
 			});

@@ -17,6 +17,7 @@ Settings.JSBuilder = {
 				"src/assets/JS/languages/",
 				"src/assets/JS/main/init.js",
 				"src/assets/JS/main/lights.js",
+				"src/assets/JS/main/sounds.js",
 				"src/assets/JS/main/ui.js",
 				"src/assets/JS/main/flares.js",
 				"src/assets/JS/main/sun.js",
