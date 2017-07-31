@@ -138,9 +138,21 @@ var NukeGameManager = {
 						var c = this.getCountryOfCity(Move.target);
 
 						if(!target.bombed){
+
+							// bize doğru gelen son füzeye göre usable ol
+							var usable = 0;
+							var _this=this;
+							this.Moves.forEach(function(m){ // bombalandığı an, şehirdeki transpart ,build,ve clear hamleleri iptal edilir.
+									if(m.type == "rocket" && _this.getCountryOfCity(m.target) == c && m.ends>usable){
+										usable = m.ends;
+									}
+							});
+
+
+
 							target.build = {
 								type : "airdefense",
-								usable : 0
+								usable : usable
 							};
 							if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
 								this.Countries[c].socket.Notice('<b lang="en">Air defense successfully built to</b> '+Move.target);
@@ -222,7 +234,6 @@ var NukeGameManager = {
 									remain++;
 								}
 							}
-
 
 							// remainPlayer = 0 ise oyun biter
 							// remainPlayer=remain=1 ise winner kazanır
@@ -346,10 +357,12 @@ var NukeGameManager = {
 									NukeGameServer.io.to(this.room).emit('move',move);
 
 									var hasAirDefense= false;
+									var ADct ;
 									for(ct in this.Countries[enemy].cities){
 										if(this.Countries[enemy].cities[ct].build && this.Countries[enemy].cities[ct].build.type=="airdefense"){
 											this.Countries[enemy].cities[ct].build = false;
 											this.SendGlobalData();
+											ADct=ct;
 											hasAirDefense=true;
 											break;
 										}
@@ -360,13 +373,15 @@ var NukeGameManager = {
 										NukeGameServer.io.to(this.room).emit('move',{
 											type : "rocket",
 											target : nuke,
-											from : to,
+											from : ADct,
+											AD : true,
 											now : Date.now(),
-											ends : (Date.now() + cost )
+											ends : (Date.now() + cost/2 )
 										});
 
 										var move2 = {
 											type : "defense",
+											def : ADct,
 											target : to,
 											from : nuke,
 											now : Date.now(),
@@ -440,7 +455,6 @@ var NukeGameManager = {
 			players.push("BOT");
 		}
 
-
 		shuffle(players); // shuffle players
 
 		var p_index=0;
@@ -499,6 +513,7 @@ var NukeGameManager = {
 			socket.Game = Game;
 			socket.emit('state','game');
 			socket.emit('you are',socket.country);
+			socket.icon = "flags/16/"+socket.country+".png"
 			socket.isYours = function(cityname){
 				return typeof(this.Game.Countries[this.country].cities[cityname]) != 'undefined';
 			};
@@ -527,6 +542,7 @@ var NukeGameManager = {
 					}
 
 					if(enemy && defense){
+						socket.ADct=df;
 						this.Game.Countries[c].cities[df].build = false;
 						Game.SendGlobalData();
 						return true;

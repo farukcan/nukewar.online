@@ -73,7 +73,14 @@ Lang.prototype.pack.tr = {
         "Our missile has been shot down by enemy" : "Nükleer füzemiz düşman tarafından vuruldu",
         "Air defense successfully destroyed enemy missile" : "Hava savunmamız düşman füzesini başarıyla yoketti",
         "\'s game will start, check \'do not wait\' for join him" : "'ın oyunu başlayacak, 'beklemeden başla' kutusu işaretleyek ona katılabilirsiniz.",
-        "If this war actually was real, we would have lost all the world because of radiation and nuclear winter..." : "Eğer bu savaş gerçekten yaşansaydı, bütün dünyayı radyasyon ve nükleer kış sebebeiyle kaybetmiştik..."
+        "If this war actually was real, we would have lost all the world because of radiation and nuclear winter..." : "Eğer bu savaş gerçekten yaşansaydı, bütün dünyayı radyasyon ve nükleer kış sebebiyle kaybetmiştik...",
+        "Bug Report" : "Hata bildir",
+        "Bug report sended" : "Hata raporu gönderildi",
+        "Build air defense" : "Hava savunma sistemi inşa et",
+        "(you)" : "(sen)",
+        "(enemy)" : "(düşman)",
+        "Population" : "Nufus",
+        "Air Defense : You can defend your country against enemy nuclear missiles" : "Ülkenizi düşman nükleer füzelerine karşı savunabilirsiniz"
 
     },
     "regex": [

@@ -18,7 +18,10 @@
 		this.distance = this.startPoint.distanceBetween(this.targetPoint,RocketController.standarts.realWorld);
 		this.currentDistance = this.distance; // gpos.distance(gpos)
 		this.launchTime = date; // date
-		this.arriveTime = date+this.distance/RocketController.standarts.speed;
+		if(config.ends)
+			this.arriveTime=config.ends;
+		else
+			this.arriveTime = date+this.distance/RocketController.standarts.speed;
 		this.mesh = new THREE.Mesh( new THREE.BoxGeometry( 0.0005, 0.0005, 0.005 ), new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } ) );
 		this.flare = addFlare( 0.55, 0.9, 0.5, zeropoint );
 

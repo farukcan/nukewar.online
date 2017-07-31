@@ -7,9 +7,10 @@
 	<title>nukewar.online</title>
 	<link href="https://fonts.googleapis.com/css?family=Orbitron|Roboto" rel="stylesheet">
 	<!-- <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet"> -->
+	<link rel="stylesheet" href="css/sweetalert.css"/>
 	<link rel="stylesheet" href="css/game.css"/>
 
-
+	<link rel="shortcut icon" type="image/png" href="/favicon.png"/>
 </head>
 
 <body>
@@ -31,6 +32,7 @@
 			<img src="images/center.svg" width="16px" /> <span lang="en">Command Center : You can transport cities</span> <br/>
 			<img src="images/nuclear.svg" width="16px" /> <span lang="en">Nuclear launcher : You can destroy enemy cities</span> <br/>
 			<img src="images/city.svg" width="16px" /> <span lang="en">Civilian city : You can build new nuclear launcher</span> <br/>
+			<img src="images/airdefense.svg" width="16px" /> <span lang="en">Air Defense : You can defend your country against enemy nuclear missiles</span> <br/>
 
 
 			<button class="playagain" lang="en">Close</button>
@@ -79,7 +81,7 @@
 
 			<p>
 				<input type="checkbox" id="cbWait">
-				<span lang="en">Do not wait for 10 players</span>
+				<label for="cbWait" lang="en">Do not wait for 10 players</label>
 			</p>
 
 
@@ -96,7 +98,7 @@
 		</div>
 
 		<div id="start" style="display: none;">
-			<gamename>nukewar<small>.online</small></gamename>
+			<gamename><img src="images/icon.svg" style="height: 40px;margin-right: 5px;">nukewar<small>.online</small></gamename>
 			<slogan class="show_one_child">
 				<span lang="en">The first atomic bomb was dropped on Japan. 220000 dead.</span>				
 				<span lang="en">The largest nuclear bomb ever detonated, the Tsar Bomba, was 1,400 times more powerful than Hiroshima and Nagasaki combined.</span>				
@@ -115,6 +117,7 @@
 
 
 		<div id="chat" style="display: none;">
+			<button class="btn bugreport" lang="en">Bug Report</button>
 			<input type="text" id="chatinput" placeholder="type a message" lang="en">
 			<div id="messages">
 				
@@ -134,17 +137,20 @@
 			<br/>
 
 			<table>			
-				<tr id="nukeTd" class="card"><td><img id="nukeButton" height="48px" src="images/nuke.svg"/></td><td><span lang="en">Launch nuclear missile from</span> <missileselector id="missilefrom">[ ]</missileselector> <inf>x sec</inf></td></tr>
-				<tr id="clearTd" class="card"><td><img id="clearButton" height="48px" src="images/clear.svg"/></td><td><span lang="en">Clear Area</span> <inf>60 sec</inf></td></tr>
-				<tr id="swapTd" class="card"><td><img id="swapButton" height="48px" src="images/swap.svg"/></td><td><span lang="en">Transport to</span> <cityselector id="cityfrom">[ ]</cityselector> <inf>180 sec</inf></td></tr>
+				<tr id="nukeTd" class="card"><td><img id="nukeButton" height="48px" src="images/nuke.svg" onmouseover="this.src='images/nuke2.svg';" onmouseout="this.src='images/nuke.svg';"/></td><td><span lang="en">Launch nuclear missile from</span> <missileselector id="missilefrom">[ ]</missileselector> <inf>x sec</inf></td></tr>
+				<tr id="clearTd" class="card"><td><img id="clearButton" height="48px" src="images/clear.svg" onmouseover="this.src='images/clear2.svg';" onmouseout="this.src='images/clear.svg';"/></td><td><span lang="en">Clear Area</span> <inf>60 sec</inf></td></tr>
+				<tr id="swapTd" class="card"><td><img id="swapButton" height="48px" src="images/swap.svg" onmouseover="this.src='images/swap2.svg';" onmouseout="this.src='images/swap.svg';"/></td><td><span lang="en">Transport to</span> <cityselector id="cityfrom">[ ]</cityselector> <inf>180 sec</inf></td></tr>
 
-				<tr id="buildTd" class="card"><td><img id="buildButton" height="48px" src="images/build.svg"/></td><td><span lang="en">Build missile launcher</span><inf>240 sec</inf></td></tr>
-				<tr id="defenseTd" class="card"><td><img id="defenseButton" height="48px" src="images/airdefenseM.svg"/></td><td><span lang="en">Build air defense</span><inf>240 sec</inf></td></tr>
+				<tr id="buildTd" class="card"><td><img id="buildButton" height="48px" src="images/build.svg" onmouseover="this.src='images/build2.svg';" onmouseout="this.src='images/build.svg';"/></td><td><span lang="en">Build missile launcher</span><inf>240 sec</inf></td></tr>
+				<tr id="defenseTd" class="card"><td><img id="defenseButton" height="48px" src="images/airdefenseM.svg" onmouseover="this.src='images/airdefenseM2.svg';" onmouseout="this.src='images/airdefenseM.svg';"/></td><td><span lang="en">Build air defense</span><inf>240 sec</inf></td></tr>
 			</table>
 
 			<div>
 				<p>
 					<b lang="en">Country</b> : <span id="selected_country">[C*] Türkiye</span>
+				</p>
+				<p>
+					<b lang="en">Population</b> : <span id="selected_country_population">0</span>
 				</p>
 				<p id="outmissiles_p"> <b lang="en">Outcoming missiles</b> : <span id="outcoming_old">newyork</span> </p>
 				<p>
@@ -171,6 +177,7 @@
 	<script src="js/jquery-lang.js"></script>
 	<script src="js/socket.io.min.js"></script>
 	<script src="js/howler.min.js"></script>
+	<script src="js/sweetalert.min.js"></script>
 	<script src="game.js"></script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

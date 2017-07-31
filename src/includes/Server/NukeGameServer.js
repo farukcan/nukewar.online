@@ -101,6 +101,8 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 	socket.wait = true;
 
+	socket.icon = "images/clock.png"
+
 	socket.TimeLimitOfMessage = 0;
 
 	socket.on('nick',function(nick){
@@ -157,11 +159,13 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 	socket.on('sending message',function(msg){
 		if(typeof msg != 'string') return;
+		if(msg.length > 100 ) return;
 
 		if(socket.TimeLimitOfMessage < Date.now()){
 			socket.ToRoom('message',{
 				username : socket.username,
-				message : EscapeMessage(msg)
+				message : EscapeMessage(msg),
+				icon : socket.icon
 			});
 			socket.TimeLimitOfMessage = Date.now()+500;
 			logger.info(socket.username + ' : ' + msg + " [" + socket.room + "]");
@@ -171,6 +175,16 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 		}
 
 	});
+
+
+	socket.on('bug report',function(msg){
+		if(typeof msg != 'string') return;
+		var report = EscapeMessage(msg.substring(0, 255));
+		socket.Notice('<b lang="en">Bug report sended</b> : ' + report);
+		logger.info(socket.username + " [BUG] "+ report);
+
+	});
+
 
 	socket.on('set language',function(lang){
 		if(typeof lang != 'string') return;
@@ -258,14 +272,16 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 			socket.ToRoom('move',{
 				type : "rocket",
 				target : config.from,
-				from : config.target,
+				from : socket.ADct,
+				AD : true,
 				now : Date.now(),
-				ends : (Date.now() + cost )
+				ends : (Date.now() + cost/2 )
 			});
 
 			var move2 = {
 				type : "defense",
-				target : config.target,
+				def : socket.ADct,
+				target : config.target ,
 				from : config.from,
 				now : Date.now(),
 				ends : (Date.now() + cost/2 ) // - hamle : yarı sürede iki füzeyi yoket ve patlama yarat.
@@ -279,7 +295,6 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 		}
 
 		socket.SendPrivateData();
-
 
 	});
 

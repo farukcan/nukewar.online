@@ -55,7 +55,7 @@
 				glitchPass.goWild = true;
 				setTimeout(function(){
 					glitchPass.goWild = false;
-				},5000);
+				},2000);
 				camera_r = camera_r_default;
 				setFlagsOff();
 				setPopulationsOff();
@@ -76,14 +76,29 @@
 	});
 
 	socket.on('disconnect', function(){
-		alert("disconnected");
+		swal({
+		  title: "Disconnect",
+		  text: "sorry :(",
+		  timer: 10000
+		});
 	});
 
 	socket.on('message',function(data){
+
+
+		Object.keys(Cities).forEach(function(ct){
+			data.message = data.message.replace(ct,"<img src='flags/16/"+getCountryOfCity(ct)+".png'/>"+ct);
+		});
+
+
 		if(data.username == "*#SERVER#*"){
 			$("#messages").append("<message><notice>"+data.message+"</notice></message>");
-		}else
-			$("#messages").append("<message><username>"+data.username+"</username><post>"+data.message+"</post></message>");
+		}else{
+			if(data.username==nickname)
+				$("#messages").append("<message><img src='"+data.icon+"'/><username class='yourname'>"+data.username+"</username><post>"+data.message+"</post></message>");
+			else
+				$("#messages").append("<message><img src='"+data.icon+"'/><username>"+data.username+"</username><post>"+data.message+"</post></message>");
+		}
 		$('#messages').scrollTop($('#messages')[0].scrollHeight);
 	});
 
@@ -180,9 +195,11 @@
 				var configration = {
 						start : Move.from,
 						target : Move.target,
-						date : (Move.now-_diff)
+						date : (Move.now-_diff),
+						ends : (Move.ends-_diff)
 				};
 				var rocket = new Rocket(configration);
+				rocket.AD = Move.AD;
 				configration.id = rocket.id;
 				configration.date = rocket.arriveTime;
 				rocket_configrations.push(configration);
@@ -196,6 +213,8 @@
 					camera.target = rocket;
 				}
 
+				InterfaceUpdateCards();
+
 		}else if(Move.type == "defense"){
 
 			Notice("<b lang='en'>Air defense missile launched from</b> "+Move.target);
@@ -203,7 +222,7 @@
 				return (rocket.start == Move.from) && (rocket.target == Move.target);
 			});
 			var defenser = RocketController.rockets.find(function(rocket){
-				return (rocket.start == Move.target) && (rocket.target == Move.from);
+				return (rocket.start == Move.def) && (rocket.target == Move.from);
 			});
 			attacker.blocked = true;
 			defenser.defense = true;
@@ -212,13 +231,7 @@
 				var attacker = RocketController.rockets.find(function(rocket){
 					return (rocket.start == Move.from) && (rocket.target == Move.target);
 				});
-				var defenser = RocketController.rockets.find(function(rocket){
-					return (rocket.start == Move.target) && (rocket.target == Move.from);
-				});
-
-
 				attacker.remove(true);
-				defenser.remove(true);
 				// iki füzeyi yok et
 				// orta noktayı patlat
 
@@ -246,11 +259,37 @@
 
 	$("#chatinput").keydown(function(e){
 		if(e.keyCode==13){
+			if($("#chatinput").val().length==0) return;
 			socket.emit('sending message',$("#chatinput").val());
 			$("#chatinput").val('');
 		}
 	});
 
+	$(".bugreport").click(function(e){
+			swal({
+			  title: "Bug report",
+			  text: "Please write the issue",
+			  type: "input",
+			  showCancelButton: true,
+			  closeOnConfirm: false,
+			  animation: "slide-from-top",
+			  inputPlaceholder: "issue"
+			},
+			function(inputValue){
+			  if (inputValue === false) return false;
+			  
+			  if (inputValue === "") {
+			    swal.showInputError("You need to write something!");
+			    return false
+			  }
+
+			  socket.emit('bug report',inputValue);
+			  
+			  swal("Thank you!", "We will try to fix", "success");
+			});
+
+			
+	});
 
 	function resetCountries(){
 		for(country in Countries){
@@ -270,6 +309,9 @@
 	}
 
 	function Notice(data){
+		Object.keys(Cities).forEach(function(ct){
+			data = data.replace(ct,"<img src='flags/16/"+getCountryOfCity(ct)+".png'/>"+ct);
+		});
 		$("#messages").append("<message><notice>"+data+"</notice></message>");
 		$('#messages').scrollTop($('#messages')[0].scrollHeight);
 	}

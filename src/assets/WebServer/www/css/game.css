@@ -5,6 +5,12 @@
 			font-family: 'Roboto', sans-serif;
 		}
 
+		body {
+			cursor: url('../images/cursor.cur'), auto;
+		}
+		select,input,button,lang,citycard,img,.progressbar {
+			cursor: url('../images/cursor2.cur'), auto;
+		}
 		.interface {
 			position: absolute;
 			top: 0px;
@@ -42,7 +48,7 @@
 			position: absolute;
 			bottom: 0px;
 			width: 300px;
-			height: 150px;
+			height: 170px;
 			background-color: rgba(0,0,0,0.2); /* onfocus hali bu */
 			border-radius: 10px;
 			margin: 5px;
@@ -88,15 +94,17 @@
 			margin: 0px;
 			padding: 0px;
 		}
-
+		#cbWait {
+			transform: scale(1.5);
+		}
 		.card:hover {
 			background-color: rgba(237,28,36,0.3);
 		}
 
-		.card img:hover {
+		/*.card img:hover {
 			background-color: black;
 			border: 3px dotted white;
-		}
+		}*/
 
 		inf {
 			margin-left: 5px;
@@ -283,6 +291,7 @@
 
 		#chatinput {
 			font-family: 'Orbitron', sans-serif;
+			left: 0px;
 		}
 		
 		err {
@@ -352,4 +361,25 @@
 
 		#youwon {
 			color: green;
+		}
+
+
+		.btn {
+			background-color: rgba(255,50,80,0.1);
+		    border-color: rgba(255,255,255,0.3);
+		    border-radius: 5px;
+		    color: white;
+		}
+
+		.yourname {
+			color: yellow;
+		}
+
+		message img {
+			margin-right: 3px;
+			margin-bottom: -3px;
+		}
+		notice img {
+			margin-right: 3px;
+			margin-bottom: -3px;
 		}

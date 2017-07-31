@@ -15,6 +15,7 @@
 	var w_html="";
 	var selected_city="Ankara";
 	var your_county = "Turkey";
+	var nickname="";
 
 	for(country in Countries){
 		w_html+="<table><tr><td><img src='flags/16/"+country+".png'/></td><td id='countryname_"+country+"'>"+country+"</td></tr></table>";
@@ -174,8 +175,13 @@
 
 			var cc = getCountryOfCity(selected_city);
 
-			$("#selected_country").html("<img src='flags/16/"+cc+".png'/>"+Countries[cc].name);
+			if(cc==your_county)
+				$("#selected_country").html("<img src='flags/16/"+cc+".png'/><span class='yourname'>"+Countries[cc].name+"</span> <span lang='en'>(you)</span>");
+			else	
+				$("#selected_country").html("<img src='flags/16/"+cc+".png'/>"+Countries[cc].name+"</span> <span lang='en'>(enemy)</span>");
 
+			
+			$("#selected_country_population").html((Cities[selected_city].population+Math.floor(Math.random()*10)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 			$("#outcoming_old").html(outcoming_old);
 			$("#outcoming_now").html(outcoming_now);
 			$("#incoming_old").html(incoming_old);
@@ -217,14 +223,14 @@
 
 	function InterfaceMakeCardDisabled(name){
 		if(name){
-			$("#"+name+"Td").css("opacity",0.2);
+			$("#"+name+"Td").css("opacity",0.4);
 			return;
 		}
-		$(".card").css("opacity",0.2);
+		$(".card").css("opacity",0.4);
 	}
 
 	function InterfaceMakeCardPassive(name){
-		$("#"+name+"Td").css("opacity",0.4);
+		$("#"+name+"Td").css("opacity",0.6);
 	}
 
 	function InterfaceMakeCardActive(name){
@@ -305,7 +311,10 @@
 		// global dataya göre güncelleme yap
 		for(country in Countries){
 			var Country = Countries[country];
-			$("#countryname_"+country).html(Country.name);
+			if(country==your_county)
+				$("#countryname_"+country).html("<b class='yourname'>"+Country.name+"</b>");
+			else
+				$("#countryname_"+country).html(Country.name);
 
 			if(Country.lose){
 				$("#countryname_"+country).css('text-decoration','line-through');
@@ -502,6 +511,7 @@
 
 		$("#playform").submit(function(){
 			socket.emit('nick',$("#nick").val());
+			nickname = $("#nick").val();
 			return false;
 		});
 
@@ -555,6 +565,13 @@
 			block_window_click = true;
 		});
 
+		$(window).keyup(function(e){ 
+		    var code = e.which; // recommended to use e.which, it's normalized across browsers
+		    if(code==13)e.preventDefault();
+		    if(code==32||code==13||code==188||code==186){
+		        $("#chatinput").focus();
+		    } // missing closing if brace
+		});
 		setInterval(InterfaceLoop,1000);
 	});
 
@@ -617,6 +634,7 @@
 
 
 $(show_one_update);
+
 
 
 function show_one_update(){
