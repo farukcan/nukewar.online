@@ -11,7 +11,7 @@ log4js.configure({
   appenders: { nuke: { type: 'file', filename: 'src/assets/WebServer/www/nuke.log' } },
   categories: { default: { appenders: ['nuke'], level: 'trace' } }
 });
-const logger = log4js.getLogger('nuke');
+var logger = log4js.getLogger('nuke');
 logger.info('NukeWar Starting');
 
 //
