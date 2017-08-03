@@ -175,12 +175,24 @@
 
 			var cc = getCountryOfCity(selected_city);
 
-			if(cc==your_county)
+			if(cc==your_county){
 				$("#selected_country").html("<img src='flags/16/"+cc+".png'/><span class='yourname'>"+Countries[cc].name+"</span> <span lang='en'>(you)</span>");
-			else	
+				var t = "city";
+				if(Cities[selected_city].build) t = Cities[selected_city].build.type;
+				if(Cities[selected_city].bombed) 
+					$("#cityinf").html("Your city is bombed. Please clear this city");
+				else
+					$("#cityinf").html($("#inf"+t).html());
+			}
+			else{
 				$("#selected_country").html("<img src='flags/16/"+cc+".png'/>"+Countries[cc].name+"</span> <span lang='en'>(enemy)</span>");
+				if(Cities[selected_city].bombed) 
+					$("#cityinf").html("City is bombed");
+				else
+					$("#cityinf").html("You should destroy this city if the command center is here");
+			}	
 
-			
+
 			$("#selected_country_population").html((Cities[selected_city].population+Math.floor(Math.random()*10)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 			$("#outcoming_old").html(outcoming_old);
 			$("#outcoming_now").html(outcoming_now);
@@ -351,7 +363,7 @@
 						}
 					});
 
-					if(buiding){
+					if(buiding && Countries[your_county].busy>Date.now() ){
 						html += "<countdown class='bcount' to='"+ends+"' trigger='InterfaceOnSelectCity(true)'></countdown>";
 					}else if(city.build){
 						if( city.build.type=="nuclear" && city.build.usable > Date.now() ){
@@ -397,10 +409,18 @@
 
 	function InterfaceUpdateStatus(){
 		if(Countries[your_county].busy < Date.now() )
-			$("#status").html('<span lang="en">Select a city and make your move</span>');
+			$("#status").html('<center><span lang="en">Select a city and make your move</span></center>');
 		else{
 			$("#status").html('');
-			$("#status").append("<center><countdown class='tcount' to='"+Countries[your_county].busy+"' trigger='InterfaceOnSelectCity(true)'></countdown></center>") ;
+			var cancelbtn = ""
+			if(game_status!="start")
+				cancelbtn="<button class='btn cancelMove' lang='en'>Cancel</button>";
+
+			$("#status").append("<center><hr/><countdown class='tcount' to='"+Countries[your_county].busy+"' trigger='InterfaceOnSelectCity(true)'></countdown><br/>"+cancelbtn+"<hr/></center>") ;
+
+			$(".cancelMove").click(function(){
+				socket.emit('cancel move');
+			});
 		}
 
 

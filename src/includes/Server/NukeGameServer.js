@@ -255,6 +255,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 
 		var move = {
+			country : socket.country,
 			type : "rocket",
 			target : config.target,
 			from : config.from,
@@ -270,6 +271,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 			// - düşman target şehrinde roket kaldır
 			socket.ToRoom('move',{
+				country : socket.getCountryOfCity(socket.ADct),
 				type : "rocket",
 				target : config.from,
 				from : socket.ADct,
@@ -279,6 +281,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 			});
 
 			var move2 = {
+				country : socket.getCountryOfCity(socket.ADct),
 				type : "defense",
 				def : socket.ADct,
 				target : config.target ,
@@ -324,6 +327,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		// timer ile şehri bombed=false yap ve update
 		var move = {
+			country : socket.country,
 			type : "clear",
 			target : target,
 			ends : Country.busy
@@ -364,7 +368,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		// timer ile şehirlerin buildlerini replace et ve update
 		var move = {
-			type : "swap",
+			country : socket.country,
 			target : config.target,
 			from : config.from,
 			ends : Country.busy
@@ -406,6 +410,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		// timer ile şehre bir nuke build et ve update
 		var move = {
+			country : socket.country,
 			type : "build",
 			target : target,
 			ends : Country.busy
@@ -446,6 +451,7 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		// timer ile şehri bombed=false yap ve update
 		var move = {
+			country : socket.country,
 			type : "airdefense",
 			target : target,
 			ends : Country.busy
@@ -457,6 +463,13 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		socket.Notice("<b lang='en'>Air Defense building ...</b>");
 
+	} );
+
+	socket.on('cancel move',function(){
+
+		if(typeof(socket.Game) == 'undefined' || typeof(socket.Game) == 'null' ) return socket.Notice("ERR");
+
+		socket.cancelMove();
 	} );
 
 });

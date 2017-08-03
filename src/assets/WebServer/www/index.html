@@ -29,10 +29,10 @@
 				<li lang="en">You can release nuclear bomb from city that has nuclear launcher</li>
 			</ul>
 
-			<img src="images/center.svg" width="16px" /> <span lang="en">Command Center : You can transport cities</span> <br/>
-			<img src="images/nuclear.svg" width="16px" /> <span lang="en">Nuclear launcher : You can destroy enemy cities</span> <br/>
-			<img src="images/city.svg" width="16px" /> <span lang="en">Civilian city : You can build new nuclear launcher</span> <br/>
-			<img src="images/airdefense.svg" width="16px" /> <span lang="en">Air Defense : You can defend your country against enemy nuclear missiles</span> <br/>
+			<img src="images/center.svg" width="16px" /> <span id="infcenter" lang="en">Command Center : If you lose this city you lose the game. You can transport cities</span> <br/>
+			<img src="images/nuclear.svg" width="16px" /> <span id="infnuclear" lang="en">Nuclear launcher : You can destroy enemy cities</span> <br/>
+			<img src="images/city.svg" width="16px" /> <span id="infcity" lang="en">Civilian city : You can build new nuclear launcher</span> <br/>
+			<img src="images/airdefense.svg" width="16px" /> <span id="infairdefense" lang="en">Air Defense : You can defend your country against enemy nuclear missiles</span> <br/>
 
 
 			<button class="playagain" lang="en">Close</button>
@@ -134,7 +134,9 @@
 
 		<div id="control" style="display: none;">
 			<h1><span lang="en">Target</span> : <target>target_name</target></h1>
-			<br/>
+			<p>
+				<b id="cityinf" lang="en">...</b>
+			</p>
 
 			<table>			
 				<tr id="nukeTd" class="card"><td><img id="nukeButton" height="48px" src="images/nuke.svg" onmouseover="this.src='images/nuke2.svg';" onmouseout="this.src='images/nuke.svg';"/></td><td><span lang="en">Launch nuclear missile from</span> <missileselector id="missilefrom">[ ]</missileselector> <inf>x sec</inf></td></tr>
@@ -146,6 +148,8 @@
 			</table>
 
 			<div>
+
+
 				<p>
 					<b lang="en">Country</b> : <span id="selected_country">[C*] Türkiye</span>
 				</p>

@@ -137,8 +137,10 @@
 	});
 
 
+	var game_status="start";
 	socket.on('global data', function(data){
 		Countries = $.extend(true,Countries,data.Countries);
+		game_status = data.Status;
 		InterfaceUpdateCities();
 		InterfaceUpdateCards();
 		updateBillboards();
@@ -185,6 +187,13 @@
 		}
 		builds = [];
 		rocket_configrations = [];
+	});
+
+	socket.on('move canceled', function(target){
+		builds.forEach(function (build) {
+			if(build.target == target)
+				build.ends=0;
+		});
 	});
 
 	var builds = [];

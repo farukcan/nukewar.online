@@ -8,6 +8,7 @@ var NukeGameManager = {
 
 		var Game = {
 			over : false,
+			Status : "start",
 			room : roomname,
 			Countries : JSON.parse(JSON.stringify(Countries)),
 			getCity : function(cityname){
@@ -43,6 +44,7 @@ var NukeGameManager = {
 						data.Countries[c].cities[ct].bombed = this.Countries[c].cities[ct].bombed;
 					}
 				}
+				data.Status = this.Status;
 				NukeGameServer.io.to(this.room).emit("global data",data);
 			},
 			Notice : function(msg){
@@ -53,22 +55,29 @@ var NukeGameManager = {
 			},
 			update : function(){
 
-			this.updateBots();	
+				var theGame = this;
 
-			var i = this.Moves.length;
-			while(i--){
+				this.updateBots();	
 
-				if(this.Moves[i].canceled){
-					this.Moves.splice(i,1);
-				}
-				else if(this.Moves[i].ends < Date.now()){
-					var Move = this.Moves[i];
+				var i = this.Moves.length;
+				while(i--){
 
-					if(Move.type == "rocket"){
+					if(this.Moves[i].canceled){
+						var Move = this.Moves[i];
+						
+						var c = theGame.getCountryOfCity(Move.target);
+						if(!theGame.Countries[c].lose && theGame.Countries[c].socket && theGame.Countries[c].socket.SendPrivateData)
+							theGame.Countries[c].socket.emit("move canceled",Move.target);
+						this.Moves.splice(i,1);
+					}
+					else if(this.Moves[i].ends < Date.now()){
+						var Move = this.Moves[i];
 
-						var target = this.getCity(Move.target);
-						if(!target.bombed)
-							this.Notice(Move.target+" <b lang='en'>is destroyed</b>");
+						if(Move.type == "rocket"){
+
+							var target = this.getCity(Move.target);
+							if(!target.bombed)
+								this.Notice(Move.target+" <b lang='en'>is destroyed</b>");
 						target.bombed = true; // bombalandı
 						
 
@@ -76,6 +85,10 @@ var NukeGameManager = {
 							if(m.target == Move.target){
 								if(m.type != "rocket"){
 									m.canceled = true;
+									var c = theGame.getCountryOfCity(Move.target);
+									theGame.Countries[c].busy = Date.now();
+									if(!theGame.Countries[c].lose && theGame.Countries[c].socket && theGame.Countries[c].socket.SendPrivateData)
+										theGame.Countries[c].socket.SendPrivateData();
 								}
 							}
 						});
@@ -115,7 +128,7 @@ var NukeGameManager = {
 						if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
 							this.Countries[c].socket.SendPrivateData();
 						}
-					
+
 					}else if(Move.type == "build"){
 
 						var target = this.getCity(Move.target);
@@ -143,9 +156,9 @@ var NukeGameManager = {
 							var usable = 0;
 							var _this=this;
 							this.Moves.forEach(function(m){ // bombalandığı an, şehirdeki transpart ,build,ve clear hamleleri iptal edilir.
-									if(m.type == "rocket" && _this.getCountryOfCity(m.target) == c && m.ends>usable){
-										usable = m.ends;
-									}
+								if(m.type == "rocket" && _this.getCountryOfCity(m.target) == c && m.ends>usable){
+									usable = m.ends;
+								}
 							});
 
 
@@ -218,8 +231,8 @@ var NukeGameManager = {
 
 
 
-			},
-			checkGame : function(){
+		},
+		checkGame : function(){
 							// kalan oyunculara göre son durum belirlenir
 							var remain = 0;
 							var remainPlayer = 0;
@@ -240,10 +253,12 @@ var NukeGameManager = {
 
 							if(remainPlayer==0){
 								this.over = true;
+								this.Status = "over";
 							}
 							if(remainPlayer==1 && remain==1){
 								winner.socket.win();
 								this.over = true;
+								this.Status = "over";
 							}
 
 							if(this.over){
@@ -251,14 +266,14 @@ var NukeGameManager = {
 
 							}
 
-			},
-			getEnemy : function(countryname){
-				if(this.Countries[countryname].enemy){
-					if(!this.Countries[this.Countries[countryname].enemy].lose)
-						return this.Countries[countryname].enemy;
-				}
-				var enemies001 = [];
-				var min = 5;
+						},
+						getEnemy : function(countryname){
+							if(this.Countries[countryname].enemy){
+								if(!this.Countries[this.Countries[countryname].enemy].lose)
+									return this.Countries[countryname].enemy;
+							}
+							var enemies001 = [];
+							var min = 5;
 				// yaşayanlardan
 				for(var c in this.Countries){
 					if(!this.Countries[c].lose && c!=countryname){
@@ -346,6 +361,7 @@ var NukeGameManager = {
 									from.build.usable = Date.now() + NukewarStandarts.ReloadCost;;
 
 									var move = {
+										country : countryname,
 										type : "rocket",
 										target : to,
 										from : nuke,
@@ -371,6 +387,7 @@ var NukeGameManager = {
 
 										// - düşman target şehrinde roket kaldır
 										NukeGameServer.io.to(this.room).emit('move',{
+											country : this.getCountryOfCity(ADct),
 											type : "rocket",
 											target : nuke,
 											from : ADct,
@@ -380,6 +397,7 @@ var NukeGameManager = {
 										});
 
 										var move2 = {
+											country : this.getCountryOfCity(ADct),
 											type : "defense",
 											def : ADct,
 											target : to,
@@ -458,6 +476,14 @@ var NukeGameManager = {
 		shuffle(players); // shuffle players
 
 		var p_index=0;
+
+		var start_time= 15000;
+
+		setTimeout(function () {
+			Game.Status = "playing";
+			Game.SendGlobalData();
+		},start_time)
+
 		for(var c in Game.Countries){
 			Game.Countries[c].socket = players[p_index];
 			if(players[p_index] == "BOT"){
@@ -469,7 +495,7 @@ var NukeGameManager = {
 			}
 
 
-			Game.Countries[c].busy = Date.now()+15000;
+			Game.Countries[c].busy = Date.now()+start_time;
 			Game.Countries[c].lose = false;
 			Game.Countries[c].kills = 0;
 
@@ -514,6 +540,16 @@ var NukeGameManager = {
 			socket.emit('state','game');
 			socket.emit('you are',socket.country);
 			socket.icon = "flags/16/"+socket.country+".png"
+			socket.cancelMove = function () {
+				socket.Game.Moves.forEach(function (move) {
+					if(move.type!="rocket" && move.country==socket.country){
+						move.canceled = true;
+						socket.Notice("<b lang='en'>Cancelled ...</b>");
+						socket.Game.Countries[socket.country].busy = Date.now();
+						socket.SendPrivateData();	
+					}
+				});
+			};
 			socket.isYours = function(cityname){
 				return typeof(this.Game.Countries[this.country].cities[cityname]) != 'undefined';
 			};
@@ -522,6 +558,16 @@ var NukeGameManager = {
 					for(var ct in this.Game.Countries[c].cities){
 						if(ct == cityname){
 							return this.Game.Countries[c].cities[ct];
+						}
+					}
+				}
+				return false;
+			};
+			socket.getCountryOfCity = function(cityname){
+				for(var c in this.Game.Countries){
+					for(var ct in this.Game.Countries[c].cities){
+						if(ct == cityname){
+							return c;
 						}
 					}
 				}
@@ -575,11 +621,11 @@ var NukeGameManager = {
 }
 
 var shuffle = function(a) {
-    var j, x, i;
-    for (i = a.length; i; i--) {
-        j = Math.floor(Math.random() * i);
-        x = a[i - 1];
-        a[i - 1] = a[j];
-        a[j] = x;
-    }
+	var j, x, i;
+	for (i = a.length; i; i--) {
+		j = Math.floor(Math.random() * i);
+		x = a[i - 1];
+		a[i - 1] = a[j];
+		a[j] = x;
+	}
 }

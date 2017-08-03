@@ -13,12 +13,13 @@ Lang.prototype.pack.tr = {
         "Exit" : "Çıkış",
         "Target" : "Hedef",
         "Launch nuclear missile from" : "Nükleer füze ile vur. Kalkış konunumu :",
-        "Clear Area" : "Şehri temizle",
+        "Clear Area" : "Şehri onar",
         "Transport to" : "Şehri şuraya taşı :",
         "Build missile launcher" : "Nükleer füze fırlatıcı inşa et",
         "City is not damaged" : "Şehir hasar almamış",
         "City is already bombed" : "Şehir zaten bombalanmış",
         "City is bombed" : "Şehir bombalanmış",
+        "Your city is bombed. Please clear this city" : "Şehriniz bombalanmış. Lütfen şehri onarın",
         "City is not empty" : "Şehir boş değil",
         "City is yours" : "Şehir sana ait",
         "It is not your city" : "Şehir sana ait değil",
@@ -49,7 +50,7 @@ Lang.prototype.pack.tr = {
         "All countries are each other's enemy" : "Bütün ülkeler birbirinin düşmanıdır",
         "Only survived country wins the game" : "Sadece hayatta kalan ülke oyunu kazanır",
         "You can release nuclear bomb from city that has nuclear launcher" : "Nükleer fırlatıcı olan şehirden atom bombası fırlatılabilir",
-        "Command Center : You can transport cities" : "Komuta merkezi : Şehirleri taşıyabilirsin",
+        "Command Center : If you lose this city you lose the game. You can transport cities" : "Komuta merkezi : Kaybedersen oyun biter. Şehirleri taşıyabilirsin",
         "Nuclear launcher : You can destroy enemy cities" : "Nükleer fırlatıcı : Düşman şehirleri yokedebilirsin",
         "Civilian city : You can build new nuclear launcher" : "Sivil şehir : Yeni bir nükleer fırlatıcı daha inşa edebilirsin",
         "Country" : "Ülke",
@@ -80,7 +81,10 @@ Lang.prototype.pack.tr = {
         "(you)" : "(sen)",
         "(enemy)" : "(düşman)",
         "Population" : "Nufus",
-        "Air Defense : You can defend your country against enemy nuclear missiles" : "Ülkenizi düşman nükleer füzelerine karşı savunabilirsiniz"
+        "Air Defense : You can defend your country against enemy nuclear missiles" : "Hava Savunması : Ülkenizi düşman nükleer füzelerine karşı savunabilirsiniz",
+        "Cancelled ..." : "İptal edildi ...",
+        "Cancel" : "İptal Et",
+        "You should destroy this city if the command center is here" : "Eğer düşmanın komuta merkezi buradaysa bu şehri yoketmelisiniz"
 
     },
     "regex": [

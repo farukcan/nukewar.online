@@ -1,6 +1,6 @@
 var Project = {
-	name : "Kâtip",
-	version : "alpha"
+	name : "Nukewar Online",
+	version : "1.0"
 };
 
 var Settings = {
