@@ -7,6 +7,6 @@ COPY src /srv/src
 
 WORKDIR /srv
 
-CMD [ "npm", "install" ]
+RUN npm install
 
 CMD [ "npm", "start" ]
