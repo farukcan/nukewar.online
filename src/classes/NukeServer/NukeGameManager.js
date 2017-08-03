@@ -64,7 +64,7 @@ var NukeGameManager = {
 
 					if(this.Moves[i].canceled){
 						var Move = this.Moves[i];
-						
+
 						var c = theGame.getCountryOfCity(Move.target);
 						if(!theGame.Countries[c].lose && theGame.Countries[c].socket && theGame.Countries[c].socket.SendPrivateData)
 							theGame.Countries[c].socket.emit("move canceled",Move.target);
@@ -554,10 +554,12 @@ var NukeGameManager = {
 				return typeof(this.Game.Countries[this.country].cities[cityname]) != 'undefined';
 			};
 			socket.getCity = function(cityname){
-				for(var c in this.Game.Countries){
-					for(var ct in this.Game.Countries[c].cities){
-						if(ct == cityname){
-							return this.Game.Countries[c].cities[ct];
+				if(this.Game){
+					for(var c in this.Game.Countries){
+						for(var ct in this.Game.Countries[c].cities){
+							if(ct == cityname){
+								return this.Game.Countries[c].cities[ct];
+							}
 						}
 					}
 				}
