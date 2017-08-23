@@ -2,7 +2,15 @@
 			background-color : black;
 			margin: 0px;
 			overflow: hidden;
-			font-family: 'Roboto', sans-serif;
+			font-family: 'Josefin Sans', sans-serif;
+		}
+
+		h1,h2,h3 {
+			font-family: 'Orbitron', sans-serif;
+		}
+
+		citycard h1 {
+			font-family: 'Josefin Sans', sans-serif;
 		}
 
 		body {
@@ -10,6 +18,12 @@
 		}
 		select,input,button,lang,citycard,img,.progressbar {
 			cursor: url('../images/cursor2.cur'), auto;
+		}
+		.waitbutton {
+		    background-color: rgba(0,0,0,0.5);
+		    border-color: black;
+		    color: white;
+		    border-radius: 10px;
 		}
 		.interface {
 			position: absolute;
@@ -33,7 +47,7 @@
 			position: absolute;
 			right: 0px;
 			width: 100px;
-			font-size: 12px;
+			font-size: 14px;
 		}
 
 		#world select {
@@ -72,7 +86,7 @@
 		message {
 			display: block;
 			margin: 5px;
-			font-size: 14px;
+			font-size: 16px;
 		}
 
 		#messages {
@@ -108,7 +122,7 @@
 
 		inf {
 			margin-left: 5px;
-			font-size: 10px;
+			font-size: 12px;
 			color : white;
 			font-family: 'Orbitron', sans-serif;
 		}
@@ -183,7 +197,7 @@
 			background-color: rgba(0,0,0,0.2);
 		}
 		small {
-			font-size: 15px;
+			font-size: 17px;
 		}
 
 		#lobby {
@@ -200,7 +214,7 @@
 		#languages {
 			position: absolute;
 			left: 0px;
-			font-size: 15px;
+			font-size: 17px;
 			margin: 5px;
 		}
 		lang {
@@ -268,7 +282,7 @@
 			margin: 0px;
 			margin-bottom: 2px;
 			padding: 0px;
-			font-size: 12px;
+			font-size: 14px;
 			color: white;
 		}
 
