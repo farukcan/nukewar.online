@@ -1,6 +1,8 @@
 // modules
 required("socket.io","socket_io");
 required('log4js');
+required("request");
+
 // includes
 depends('Server/HTTP.js');
 
@@ -179,9 +181,30 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 	socket.on('bug report',function(msg){
 		if(typeof msg != 'string') return;
-		var report = EscapeMessage(msg.substring(0, 255));
-		socket.Notice('<b lang="en">Bug report sended</b> : ' + report);
-		logger.info(socket.username + " [BUG] "+ report);
+
+
+		if(socket.TimeLimitOfMessage < Date.now()){
+			var report = EscapeMessage(msg.substring(0, 255));
+			socket.Notice('<b lang="en">Bug report sended</b> : ' + report);
+			logger.info(socket.username + " [BUG] "+ report);
+
+			request.post('http://bildirim.hesap.online/v1/send.php', {
+				form:{
+					key:'server_status',
+					title: "nukewar.online Bug Report - "+socket.username+" - "+socket.room,
+					message : report,
+					ReplyTo : "noone@nukewar.online"
+				}
+			}, function(err,httpResponse,body){ 
+				console.log("Bug Status Notification : ",httpResponse.body);
+			});
+			socket.TimeLimitOfMessage = Date.now()+500;
+		}else{
+			socket.TimeLimitOfMessage += 2000;
+			socket.Notice('<b lang="en">Please wait for send message</b>');
+		}
+
+
 
 	});
 
