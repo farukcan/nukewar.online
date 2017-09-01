@@ -13,7 +13,6 @@
 	<meta name="twitter:card" content="summary" />
 	<title>Nukewar Online - Realtime Strategy Game</title>
 	<link href="https://fonts.googleapis.com/css?family=Orbitron|Josefin+Sans" rel="stylesheet">
-	<!-- <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet"> -->
 	<link rel="stylesheet" href="css/sweetalert.css"/>
 	<link rel="stylesheet" href="css/game.css"/>
 
@@ -125,6 +124,7 @@
 
 		<div id="chat" style="display: none;">
 			<button class="btn bugreport" lang="en">Bug Report</button>
+			<button class="btn help" lang="en">Help</button>
 			<input type="text" id="chatinput" placeholder="type a message" lang="en">
 			<div id="messages">
 				
@@ -135,6 +135,66 @@
 			<br/>
 		    <img onclick="zoomin()" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTcuMS4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDMwMC4xOTMgMzAwLjE5MyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMzAwLjE5MyAzMDAuMTkzOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjY0cHgiIGhlaWdodD0iNjRweCI+CjxnPgoJPHBvbHlnb24gcG9pbnRzPSIyNTIuMTk5LDcxLjMxNiAzMDAuMTkzLDIzLjMyMiAyNzcuNTY2LDAuNjk1IDIyOS41NzIsNDguNjg5IDIwNS45NzksMjUuMDk3IDE4My4wOTcsMTE3LjU5NyAyNzYuNjE2LDk1LjczNCAgIiBmaWxsPSIjMDA2REYwIi8+Cgk8cG9seWdvbiBwb2ludHM9IjcwLjYyMSw0OC42ODkgMjIuNjI3LDAuNjk1IDAsMjMuMzIyIDQ3Ljk5NCw3MS4zMTYgMjMuNTc1LDk1LjczNCAxMTcuMDk3LDExNy41OTcgOTQuMjE0LDI1LjA5NyAgIiBmaWxsPSIjMDA2REYwIi8+Cgk8cG9seWdvbiBwb2ludHM9IjI3Ni42MTYsMjA0LjQ1OSAxODMuMDk3LDE4Mi41OTcgMjA1Ljk3OSwyNzUuMDk3IDIyOS41NzIsMjUxLjUwNCAyNzcuNTY2LDI5OS40OTggMzAwLjE5MywyNzYuODcxICAgIDI1Mi4xOTksMjI4Ljg3NyAgIiBmaWxsPSIjMDA2REYwIi8+Cgk8cG9seWdvbiBwb2ludHM9IjQ3Ljk5NCwyMjguODc3IDAsMjc2Ljg3MSAyMi42MjcsMjk5LjQ5OCA3MC42MjEsMjUxLjUwNCA5NC4yMTQsMjc1LjA5NyAxMTcuMDk3LDE4Mi41OTcgMjMuNTc1LDIwNC40NTkgICIgZmlsbD0iIzAwNkRGMCIvPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=" />
 		    <img onclick="zoomout()" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTcuMS4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDI5Ny41NjYgMjk3LjU2NiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMjk3LjU2NiAyOTcuNTY2OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjY0cHgiIGhlaWdodD0iNjRweCI+Cjxwb2x5Z29uIHBvaW50cz0iMjUwLjU5MSwyMjguNDY0IDE3MS40MSwxNDkuMjgzIDI1MS4wOTEsNjkuNjAyIDI3NC42ODQsOTMuMTk1IDI5Ny41NjYsMC42OTUgMjA0LjA0NiwyMi41NTggMjI4LjQ2NCw0Ni45NzYgICAxNDguNzgzLDEyNi42NTYgNjkuMTAzLDQ2Ljk3NiA5My41MjEsMjIuNTU4IDAsMC42OTUgMjIuODgzLDkzLjE5NSA0Ni40NzYsNjkuNjAyIDEyNi4xNTYsMTQ5LjI4MyA0Ni45NzYsMjI4LjQ2NCAyMi44ODMsMjA0LjM3MSAgIDAsMjk2Ljg3MSA5My41MjEsMjc1LjAwOSA2OS42MDMsMjUxLjA5MSAxNDguNzgzLDE3MS45MSAyMjcuOTY0LDI1MS4wOTEgMjA0LjA0NiwyNzUuMDA5IDI5Ny41NjYsMjk2Ljg3MSAyNzQuNjg0LDIwNC4zNzEgIiBmaWxsPSIjMDA2REYwIi8+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=" />
+
+		</div>
+
+		<div id="help" style="display: none;">
+			<iframe id="helpiframe"></iframe>
+			<button lang="en" onclick="$(this).parent().hide()">Close</button>
+		</div>
+
+		<div class="FORSEO" style="display: none;">
+				<H1 CLASS="western"><FONT COLOR="#4f81bd">Nukewar Online</FONT></H1>
+				<P CLASS="first-paragraph"><B>Description</B>: It is a
+				Battleship-style, real-time browser-based online game that features
+				the global world.</P>
+				<P><B>Themes</B>: Nuclear warfare, ballistic missiles, nuclear
+				apocalypse, World War 3</P>
+				<P><B>Benefits</B>: Increased strategic thinking and time-management
+				capabilities, enhanced political cooperation, imagination of the
+				global context of the world, explanation of the damages that can be
+				caused by nuclear warfare</P>
+				<P><B>Parties</B>: Each country is a different party and is
+				controlled by a player. There are 10 (ten) countries. All countries
+				are enemies.</P>
+				<P><B>Condition of Victory</B>: Defeat all opponents by bombing their
+				command center cities.</P>
+				<P><B>Condition of Defeat</B>: Bombing of the city that command
+				center is located in.</P>
+				<P><B>Players and bots</B>: At least 1 player 9 bots. At most 10
+				players.</P>
+				<P><B>Controls</B>: Mouse (Keyboard [For typing messages] )</P>
+				<H1 CLASS="western" STYLE="margin-top: 1.48cm; margin-bottom: 0.74cm; border: none; padding: 0cm; font-style: normal; line-height: 123%; widows: 2; orphans: 2">
+				<FONT COLOR="#333333"><FONT FACE="Oxygen, sans-serif"><FONT SIZE=6 STYLE="font-size: 26pt"><B>Keyword</B></FONT></FONT></FONT></H1>
+				<UL>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">nuke
+					war</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">nuke</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">war</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">battleship</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">strategy</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">atom</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">bomb</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">world</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">world
+					war</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">io</FONT></FONT></FONT></P>
+					<LI><P STYLE="margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm; font-style: normal; font-weight: normal; widows: 2; orphans: 2">
+					<FONT COLOR="#333333"><FONT FACE="Merriweather, serif"><FONT SIZE=3 STYLE="font-size: 12pt">online</FONT></FONT></FONT></P>
+				</UL>
+
+				<a href="docs/en/help.html">Help</a>
+				<a href="docs/tr/help.html">Yardım</a>
 
 		</div>
 

@@ -84,6 +84,7 @@ Lang.prototype.pack.tr = {
         "Air Defense : You can defend your country against enemy nuclear missiles" : "Hava Savunması : Ülkenizi düşman nükleer füzelerine karşı savunabilirsiniz",
         "Cancelled ..." : "İptal edildi ...",
         "Cancel" : "İptal Et",
+        "Help" : "Yardım",
         "You should destroy this city if the command center is here" : "Eğer düşmanın komuta merkezi buradaysa bu şehri yoketmelisiniz"
 
     },

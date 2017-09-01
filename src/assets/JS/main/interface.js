@@ -525,6 +525,7 @@
 		socket.emit('exit');
 	}
 
+
 	$(function(){
 		
 
@@ -584,6 +585,22 @@
 		$("#world").click(function(){
 			block_window_click = true;
 		});
+		var old_link="non";
+		$(".help").click(function () {
+				var link = "docs/"+window.lang.currentLang+"/help.html";
+				$("#help").fadeIn(500);
+				if(old_link!=link){
+					old_link=link;
+					$("#helpiframe").attr("src",link);
+					$('#helpiframe').load(function(){ 
+					    $(this).contents().find('body').css("margin-left", "20%");
+					    $(this).contents().find('body').css("margin-right", "20%");
+					    $(this).contents().find('body').css("background-color", "white");
+					});
+				}
+
+		});
+
 
 		$(window).keyup(function(e){ 
 		    var code = e.which; // recommended to use e.which, it's normalized across browsers

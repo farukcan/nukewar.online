@@ -18,6 +18,5 @@ var sound_explosion = new Howl({
 
 var sound_missile = new Howl({
 	src: ['sounds/missile.mp3'],
-	volume: 0.3
-
+	volume: 0.2
 });
