@@ -1,16 +1,16 @@
 required("request");
 
 
-request.post('http://bildirim.hesap.online/v1/send.php', {
-	form:{
-		key:'server_status',
-		title: "nukewar.online Started",
-		message : json2html(Project) + json2html(Framework),
-		ReplyTo : "noone@nukewar.online"
-	}
-}, function(err,httpResponse,body){ 
-	console.log("Status Notification : ",httpResponse.body);
-});
+// request.post('http://bildirim.hesap.online/v1/send.php', {
+// 	form:{
+// 		key:'server_status',
+// 		title: "nukewar.online Started",
+// 		message : json2html(Project) + json2html(Framework),
+// 		ReplyTo : "noone@nukewar.online"
+// 	}
+// }, function(err,httpResponse,body){ 
+// 	console.log("Status Notification : ",httpResponse.body);
+// });
 
 
 function json2html (obj) {
