@@ -4,11 +4,11 @@ A real-time, browser-based multiplayer nuclear warfare strategy game. Battleship
 
 ## Tech Stack
 
-- **Server**: Node.js with custom "katip-framework" (file-based module loader using `eval`)
-- **Networking**: Socket.IO 1.x (real-time WebSocket communication)
+- **Server**: Node.js (>=18) with custom "katip-framework" (file-based module loader)
+- **Networking**: Socket.IO 4.x (real-time WebSocket communication)
 - **3D Rendering**: Three.js (Earth globe with atmosphere, rockets, explosions, lens flares)
 - **Client Libraries**: jQuery, SweetAlert, Howler.js (audio), js-cookie
-- **Build**: Custom JS concatenator + UglifyJS minification
+- **Build**: Custom JS concatenator (chokidar watch + UglifyJS 3 minification)
 - **Containerization**: Docker
 
 ## Game Overview
@@ -22,10 +22,7 @@ A real-time, browser-based multiplayer nuclear warfare strategy game. Battleship
 
 ## Prerequisites
 
-> **Important**: This project was built around 2016 and targets **Node.js 6.x** (Boron LTS). It uses outdated dependencies (Socket.IO 1.x, `request` module). You may need an older Node.js version to run it without issues.
-
-- **Node.js 6.x** (recommended) or attempt with a newer version (may require fixes)
-  - Use [nvm](https://github.com/nvm-sh/nvm) to install: `nvm install 6 && nvm use 6`
+- **Node.js 18+** (tested on Node.js 25)
 - **npm** (comes with Node.js)
 
 ## Getting Started
@@ -44,9 +41,9 @@ npm start
 
 This runs `node app.js`, which:
 1. Boots the katip-framework (loads configs, functions, classes, includes from `src/`)
-2. Builds/minifies the client-side `game.js` from multiple source files
+2. Builds/minifies the client-side `game.js` from multiple source files (with chokidar file watching for hot-rebuild)
 3. Starts an HTTP server on port **80** (or `$PORT` env variable)
-4. Starts a Socket.IO server on port **3000**
+4. Starts a Socket.IO server on the same port (attached to the HTTP server)
 
 ### 3. Open in browser
 
@@ -58,16 +55,13 @@ http://localhost:80
 > ```bash
 > PORT=8080 npm start
 > ```
-> The Socket.IO port (3000) is hardcoded in `src/includes/Server/NukeGameServer.js`.
 
 ## Running with Docker
 
 ```bash
 docker build -t nukewar .
-docker run -p 80:80 -p 3000:3000 nukewar
+docker run -p 80:80 nukewar
 ```
-
-> The Dockerfile uses `node:boron` (Node.js 6.x). For modern Docker, you may need to update the base image.
 
 ## Project Structure
 
@@ -91,10 +85,11 @@ docker run -p 80:80 -p 3000:3000 nukewar
 │   │   └── Server/HTTP.js        # HTTP server config
 │   ├── functions/              # Utility functions (logging, security)
 │   ├── includes/
-│   │   ├── Builder/JSBuilder.js  # JS concatenation & minification
+│   │   ├── Builder/JSBuilder.js  # JS concatenation & minification (chokidar watch)
 │   │   └── Server/
 │   │       ├── HTTP.js           # HTTP server & static file serving
-│   │       └── NukeGameServer.js # Game logic, Socket.IO events, lobby, matchmaking
+│   │       ├── NukeGameServer.js # Game logic, Socket.IO events, lobby, matchmaking
+│   │       └── WebConsole.js     # Debug console (Socket.IO /console namespace)
 │   └── assets/
 │       ├── JS/main/            # Client-side game code (Three.js scenes, controls, UI)
 │       ├── JS/languages/       # i18n translations
@@ -104,22 +99,12 @@ docker run -p 80:80 -p 3000:3000 nukewar
 └── package.json
 ```
 
-## Ports
+## Architecture Notes
 
-| Service    | Port | Configurable          |
-|------------|------|-----------------------|
-| HTTP       | 80   | Yes (`$PORT` env var) |
-| Socket.IO  | 3000 | No (hardcoded)        |
-
-## Known Issues / Modernization Notes
-
-- **Node.js 6.x only**: The `node:boron` Docker image and dependency versions target Node 6. Newer Node versions may break things.
-- **`eval()` everywhere**: The katip-framework loads all modules via `eval(readFile(...))`. This is a security concern and prevents proper module resolution.
-- **Socket.IO 1.x**: Very old version. Modern clients won't connect without matching the protocol.
-- **`request` module**: Deprecated. Used only for bug report notifications to an external service (now defunct).
-- **Hardcoded Socket.IO port**: Client connects to port 3000 separately from the HTTP server.
-- **No HTTPS**: Everything runs over plain HTTP.
-- **Client JS build**: `game.js` is built by concatenating and uglifying source files on server startup. There's no separate build command.
+- **Single port**: Both HTTP and Socket.IO run on the same port. The game uses the default `/` namespace; the debug WebConsole uses the `/console` namespace.
+- **katip-framework**: A custom module loader that uses `eval()` to load configs, functions, classes, and includes from the `src/` directory. It provides dependency ordering via `depends()` and `needs()` declarations.
+- **Client JS build**: `game.js` is built automatically on server startup by concatenating and minifying source files. File changes are watched via chokidar for hot-rebuild during development.
+- **Shared code**: Some classes (GPos, Countries, RocketController, NukewarStandarts) are shared between server (loaded via eval) and client (concatenated into game.js).
 
 ## License
 
