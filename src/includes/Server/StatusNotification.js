@@ -1,6 +1,3 @@
-required("request");
-
-
 // request.post('http://bildirim.hesap.online/v1/send.php', {
 // 	form:{
 // 		key:'server_status',

@@ -1,12 +1,11 @@
 depends("Server/HTTP.js");
+depends("Server/NukeGameServer.js");
 
 required('fs');
-required('syntax-error','check_code');
-required('socket.io','socket_io');
 
 needs('config','Server/WebConsole');
 
-var io = socket_io(http_server);
+var io = NukeGameServer.io.of('/console');
 
 var console_cmds = {};
 

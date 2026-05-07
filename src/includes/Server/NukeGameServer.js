@@ -1,7 +1,6 @@
 // modules
 required("socket.io","socket_io");
 required('log4js');
-required("request");
 
 // includes
 depends('Server/HTTP.js');
@@ -10,7 +9,7 @@ depends('Server/HTTP.js');
 needs('function','cc');
 
 log4js.configure({
-  appenders: { nuke: { type: 'file', filename: 'src/assets/WebServer/www/nuke.log' } },
+  appenders: { nuke: { type: 'console' } },
   categories: { default: { appenders: ['nuke'], level: 'trace' } }
 });
 var logger = log4js.getLogger('nuke');
@@ -21,14 +20,15 @@ logger.info('NukeWar Starting');
 //
 
 var NukeGameServer = {
-	io : socket_io.listen(3000),
+	io : new socket_io.Server(http_server),
 	online : 0,
 	getLobbySockets : function(){
-		var roomObject = NukeGameServer.io.sockets.adapter.rooms["lobby"];
+		var roomSet = NukeGameServer.io.sockets.adapter.rooms.get("lobby");
 		var sockets = [];
-		if(roomObject){
-			for (var clientId in roomObject.sockets ) {
-				sockets.push(NukeGameServer.io.sockets.connected[clientId]);
+		if(roomSet){
+			for (var clientId of roomSet) {
+				var s = NukeGameServer.io.sockets.sockets.get(clientId);
+				if(s) sockets.push(s);
 			}
 		}
 		return sockets;
@@ -47,7 +47,7 @@ var NukeGameServer = {
 	}
 }
 
-NukeGameServer.io.sockets.on('connection',function(socket){
+NukeGameServer.io.on('connection',function(socket){
 
 	NukeGameServer.online++;
 
@@ -57,13 +57,16 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 
 		this.join(room);
 		this.room = room;
-		this.roomObject = NukeGameServer.io.sockets.adapter.rooms[room];
 	}
 
 	socket.GetRoomSockets=function () {
+		var roomSet = NukeGameServer.io.sockets.adapter.rooms.get(this.room);
 		var sockets = [];
-		for (var clientId in this.roomObject.sockets ) {
-			sockets.push(NukeGameServer.io.sockets.connected[clientId]);
+		if(roomSet){
+			for (var clientId of roomSet) {
+				var s = NukeGameServer.io.sockets.sockets.get(clientId);
+				if(s) sockets.push(s);
+			}
 		}
 		return sockets;
 	}
@@ -187,24 +190,11 @@ NukeGameServer.io.sockets.on('connection',function(socket){
 			var report = EscapeMessage(msg.substring(0, 255));
 			socket.Notice('<b lang="en">Bug report sended</b> : ' + report);
 			logger.info(socket.username + " [BUG] "+ report);
-
-			request.post('http://bildirim.hesap.online/v1/send.php', {
-				form:{
-					key:'server_status',
-					title: "nukewar.online Bug Report - "+socket.username+" - "+socket.room,
-					message : report,
-					ReplyTo : "noone@nukewar.online"
-				}
-			}, function(err,httpResponse,body){ 
-				console.log("Bug Status Notification : ",httpResponse.body);
-			});
 			socket.TimeLimitOfMessage = Date.now()+500;
 		}else{
 			socket.TimeLimitOfMessage += 2000;
 			socket.Notice('<b lang="en">Please wait for send message</b>');
 		}
-
-
 
 	});
 

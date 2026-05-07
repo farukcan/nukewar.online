@@ -39,6 +39,6 @@ Settings.JSBuilder = {
 	],
 
 
-	UglifyJS : {fromString : true, mangle: {toplevel: true} }
+	UglifyJS : {mangle: {toplevel: true} }
 
 };

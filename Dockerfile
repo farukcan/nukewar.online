@@ -1,4 +1,4 @@
-FROM node:boron
+FROM node:22-alpine
 
 COPY package.json /srv
 COPY app.js /srv

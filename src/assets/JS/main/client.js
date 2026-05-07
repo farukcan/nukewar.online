@@ -5,7 +5,7 @@
 	//		client
 	//////////////////////////////////////////////////////////////////////////////////
 
-	var socket = io(window.location.hostname+':3000');
+	var socket = io();
 
 	socket.on('state',function(state){
 		switch(state){
