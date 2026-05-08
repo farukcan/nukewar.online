@@ -9,6 +9,7 @@ COPY src /srv/src
 WORKDIR /srv
 
 RUN npm install
+RUN npm run build
 
 ENV LISTEN_PORT=3000 \
     GAME_PORT=3001 \

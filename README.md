@@ -8,7 +8,7 @@ A real-time, browser-based multiplayer nuclear warfare strategy game. Battleship
 - **Networking**: Socket.IO 4.x (real-time WebSocket communication)
 - **3D Rendering**: Three.js (Earth globe with atmosphere, rockets, explosions, lens flares)
 - **Client Libraries**: jQuery, SweetAlert, Howler.js (audio), js-cookie
-- **Build**: Custom JS concatenator (chokidar watch + UglifyJS 3 minification)
+- **Build**: Custom JS concatenator (UglifyJS 3 minification, optional chokidar watch in dev mode)
 - **Containerization**: Docker
 
 ## Game Overview
@@ -33,7 +33,15 @@ A real-time, browser-based multiplayer nuclear warfare strategy game. Battleship
 npm install
 ```
 
-### 2. Run the server
+### 2. Build the client bundle
+
+```bash
+npm run build
+```
+
+This runs `node app.js --build`, which concatenates and minifies the client-side `game.js` from multiple source files, then exits. The bundle (`src/assets/WebServer/www/game.js`) must exist before the server can serve the client.
+
+### 3. Run the server
 
 ```bash
 npm start
@@ -41,11 +49,12 @@ npm start
 
 This runs `node app.js`, which:
 1. Boots the katip-framework (loads configs, functions, classes, includes from `src/`)
-2. Builds/minifies the client-side `game.js` from multiple source files (with chokidar file watching for hot-rebuild)
-3. Starts an HTTP server on port **80** (or `$PORT` env variable)
-4. Starts a Socket.IO server on the same port (attached to the HTTP server)
+2. Starts an HTTP server on port **80** (or `$PORT` env variable)
+3. Starts a Socket.IO server on the same port (attached to the HTTP server)
 
-### 3. Open in browser
+For development with auto-rebuild on source changes, use `npm run dev` instead. It runs `node app.js --dev`, which builds once and then watches the client source files via chokidar, rebuilding `game.js` on every change while the server is running.
+
+### 4. Open in browser
 
 ```
 http://localhost:80
@@ -103,7 +112,7 @@ docker run -p 80:80 nukewar
 
 - **Single port**: Both HTTP and Socket.IO run on the same port. The game uses the default `/` namespace; the debug WebConsole uses the `/console` namespace.
 - **katip-framework**: A custom module loader that uses `eval()` to load configs, functions, classes, and includes from the `src/` directory. It provides dependency ordering via `depends()` and `needs()` declarations.
-- **Client JS build**: `game.js` is built automatically on server startup by concatenating and minifying source files. File changes are watched via chokidar for hot-rebuild during development.
+- **Client JS build**: `game.js` is built explicitly via `npm run build` (one-shot) or `npm run dev` (build + chokidar watch for hot-rebuild). The default `npm start` does not trigger any build.
 - **Shared code**: Some classes (GPos, Countries, RocketController, NukewarStandarts) are shared between server (loaded via eval) and client (concatenated into game.js).
 
 ## License
