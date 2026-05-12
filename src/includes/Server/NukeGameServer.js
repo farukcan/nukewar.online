@@ -382,6 +382,7 @@ NukeGameServer.io.on('connection',function(socket){
 		// timer ile şehirlerin buildlerini replace et ve update
 		var move = {
 			country : socket.country,
+			type : "swap",
 			target : config.target,
 			from : config.from,
 			ends : Country.busy
@@ -391,7 +392,7 @@ NukeGameServer.io.on('connection',function(socket){
 		socket.emit('move',move);
 		socket.SendPrivateData();
 
-		socket.Notice(config.target+" <b lang='en'>is transporting to</b> "+config.from);
+		socket.Notice(config.from+" <b lang='en'>is transporting to</b> "+config.target);
 
 
 	} );
