@@ -262,7 +262,7 @@ NukeGameServer.io.on('connection',function(socket){
 
 		// busy yap
 		var cost = RocketController.calcTime(from,target);
-		//Country.busy = Date.now() + cost;
+		Country.busy = Date.now() + cost;
 
 		from.build.usable = Date.now() + NukewarStandarts.ReloadCost;;
 
