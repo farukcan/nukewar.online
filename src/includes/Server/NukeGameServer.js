@@ -22,29 +22,7 @@ logger.info('NukeWar Starting');
 var NukeGameServer = {
 	io : new socket_io.Server(http_server),
 	online : 0,
-	getLobbySockets : function(){
-		var roomSet = NukeGameServer.io.sockets.adapter.rooms.get("lobby");
-		var sockets = [];
-		if(roomSet){
-			for (var clientId of roomSet) {
-				var s = NukeGameServer.io.sockets.sockets.get(clientId);
-				if(s) sockets.push(s);
-			}
-		}
-		return sockets;
-	},
-	SendLobbyUsers : function(){
-		var usernames = [];
-		this.getLobbySockets().forEach(function(client) {
-		    usernames.push({
-		    	username : client.username,
-		    	language : client.lang,
-		    	id : client.id,
-		    	wait : client.wait
-		    });
-		});
-		NukeGameServer.io.to("lobby").emit('users in lobby',usernames);
-	}
+	matchQueue : []
 }
 
 NukeGameServer.io.on('connection',function(socket){
@@ -102,10 +80,6 @@ NukeGameServer.io.on('connection',function(socket){
 
 	socket.username = "Player "+Math.floor(Math.random()*100);
 
-	socket.lang = "en";
-
-	socket.wait = true;
-
 	socket.icon = "images/clock.png"
 
 	socket.TimeLimitOfMessage = 0;
@@ -114,53 +88,32 @@ NukeGameServer.io.on('connection',function(socket){
 		// [ERR] Güvenlik
 		socket.username = EscapeMessage(nick.substring(0, 10));
 
-		socket.JoinRoom("lobby");
+		socket.JoinRoom("matchmaking");
 
-		socket.emit('state',"lobby");
-
-		NukeGameServer.SendLobbyUsers();
+		socket.emit('state',"matchmaking");
 
 		socket.Notice('<b lang="en">Welcome</b> '+socket.username);
-		socket.Notice('<i lang="en">Game will start automatically with 10 players</i>');
-
-
-		// [ERR] test edilmeli
-		// Bir ülkeden 10 kişi olunca o soketler ile oda kur
-
-		var lobby_sockets = NukeGameServer.getLobbySockets();
-		var langs = {};
-
-		lobby_sockets.forEach(function(soc){
-			if(langs[soc.lang])
-				langs[soc.lang].push(soc);
-			else
-				langs[soc.lang] = [soc];
-		});
-
-		for(var i in langs){
-			if(langs[i].length==10){
-				NukeGameManager.CreateGame(langs[i]);
-				break;
-			}
-		}
-
-
+		socket.Notice('<i lang="en">Press Find Match to start searching</i>');
 	});
 
-	socket.on('change wait status',function(new_value){
-		if(typeof(new_value)!="boolean") return;
+	socket.on('queue',function(){
+		if(socket.room !== "matchmaking") return;
+		if(NukeGameServer.matchQueue.indexOf(socket) !== -1) return;
 
-		socket.wait = new_value;
-		if(!socket.wait){
-			socket.stoppedWaiting = Date.now();
-			socket.ToRoom('message',{
-				username : "*#SERVER#*",
-				message : socket.username+' <b lang="en">\'s game will start, check \'do not wait\' for join him</b>'
-			});
-			socket.Notice('<b lang="en">Game will start in 10 second</b>');
-		}
-		NukeGameServer.SendLobbyUsers();
+		socket.queuedAt = Date.now();
+		NukeGameServer.matchQueue.push(socket);
+		socket.emit('queue status', { searching: true, elapsed: 0 });
 	});
+
+	socket.on('cancel queue',function(){
+		var idx = NukeGameServer.matchQueue.indexOf(socket);
+		if(idx !== -1){
+			NukeGameServer.matchQueue.splice(idx, 1);
+		}
+		socket.queuedAt = null;
+		socket.emit('queue status', { searching: false, elapsed: 0 });
+	});
+
 
 	socket.on('sending message',function(msg){
 		if(typeof msg != 'string') return;
@@ -199,25 +152,22 @@ NukeGameServer.io.on('connection',function(socket){
 	});
 
 
-	socket.on('set language',function(lang){
-		if(typeof lang != 'string') return;
-		if(lang.length != 2 ) return;
-		// [ERR] Güvenlik
-		socket.lang = lang;
-		NukeGameServer.SendLobbyUsers();
-
-	});
 
 	socket.on('exit',function(){
-		socket.stoppedWaiting = Date.now();
+		var idx = NukeGameServer.matchQueue.indexOf(socket);
+		if(idx !== -1){
+			NukeGameServer.matchQueue.splice(idx, 1);
+		}
+		socket.queuedAt = null;
 		socket.JoinRoom("main");
 		socket.emit('state',"main");
-
-		NukeGameServer.SendLobbyUsers();
-		
 	});
 
 	socket.on('disconnect',function(){
+		var idx = NukeGameServer.matchQueue.indexOf(socket);
+		if(idx !== -1){
+			NukeGameServer.matchQueue.splice(idx, 1);
+		}
 		if(socket.Game && socket.country && !socket.Game.Countries[socket.country].lose){
 			socket.Game.Countries[socket.country].lose = true;
 			socket.Game.checkGame();
@@ -227,9 +177,7 @@ NukeGameServer.io.on('connection',function(socket){
 			username : "*#SERVER#*",
 			message : socket.username+' <b lang="en">disconnected</b>'
 		});
-		NukeGameServer.SendLobbyUsers();
 		NukeGameServer.online--;
-		// oyundaydsa oyundan at kaybetsin
 	});
 
 	socket.on('launch nuclear missile',function(config){
@@ -459,30 +407,27 @@ NukeGameServer.io.on('connection',function(socket){
 
 // 1sc loop
 setInterval(function(){
-	var lobby_sockets = NukeGameServer.getLobbySockets();
 
-	var GameCreateLimit = false;
-	lobby_sockets.forEach(function(socket){
+	// Matchmaking queue processing
+	var queue = NukeGameServer.matchQueue;
 
-		if(GameCreateLimit) return;
+	for(var q = 0; q < queue.length; q++){
+		var elapsed = Math.floor((Date.now() - queue[q].queuedAt) / 1000);
+		queue[q].emit('queue status', { searching: true, elapsed: elapsed });
+	}
 
-		if(!socket.wait){
-			if( (Date.now()-socket.stoppedWaiting) > 10000 ){
-				GameCreateLimit = true;
-				var sockets_for_game = [];
-				lobby_sockets.forEach(function(soc){
-					if(!soc.wait){
-						if(socket.lang == soc.lang){
-							sockets_for_game.push(soc);
-						}
-					}
-				});
-
-				NukeGameManager.CreateGame(sockets_for_game);
-			}
+	if(queue.length >= 10){
+		var gameSockets = queue.splice(0, 10);
+		NukeGameManager.CreateGame(gameSockets);
+	} else if(queue.length > 0){
+		var waited = Date.now() - queue[0].queuedAt;
+		if(waited > 30000){
+			var gameSockets = queue.splice(0, queue.length);
+			NukeGameManager.CreateGame(gameSockets);
 		}
-	});
+	}
 
+	// Game update loop
 	var i = NukeGameManager.games.length;
 	while(i--){
 		if(NukeGameManager.games[i].over)

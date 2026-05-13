@@ -79,28 +79,20 @@
 			</citycard>
 		</div>
 
-		<div id="lobby" style="display: none;">
-			<h2 lang="en">Lobby</h2>
-
-			<div id="lobby_list"></div>
-
-
-			<button class="waitbutton">
-				<input type="checkbox" id="cbWait">
-				<label for="cbWait" lang="en">Do not wait for 10 players</label>
-			</button>
-
-
-
-			<button onclick="Exit()" class="exit" lang="en">Exit</button>
-
-
-		</div>
-
-		<div id="languages" style="display: none;">
-			<span lang="en">Please select your language</span>
-			<lang value="tr"> <img src="flags/16/Turkey.png"> Türkçe </lang>
-			<lang value="en"> <img src="flags/16/UK.png"> English </lang>
+		<div id="matchmaking" style="display: none;">
+			<h2 lang="en">Matchmaking</h2>
+			<button id="matchmaking_play_btn" class="play_match_btn" lang="en">Find Match</button>
+			<div id="matchmaking_searching" style="display: none;">
+				<div class="searching_animation">
+					<span class="searching_dot"></span>
+					<span class="searching_dot"></span>
+					<span class="searching_dot"></span>
+				</div>
+				<p lang="en">Searching for players...</p>
+				<span id="matchmaking_timer" class="match_timer">0:00</span>
+			</div>
+			<button id="matchmaking_cancel_btn" class="exit" style="display: none;" lang="en">Cancel</button>
+			<button id="matchmaking_exit_btn" class="exit" lang="en">Exit</button>
 		</div>
 
 		<div id="start" style="display: none;">

@@ -267,33 +267,31 @@
 		currentState = state;
 		if( state == 'main' ) {
 
-			InterfaceOpenPanels(["start","languages"],delay);
+			InterfaceOpenPanels(["start"],delay);
 
-			InterfaceClosePanels(["mycities","lobby","chat","world","control","status","gameover","info"],100);
+			InterfaceClosePanels(["mycities","matchmaking","chat","world","control","status","gameover","info"],100);
 
 			$("#nick").focus();
 
-		}else if( state == 'lobby' ){
+		}else if( state == 'matchmaking' ){
 
-			InterfaceOpenPanels(["chat","lobby","languages"],100);
+			$("#start").hide();
+			InterfaceOpenPanels(["chat","matchmaking"],100);
 
-			InterfaceClosePanels(["mycities","start","world","control","status","gameover","info"],100);
-
-			$('#cbWait').prop('checked', false);
-			$('#cbWait').change();
+			InterfaceClosePanels(["mycities","world","control","status","gameover","info"],100);
 
 		}else if( state == 'game' ){
 
 			InterfaceOpenPanels(["mycities","chat","world","status","info"],100);
 
-			InterfaceClosePanels(["lobby","languages","start","control","gameover"],100);
+			InterfaceClosePanels(["matchmaking","start","control","gameover"],100);
 
 
 		}else if( state == 'gameover' || state == "win"){
 
 			InterfaceOpenPanels(["chat","gameover"],100);
 
-			InterfaceClosePanels(["world","status","mycities","lobby","languages","start","control","info"],100);
+			InterfaceClosePanels(["world","status","mycities","matchmaking","start","control","info"],100);
 
 			if(state == "win"){
 				$("#youwon").show();
@@ -536,9 +534,17 @@
 			return false;
 		});
 
-		$('#cbWait').change(function() {
-	        socket.emit('change wait status',!$(this).is(":checked"));      
-   		});
+		$('#matchmaking_play_btn').click(function(){
+			socket.emit('queue');
+		});
+
+		$('#matchmaking_cancel_btn').click(function(){
+			socket.emit('cancel queue');
+		});
+
+		$('#matchmaking_exit_btn').click(function(){
+			Exit();
+		});
 
 
 		$("#nukeButton").click(function(){

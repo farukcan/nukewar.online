@@ -11,7 +11,6 @@
 		switch(state){
 			case 'main':
 				InterfaceSetState(state);
-				socket.emit("set language",lang.currentLang);
 				RocketController.deleteAll();
 				var exampleRocketA = new Rocket({
 						start : new GPos(90,0),
@@ -31,7 +30,7 @@
 				glitchPass.goWild = false;
 				break;
 
-			case 'lobby':
+			case 'matchmaking':
 				InterfaceSetState(state);
 				resetCountries();
 				camera_r = camera_r_default;
@@ -102,38 +101,23 @@
 		$('#messages').scrollTop($('#messages')[0].scrollHeight);
 	});
 
-	socket.on('users in lobby',function(users){
-		var lobbies = {};
-		users.forEach(function(user){
-			if(lobbies[user.language]){
-				lobbies[user.language].push(user);
-			}else{
-				lobbies[user.language] = [user];
-			}
-		});
-		var html = "";
-		for(lobby in lobbies){
-			var src = $("lang[value='"+lobby+"'] img").attr("src");
-			html += "<lobby><img src='"+src+"'/>";
-			var usercount = 0;
-			lobbies[lobby].forEach(function(user){
-				usercount++;
-				var a;
-				if(user.id == socket.id){
-					a="<b>"+user.username+"</b> , ";
-				}else{
-					a=user.username+" , ";
-				}
-
-				if(!user.wait){
-					a = "<u>"+a+"</u>";
-				}
-
-				html+=a;
-			});
-			html += "["+usercount+"/10]</lobby>";
+	socket.on('queue status',function(data){
+		if(data.searching){
+			$('#matchmaking_searching').show();
+			$('#matchmaking_play_btn').hide();
+			$('#matchmaking_cancel_btn').show();
+			$('#matchmaking_exit_btn').hide();
+			var mins = Math.floor(data.elapsed / 60);
+			var secs = data.elapsed % 60;
+			if(secs < 10) secs = '0' + secs;
+			$('#matchmaking_timer').text(mins + ':' + secs);
+		} else {
+			$('#matchmaking_searching').hide();
+			$('#matchmaking_play_btn').show();
+			$('#matchmaking_cancel_btn').hide();
+			$('#matchmaking_exit_btn').show();
+			$('#matchmaking_timer').text('0:00');
 		}
-		$("#lobby_list").html(html);
 	});
 
 

@@ -19,12 +19,6 @@
 		select,input,button,lang,citycard,img,.progressbar {
 			cursor: url('../images/cursor2.cur'), auto;
 		}
-		.waitbutton {
-		    background-color: rgba(0,0,0,0.5);
-		    border-color: black;
-		    color: white;
-		    border-radius: 10px;
-		}
 		.interface {
 			position: absolute;
 			top: 0px;
@@ -131,9 +125,6 @@
 			margin: 0px;
 			padding: 0px;
 		}
-		#cbWait {
-			transform: scale(1.5);
-		}
 		.card:hover {
 			background-color: rgba(237,28,36,0.3);
 		}
@@ -223,36 +214,77 @@
 			font-size: 17px;
 		}
 
-		#lobby {
+		#matchmaking {
 			position: absolute;
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
-			background-color: rgba(0,0,0,0.3);
+			background-color: rgba(0,0,0,0.5);
 			border-radius: 20px;
-			padding: 10px;
+			padding: 20px;
 			text-align: center;
+			min-width: 250px;
 		}
 
-		#languages {
-			position: absolute;
-			left: 0px;
-			font-size: 17px;
-			margin: 5px;
-		}
-		lang {
+		#matchmaking button {
 			display: block;
+			float: none;
+			margin: 10px auto;
+		}
+
+		.play_match_btn {
+			background-color: rgba(0, 200, 80, 0.8);
+			border: 2px solid rgba(0, 255, 100, 0.5);
+			border-radius: 25px;
 			color: white;
+			font-family: 'Orbitron', sans-serif;
+			font-size: 16px;
+			padding: 10px 30px;
+			cursor: pointer;
+			transition: background-color 0.3s;
+			width: auto;
 		}
 
-		lobby {
+		.play_match_btn:hover {
+			background-color: rgba(0, 255, 100, 0.9);
+		}
+
+		.match_timer {
+			font-family: 'Orbitron', sans-serif;
+			font-size: 24px;
+			color: white;
 			display: block;
-			padding-bottom: 2px;
-			border-bottom: 1px dotted white;
+			margin: 10px 0;
 		}
 
-		#lobby_list img{
-			margin-right: 5px;
+		.searching_animation {
+			display: inline-block;
+			margin: 10px 0;
+		}
+
+		.searching_dot {
+			display: inline-block;
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background-color: #C7DF5F;
+			margin: 0 4px;
+			animation: searchPulse 1.4s infinite ease-in-out both;
+		}
+
+		.searching_dot:nth-child(1) { animation-delay: -0.32s; }
+		.searching_dot:nth-child(2) { animation-delay: -0.16s; }
+		.searching_dot:nth-child(3) { animation-delay: 0s; }
+
+		@keyframes searchPulse {
+			0%, 80%, 100% {
+				transform: scale(0.4);
+				opacity: 0.3;
+			}
+			40% {
+				transform: scale(1);
+				opacity: 1;
+			}
 		}
 
 		notice {

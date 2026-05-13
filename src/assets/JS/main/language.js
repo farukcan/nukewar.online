@@ -25,7 +25,6 @@
 	$(function(){
 		$("lang").click(function(){
 			window.lang.change($(this).attr("value"));
-			socket.emit("set language",lang.currentLang);
 		});
 	});
 
