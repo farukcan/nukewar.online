@@ -174,12 +174,6 @@ var NukeGameManager = {
 
 						target.build = false; // yıkıldı
 
-						// reset launcher cooldown so it's usable again
-						var fromCity = this.getCity(Move.from);
-						if(fromCity && fromCity.build && fromCity.build.type == "nuclear"){
-							fromCity.build.usable = 0;
-						}
-
 						this.SendGlobalData();
 
 						var c = this.getCountryOfCity(Move.from);
