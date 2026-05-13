@@ -119,6 +119,16 @@ NukeGameServer.io.on('connection',function(socket){
 		if(typeof msg != 'string') return;
 		if(msg.length > 100 ) return;
 
+		// /bot command: start game immediately with bots
+		if(msg.trim() === '/bot'){
+			var idx = NukeGameServer.matchQueue.indexOf(socket);
+			if(idx !== -1){
+				var gameSockets = NukeGameServer.matchQueue.splice(0, NukeGameServer.matchQueue.length);
+				NukeGameManager.CreateGame(gameSockets);
+			}
+			return;
+		}
+
 		if(socket.TimeLimitOfMessage < Date.now()){
 			socket.ToRoom('message',{
 				username : socket.username,
