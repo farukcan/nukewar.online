@@ -39,6 +39,11 @@
 				setPopulationsOff();
 				setCrossesOff();
 				glitchPass.active = false;
+				$('#matchmaking_searching').hide();
+				$('#matchmaking_play_btn').show();
+				$('#matchmaking_cancel_btn').hide();
+				$('#matchmaking_exit_btn').show();
+				$('#matchmaking_timer').text('0:00');
 				break;
 
 			case 'game':
