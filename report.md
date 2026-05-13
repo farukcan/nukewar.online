@@ -35,6 +35,15 @@ if(city.build && city.build.type == "airdefense"){
 
 This issue is obsolete as originally described because the old side-effecting checker function is gone.
 
+### 10. ~~AD Did Not Prioritize Command-Center-Bound Missiles~~ ✓ Fixed
+
+**File:** `src/classes/NukeServer/NukeGameManager.js`
+
+The AD intercept loop iterated `Moves` in insertion order, so a scarce air defense
+could be spent on a low-value incoming missile while a missile heading for the
+command center was left untouched. Fixed by pre-sorting in-flight rockets so
+those targeting a `center` city are processed first.
+
 ### 6. Bot Zombie State Is Irreversible
 
 **File:** `NukeGameManager.js:419, 453`

@@ -59,10 +59,23 @@ var NukeGameManager = {
 
 				this.updateBots();
 
-				// AD Intercept: check all in-flight rockets against active air defenses
+				// AD Intercept: check all in-flight rockets against active air defenses.
+				// Rockets targeting a command center are prioritized so a scarce AD
+				// is spent on the most dangerous incoming missile first.
+				var pendingRockets = [];
 				for(var mi = 0; mi < this.Moves.length; mi++){
 					var m = this.Moves[mi];
 					if(m.type != "rocket" || m.intercepted) continue;
+					var targetCity = this.getCity(m.target);
+					var targetsCenter = !!(targetCity && targetCity.build && targetCity.build.type == "center");
+					pendingRockets.push({ move: m, targetsCenter: targetsCenter });
+				}
+				pendingRockets.sort(function(a, b){
+					return (b.targetsCenter ? 1 : 0) - (a.targetsCenter ? 1 : 0);
+				});
+
+				for(var pi = 0; pi < pendingRockets.length; pi++){
+					var m = pendingRockets[pi].move;
 
 					var targetCountry = this.getCountryOfCity(m.target);
 					var ADcity = null;
