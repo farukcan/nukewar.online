@@ -393,7 +393,7 @@ var NukeGameManager = {
 									var target = this.Countries[enemy].cities[to];
 
 									var cost = RocketController.calcTime(from,target);
-									from.build.usable = Date.now() + NukewarStandarts.ReloadCost;
+									from.build.usable = Date.now() + NukewarStandarts.ReloadCost + cost;
 
 									var move = {
 										country : countryname,

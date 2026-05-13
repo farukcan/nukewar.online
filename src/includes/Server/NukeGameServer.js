@@ -219,7 +219,7 @@ NukeGameServer.io.on('connection',function(socket){
 		if(from.build.usable > Date.now() ) return socket.Notice("<err lang='en'>Nuclear launcher is not ready, please wait</err>");
 
 		var cost = RocketController.calcTime(from,target);
-		from.build.usable = Date.now() + NukewarStandarts.ReloadCost;
+		from.build.usable = Date.now() + NukewarStandarts.ReloadCost + cost;
 
 		var move = {
 			country : socket.country,
