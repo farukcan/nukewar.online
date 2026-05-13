@@ -209,8 +209,8 @@ NukeGameServer.io.on('connection',function(socket){
 		// o şehir bombalanmadıysa
 		if(target.bombed) return socket.Notice("<err lang='en'>City is already bombed</err>");
 
-		// ülke meşgul değilse
-		if( Country.busy > Date.now() ) return socket.Notice("<err lang='en'>Country is busy, please wait</err>");
+		// oyun başlamamışsa roket fırlatılamaz
+		if(socket.Game.Status == "start") return socket.Notice("<err lang='en'>Game has not started yet</err>");
 
 		// from geçerliyse ve orada nuke varsa
 		if(!from.build || from.build.type != "nuclear" ) return socket.Notice("<err lang='en'>City has not nuclear launcher</err>");
@@ -218,12 +218,8 @@ NukeGameServer.io.on('connection',function(socket){
 		// nuke varsa bir sonraki zamanı uygunsa
 		if(from.build.usable > Date.now() ) return socket.Notice("<err lang='en'>Nuclear launcher is not ready, please wait</err>");
 
-		// busy yap
 		var cost = RocketController.calcTime(from,target);
-		Country.busy = Date.now() + cost;
-
-		from.build.usable = Date.now() + NukewarStandarts.ReloadCost;;
-
+		from.build.usable = Date.now() + NukewarStandarts.ReloadCost;
 
 		var move = {
 			country : socket.country,
@@ -236,7 +232,7 @@ NukeGameServer.io.on('connection',function(socket){
 		socket.ToRoom('move',move);
 		socket.Game.Moves.push(move);
 
-		socket.SendPrivateData();
+		socket.SendPrivateData(); // update launcher cooldown to client
 
 	});
 

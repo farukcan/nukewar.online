@@ -174,6 +174,12 @@ var NukeGameManager = {
 
 						target.build = false; // yıkıldı
 
+						// reset launcher cooldown so it's usable again
+						var fromCity = this.getCity(Move.from);
+						if(fromCity && fromCity.build && fromCity.build.type == "nuclear"){
+							fromCity.build.usable = 0;
+						}
+
 						this.SendGlobalData();
 
 						var c = this.getCountryOfCity(Move.from);
@@ -379,11 +385,8 @@ var NukeGameManager = {
 									var from = Country.cities[nuke];
 									var target = this.Countries[enemy].cities[to];
 
-									// busy yap
 									var cost = RocketController.calcTime(from,target);
-									Country.busy = Date.now() + cost;
-
-									from.build.usable = Date.now() + NukewarStandarts.ReloadCost;;
+									from.build.usable = Date.now() + NukewarStandarts.ReloadCost;
 
 									var move = {
 										country : countryname,

@@ -114,6 +114,16 @@
 					
 				}
 
+			}else if(game_status == "start"){
+				// oyun başlamamışsa roket fırlatılamaz
+				InterfaceMakeCardPassive("nuke");
+				InterfaceSetInfo('nuke',translate('Game has not started yet'));
+
+				InterfaceSetInfo('clear',translate('It is not your city'));
+				InterfaceSetInfo('swap',translate('It is not your city'));
+				InterfaceSetInfo('build',translate('It is not your city'));
+				InterfaceSetInfo('defense',translate('It is not your city'));
+
 			}else{
 
 				// targete göre mesefa
@@ -257,6 +267,13 @@
 		$(".card").hide();
 	}
 
+	function InterfaceHideBuildCards(){
+		$("#buildTd").hide();
+		$("#defenseTd").hide();
+		$("#swapTd").hide();
+		$("#clearTd").hide();
+	}
+
 	function InterfaceShowCards(){
 		$(".card").fadeIn();
 	}
@@ -397,7 +414,7 @@
 
 
 		if(Countries[your_county].busy > Date.now() )
-			InterfaceHideCards();
+			InterfaceHideBuildCards();
 		else
 			InterfaceShowCards();
 
@@ -673,6 +690,11 @@
 			if(remain<0)
 				eval(e.attr('trigger'));
 		});
+
+		// Refresh button states every second (for time-based updates like missile launcher ready)
+		if(currentState === 'game' && selected_city) {
+			InterfaceUpdateCards();
+		}
 	}
 
 
