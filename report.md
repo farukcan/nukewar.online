@@ -18,30 +18,22 @@ Uncommented `Country.busy = Date.now() + cost;` so human players now get the sam
 
 ## Open Issues
 
-### 3. Air Defense `usable` Field Is Never Checked
+### 5. ~~`hasAirDefense()` Destroys Air Defense as Side Effect~~ ✓ Obsolete
 
-**Files:** `NukeGameManager.js:578-599` (human), `NukeGameManager.js:376-384` (bot)
+**File:** `src/classes/NukeServer/NukeGameManager.js`
 
-When air defense is built, a `usable` timestamp is calculated based on incoming rockets (line 155-168). But neither `hasAirDefense()` nor the bot air defense check ever validates `usable < Date.now()`. Air defense activates immediately after construction, making the cooldown calculation dead code.
-
-### 4. Air Defense Protects All Cities in the Country
-
-**File:** `NukeGameManager.js:578-599`
-
-`hasAirDefense(cityname)` iterates all cities of the country that owns the target city. If ANY city has air defense, it intercepts. A single air defense unit in Istanbul protects Ankara, Izmir, Konya, and Antalya too. This may be intentional but is undocumented and potentially overpowered.
-
-### 5. `hasAirDefense()` Destroys Air Defense as Side Effect
-
-**File:** `NukeGameManager.js:594`
-
-The function name implies a read-only check, but it mutates state:
+`hasAirDefense()` no longer exists as a standalone function in the current server logic.
+Air defense consumption is now handled inline in the rocket interception block:
 
 ```js
-this.Game.Countries[c].cities[df].build = false; // destroys air defense
-Game.SendGlobalData(); // broadcasts change
+if(city.build && city.build.type == "airdefense"){
+    ADcity = ct;
+    city.build = false;
+    break;
+}
 ```
 
-The air defense is removed during the check itself, before any interception logic runs.
+This issue is obsolete as originally described because the old side-effecting checker function is gone.
 
 ### 6. Bot Zombie State Is Irreversible
 

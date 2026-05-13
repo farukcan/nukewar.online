@@ -276,39 +276,7 @@ NukeGameServer.io.on('connection',function(socket){
 			ends : (Date.now() + cost )
 		};
 		socket.ToRoom('move',move);
-
-
-		
-		
-		if( socket.hasAirDefense(config.target) ){ // eğer düşmnanda AD varsa - düşman defansı yok et
-
-			// - düşman target şehrinde roket kaldır
-			socket.ToRoom('move',{
-				country : socket.getCountryOfCity(socket.ADct),
-				type : "rocket",
-				target : config.from,
-				from : socket.ADct,
-				AD : true,
-				now : Date.now(),
-				ends : (Date.now() + cost/2 )
-			});
-
-			var move2 = {
-				country : socket.getCountryOfCity(socket.ADct),
-				type : "defense",
-				def : socket.ADct,
-				target : config.target ,
-				from : config.from,
-				now : Date.now(),
-				ends : (Date.now() + cost/2 ) // - hamle : yarı sürede iki füzeyi yoket ve patlama yarat.
-			};
-
-			socket.Game.Moves.push(move2);
-			socket.ToRoom('move',move2);  // - defence hamlesi gönder düşmandan
-
-		}else {
-			socket.Game.Moves.push(move); //  yokoluşu iptal etme
-		}
+		socket.Game.Moves.push(move);
 
 		socket.SendPrivateData();
 

@@ -22,34 +22,33 @@
 		update : function(Time){
 
 			RocketController.rockets.forEach(function(rocket){
+				var now = Date.now();
 
-				if( rocket.arriveTime<Date.now() ) return rocket.remove(rocket.onAir);
+				if(rocket.interceptTime && rocket.interceptTime < now){
+					if(rocket.interceptPoint){
+						rocket.position = rocket.interceptPoint;
+					}
+					return rocket.remove(true);
+				}
+
+				if( rocket.arriveTime<now ) return rocket.remove(rocket.onAir);
 
 				// Air defense rocket :
 				if(rocket.AD){
 
-					if(rocket.ADReady){
-
-						var d = ( 1 - (rocket.arriveTime-Date.now() ) / (rocket.arriveTime-rocket.launchTime) ); // yolun oransal gidilme miktarı
-						var position = rocket.startPoint.lerp(rocket.collapsePoint , d ); // global olarak şuanki konum
-						rocket.currentDistance = position.distanceBetween(rocket.collapsePoint,RocketController.standarts.realWorld); // şuanki hedefe mesafe
-						if(rocket.currentDistance<0)
-							rocket.currentDistance = 0;
-						rocket.position = position;
-						var m = d/2;
-						position = position.toVector3(world_r + Math.abs(m*m-m) * RocketController.standarts.maxAltitude); // meshin konum ve yüksekliği
-						rocket.mesh.lookAt(position); // hareket noktasına bak
-						rocket.mesh.position.copy(position); // meshi konumunu set
-						rocket.flare.position.copy( rocket.mesh.position ); // flare set
-						new Smoke(rocket.mesh.position); // duman çıkart
-
-					}else{
-						rocket.ADReady = RocketController.rockets.find(function(r){
-							return r.start == rocket.target;
-						});
-						rocket.collapsePoint = rocket.ADReady.startPoint.lerp(rocket.ADReady.targetPoint , 0.5 );
-						rocket.onAir=true;
-					}
+					var d = ( 1 - (rocket.arriveTime-now ) / (rocket.arriveTime-rocket.launchTime) ); // yolun oransal gidilme miktarı
+					var position = rocket.startPoint.lerp(rocket.targetPoint , d ); // global olarak şuanki konum
+					rocket.currentDistance = position.distanceBetween(rocket.targetPoint,RocketController.standarts.realWorld); // şuanki hedefe mesafe
+					if(rocket.currentDistance<0)
+						rocket.currentDistance = 0;
+					rocket.position = position;
+					var arc = Math.abs(d*d-d) * RocketController.standarts.maxAltitude;
+					var altitude = arc + d * (rocket.endAltitude || 0);
+					position = position.toVector3(world_r + altitude); // meshin konum ve yüksekliği
+					rocket.mesh.lookAt(position); // hareket noktasına bak
+					rocket.mesh.position.copy(position); // meshi konumunu set
+					rocket.flare.position.copy( rocket.mesh.position ); // flare set
+					new Smoke(rocket.mesh.position); // duman çıkart
 
 					return;
 				}
@@ -57,7 +56,7 @@
 
 				// Ground rocket :
 
-				var d = ( 1 - (rocket.arriveTime-Date.now() ) / (rocket.arriveTime-rocket.launchTime) ); // yolun oransal gidilme miktarı
+				var d = ( 1 - (rocket.arriveTime-now ) / (rocket.arriveTime-rocket.launchTime) ); // yolun oransal gidilme miktarı
 
 				var position = rocket.startPoint.lerp(rocket.targetPoint , d ); // global olarak şuanki konum
 

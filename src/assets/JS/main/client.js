@@ -224,29 +224,6 @@
 
 				InterfaceUpdateCards();
 
-		}else if(Move.type == "defense"){
-
-			Notice("<b lang='en'>Air defense missile launched from</b> "+Move.target);
-			var attacker = RocketController.rockets.find(function(rocket){
-				return (rocket.start == Move.from) && (rocket.target == Move.target);
-			});
-			var defenser = RocketController.rockets.find(function(rocket){
-				return (rocket.start == Move.def) && (rocket.target == Move.from);
-			});
-			attacker.blocked = true;
-			defenser.defense = true;
-
-			setTimeout(function(){
-				var attacker = RocketController.rockets.find(function(rocket){
-					return (rocket.start == Move.from) && (rocket.target == Move.target);
-				});
-				attacker.remove(true);
-				// iki füzeyi yok et
-				// orta noktayı patlat
-
-
-			},Move.ends-Move.now);
-
 		}else if(Move.type == "build" || Move.type == "clear" || Move.type == "airdefense"){
 			Move.ends -= _diff;
 			builds.push(Move);
@@ -263,6 +240,37 @@
 		}
 
 		InterfaceUpdateCities();
+	});
+
+	socket.on('intercept', function(data){
+		var attacker = RocketController.rockets.find(function(rocket){
+			return (rocket.start == data.from) && (rocket.target == data.target);
+		});
+
+		if(attacker){
+			attacker.interceptTime = Date.now() + data.duration;
+			attacker.onAir = true;
+			var dInt = (attacker.interceptTime - attacker.launchTime) / (attacker.arriveTime - attacker.launchTime);
+			var interceptPoint = attacker.startPoint.lerp(attacker.targetPoint, dInt);
+			attacker.interceptPoint = interceptPoint;
+
+			var adStart = new GPos(
+				city_list[data.def].position.lat,
+				city_list[data.def].position.lon
+			);
+
+			var defRocket = new Rocket({
+				start: adStart,
+				target: interceptPoint,
+				date: Date.now(),
+				ends: attacker.interceptTime
+			});
+			defRocket.AD = true;
+			defRocket.onAir = true;
+			defRocket.endAltitude = Math.abs(dInt * dInt - dInt) * RocketController.standarts.maxAltitude;
+		}
+
+		Notice("<b lang='en'>Air defense missile launched from</b> " + data.def);
 	});
 
 

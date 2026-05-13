@@ -57,7 +57,55 @@ var NukeGameManager = {
 
 				var theGame = this;
 
-				this.updateBots();	
+				this.updateBots();
+
+				// AD Intercept: check all in-flight rockets against active air defenses
+				for(var mi = 0; mi < this.Moves.length; mi++){
+					var m = this.Moves[mi];
+					if(m.type != "rocket" || m.intercepted) continue;
+
+					var targetCountry = this.getCountryOfCity(m.target);
+					var ADcity = null;
+
+					for(var ct in this.Countries[targetCountry].cities){
+						var city = this.Countries[targetCountry].cities[ct];
+						if(city.build && city.build.type == "airdefense"){
+							ADcity = ct;
+							city.build = false;
+							break;
+						}
+					}
+
+					if(ADcity){
+						var remaining = m.ends - Date.now();
+						if(remaining < 1000) remaining = 1000;
+						var interceptDuration = remaining / 2;
+
+						m.intercepted = true;
+						m.interceptTime = Date.now() + interceptDuration;
+
+						NukeGameServer.io.to(this.room).emit('intercept', {
+							target: m.target,
+							from: m.from,
+							def: ADcity,
+							duration: interceptDuration
+						});
+
+						var dc = this.Countries[targetCountry];
+						if(!dc.lose && dc.socket && dc.socket.SendPrivateData){
+							dc.socket.Notice('<b lang="en">Air defense launched from</b> ' + ADcity);
+							dc.socket.SendPrivateData();
+						}
+
+						var ac = this.getCountryOfCity(m.from);
+						if(!this.Countries[ac].lose && this.Countries[ac].socket && this.Countries[ac].socket.SendPrivateData){
+							this.Countries[ac].socket.Notice('<b lang="en">Our missile is being targeted by air defense</b>');
+							this.Countries[ac].socket.SendPrivateData();
+						}
+
+						this.SendGlobalData();
+					}
+				}
 
 				var i = this.Moves.length;
 				while(i--){
@@ -70,10 +118,18 @@ var NukeGameManager = {
 							theGame.Countries[c].socket.emit("move canceled",Move.target);
 						this.Moves.splice(i,1);
 					}
-					else if(this.Moves[i].ends < Date.now()){
+					else if(this.Moves[i].ends < Date.now() || (this.Moves[i].intercepted && this.Moves[i].interceptTime < Date.now())){
 						var Move = this.Moves[i];
 
 						if(Move.type == "rocket"){
+
+							if(Move.intercepted){
+								// AD intercepted — city is not bombed
+								this.Notice('<b lang="en">Air defense destroyed enemy missile targeting</b> ' + Move.target);
+								this.SendGlobalData();
+								this.Moves.splice(i,1);
+								continue;
+							}
 
 							var target = this.getCity(Move.target);
 							if(!target.bombed)
@@ -152,20 +208,8 @@ var NukeGameManager = {
 
 						if(!target.bombed){
 
-							// bize doğru gelen son füzeye göre usable ol
-							var usable = 0;
-							var _this=this;
-							this.Moves.forEach(function(m){ // bombalandığı an, şehirdeki transpart ,build,ve clear hamleleri iptal edilir.
-								if(m.type == "rocket" && _this.getCountryOfCity(m.target) == c && m.ends>usable){
-									usable = m.ends;
-								}
-							});
-
-
-
 							target.build = {
-								type : "airdefense",
-								usable : usable
+								type : "airdefense"
 							};
 							if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
 								this.Countries[c].socket.Notice('<b lang="en">Air defense successfully built to</b> '+Move.target);
@@ -185,25 +229,6 @@ var NukeGameManager = {
 						}
 
 						this.SendGlobalData();
-
-					}else if(Move.type == "defense"){
-
-						var c = this.getCountryOfCity(Move.target);
-
-						if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
-							this.Countries[c].socket.Notice('<b lang="en">Air defense successfully destroyed enemy missile</b> '+Move.target);
-							this.Countries[c].socket.SendPrivateData();
-						}
-
-						var c = this.getCountryOfCity(Move.from);
-						
-						if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
-							this.Countries[c].socket.Notice('<b lang="en">Our missile has been shot down by enemy</b> '+Move.target);
-							this.Countries[c].socket.SendPrivateData();
-						}
-
-						this.SendGlobalData();
-
 
 					}else if(Move.type == "swap"){
 						var target = this.getCity(Move.target);
@@ -371,46 +396,7 @@ var NukeGameManager = {
 
 									
 									NukeGameServer.io.to(this.room).emit('move',move);
-
-									var hasAirDefense= false;
-									var ADct ;
-									for(ct in this.Countries[enemy].cities){
-										if(this.Countries[enemy].cities[ct].build && this.Countries[enemy].cities[ct].build.type=="airdefense"){
-											this.Countries[enemy].cities[ct].build = false;
-											this.SendGlobalData();
-											ADct=ct;
-											hasAirDefense=true;
-											break;
-										}
-									}		
-									if( hasAirDefense ){ // eğer düşmnanda AD varsa - düşman defansı yok et
-
-										// - düşman target şehrinde roket kaldır
-										NukeGameServer.io.to(this.room).emit('move',{
-											country : this.getCountryOfCity(ADct),
-											type : "rocket",
-											target : nuke,
-											from : ADct,
-											AD : true,
-											now : Date.now(),
-											ends : (Date.now() + cost/2 )
-										});
-
-										var move2 = {
-											country : this.getCountryOfCity(ADct),
-											type : "defense",
-											def : ADct,
-											target : to,
-											from : nuke,
-											now : Date.now(),
-											ends : (Date.now() + cost/2 ) // - hamle : yarı sürede iki füzeyi yoket ve patlama yarat.
-										};
-
-										this.Moves.push(move2);
-										NukeGameServer.io.to(this.room).emit('move',move2);  // - defence hamlesi gönder düşmandan
-									}else {
-										this.Moves.push(move);//  yokoluşu iptal etme
-									}
+									this.Moves.push(move);
 
 
 									// FIN
@@ -571,29 +557,6 @@ var NukeGameManager = {
 						if(ct == cityname){
 							return c;
 						}
-					}
-				}
-				return false;
-			};
-			socket.hasAirDefense = function(cityname){
-				for(var c in this.Game.Countries){
-					var enemy=false;
-					var defense=false,df;
-					for(var ct in this.Game.Countries[c].cities){
-						if(ct == cityname){
-							enemy=true;
-						}
-						if(this.Game.Countries[c].cities[ct].build && this.Game.Countries[c].cities[ct].build.type=="airdefense"){
-							defense=true;
-							df=ct;
-						}
-					}
-
-					if(enemy && defense){
-						socket.ADct=df;
-						this.Game.Countries[c].cities[df].build = false;
-						Game.SendGlobalData();
-						return true;
 					}
 				}
 				return false;
