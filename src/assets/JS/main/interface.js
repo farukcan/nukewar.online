@@ -134,6 +134,7 @@
 						InterfaceMakeCardActive("nuke");
 						InterfaceSetInfo('nuke',RemainTime(RocketController.calcTime(from,city)));
 					}else{
+						InterfaceMakeCardPassive("nuke");
 						InterfaceSetInfo('nuke',translate('Missile launcher is not ready'));
 					}
 				}else{
@@ -516,24 +517,42 @@
 		missiles_with_distance.forEach(function(m){ missiles.push(m.name) });
 
 		$("missileselector").each(function(){
-			var e = $(this);
-			var html="<select>";
-			missiles.forEach(function(m){
-				html+="<option value='"+m+"'>"+m+"</option>"
-			});
-			html+="</select>";
-			e.html(html);
+			InterfaceRefreshSelector($(this), missiles);
 		});
 
 		$("cityselector").each(function(){
-			var e = $(this);
-			var html="<select>";
-			cities.forEach(function(c){
-				html+="<option value='"+c+"'>"+c+"</option>"
-			});
-			html+="</select>";
-			e.html(html);
+			InterfaceRefreshSelector($(this), cities);
 		});
+	}
+
+	// Rebuild a selector's <select> only when options actually change,
+	// and preserve the previously selected value when possible.
+	function InterfaceRefreshSelector($container, options){
+		var $select = $container.find("select");
+		var prevValue = $select.val();
+
+		var currentOptions = [];
+		$select.find("option").each(function(){ currentOptions.push(this.value); });
+
+		var same = currentOptions.length === options.length;
+		if(same){
+			for(var i=0; i<options.length; i++){
+				if(currentOptions[i] !== options[i]){ same = false; break; }
+			}
+		}
+
+		if(same) return;
+
+		var html = "<select>";
+		options.forEach(function(o){
+			html += "<option value='"+o+"'>"+o+"</option>";
+		});
+		html += "</select>";
+		$container.html(html);
+
+		if(prevValue && options.indexOf(prevValue) !== -1){
+			$container.find("select").val(prevValue);
+		}
 	}
 
 	function Exit(){
@@ -691,8 +710,11 @@
 				eval(e.attr('trigger'));
 		});
 
-		// Refresh button states every second (for time-based updates like missile launcher ready)
+		// Refresh button states every second (for time-based updates like missile launcher ready).
+		// Selectors must be refreshed BEFORE cards, because InterfaceUpdateCards reads the
+		// currently selected launcher from #missilefrom select to decide if the nuke card is active.
 		if(currentState === 'game' && selected_city) {
+			InterfaceUpdateSelectors();
 			InterfaceUpdateCards();
 		}
 	}
