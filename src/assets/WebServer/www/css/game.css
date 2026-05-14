@@ -141,6 +141,42 @@
 			font-family: 'Orbitron', sans-serif;
 		}
 
+		#strategy_select {
+			margin-top: 10px;
+			text-align: center;
+		}
+
+		#strategy_select h2 {
+			color: #C7DF5F;
+			margin-bottom: 10px;
+		}
+
+		.strategy_options {
+			display: flex;
+			gap: 20px;
+			justify-content: center;
+		}
+
+		.strategy_btn {
+			background-color: rgba(50,50,50,0.8);
+			border: 2px solid rgba(255,255,255,0.3);
+			border-radius: 15px;
+			color: white;
+			font-family: 'Orbitron', sans-serif;
+			font-size: 14px;
+			padding: 15px 20px;
+			min-width: 140px;
+		}
+
+		.strategy_btn:hover {
+			background-color: rgba(100,100,100,0.8);
+		}
+
+		.strategy_selected {
+			border-color: #C7DF5F;
+			background-color: rgba(100,150,50,0.5);
+		}
+
 		#status {
 			position: absolute;
 			min-width: 300px;
@@ -421,10 +457,12 @@
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);
-			background-color: rgba(0,0,0,0.3);
+			background-color: rgba(0,0,0,0.7);
 			border-radius: 20px;
 			padding: 10px;
 			color: white;
+			max-height: 90vh;
+			overflow-y: auto;
 		}
 
 

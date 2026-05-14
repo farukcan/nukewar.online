@@ -130,6 +130,9 @@
 	socket.on('global data', function(data){
 		Countries = $.extend(true,Countries,data.Countries);
 		game_status = data.Status;
+		if(game_status === "playing"){
+			$("#strategy_select").fadeOut(500);
+		}
 		InterfaceUpdateCities();
 		InterfaceUpdateCards();
 		updateBillboards();
@@ -176,6 +179,22 @@
 		}
 		builds = [];
 		rocket_configrations = [];
+	});
+
+	$('#strategy_aggressive').click(function(){
+		socket.emit('select strategy', 'aggressive');
+		$('.strategy_btn').removeClass('strategy_selected');
+		$(this).addClass('strategy_selected');
+	});
+	$('#strategy_defensive').click(function(){
+		socket.emit('select strategy', 'defensive');
+		$('.strategy_btn').removeClass('strategy_selected');
+		$(this).addClass('strategy_selected');
+	});
+
+	$('#info_close_btn').click(function(){
+		block_window_click = true;
+		$('#info').fadeOut();
 	});
 
 	socket.on('move canceled', function(target){

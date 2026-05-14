@@ -393,7 +393,9 @@ var NukeGameManager = {
 									var target = this.Countries[enemy].cities[to];
 
 									var cost = RocketController.calcTime(from,target);
-									from.build.usable = Date.now() + NukewarStandarts.ReloadCost + cost;
+									var reloadCost = NukewarStandarts.ReloadCost;
+									if(Country.strategy === "aggressive") reloadCost = Math.floor(reloadCost * 0.9);
+									from.build.usable = Date.now() + reloadCost + cost;
 
 									var move = {
 										country : countryname,
@@ -494,8 +496,14 @@ var NukeGameManager = {
 			Game.Countries[c].busy = Date.now()+start_time;
 			Game.Countries[c].lose = false;
 			Game.Countries[c].kills = 0;
+			Game.Countries[c].strategy = "defensive";
 
-			var cities = ["nuclear","center","","",""];
+			if(Game.Countries[c].isBot){
+				Game.Countries[c].strategy = (Math.random() > 0.5) ? "aggressive" : "defensive";
+			}
+
+			var firstBuilding = (Game.Countries[c].strategy === "aggressive") ? "nuclear" : "airdefense";
+			var cities = [firstBuilding,"center","","",""];
 			shuffle(cities); // shuffle cities
 
 			var c_index = 0;
@@ -583,7 +591,8 @@ var NukeGameManager = {
 					this.emit('private data',{
 						busy : Country.busy,
 						date : Date.now(),
-						cities : Cities
+						cities : Cities,
+						strategy : Country.strategy
 					});
 				}
 			}

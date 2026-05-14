@@ -219,7 +219,9 @@ NukeGameServer.io.on('connection',function(socket){
 		if(from.build.usable > Date.now() ) return socket.Notice("<err lang='en'>Nuclear launcher is not ready, please wait</err>");
 
 		var cost = RocketController.calcTime(from,target);
-		from.build.usable = Date.now() + NukewarStandarts.ReloadCost + cost;
+		var reloadCost = NukewarStandarts.ReloadCost;
+		if(socket.Game.Countries[socket.country].strategy === "aggressive") reloadCost = Math.floor(reloadCost * 0.9);
+		from.build.usable = Date.now() + reloadCost + cost;
 
 		var move = {
 			country : socket.country,
@@ -383,7 +385,9 @@ NukeGameServer.io.on('connection',function(socket){
 		if( Country.busy > Date.now() ) return socket.Notice("<err lang='en'>Country is busy, please wait</err>");
 
 		// busy yap
-		Country.busy = Date.now() + NukewarStandarts.AirDefenseCost;
+		var adCost = NukewarStandarts.AirDefenseCost;
+		if(Country.strategy === "defensive") adCost = Math.floor(adCost * 0.9);
+		Country.busy = Date.now() + adCost;
 
 		// timer ile şehri bombed=false yap ve update
 		var move = {
@@ -407,6 +411,34 @@ NukeGameServer.io.on('connection',function(socket){
 
 		socket.cancelMove();
 	} );
+
+	socket.on('select strategy',function(strategy){
+		if(strategy !== "aggressive" && strategy !== "defensive") return;
+		if(!socket.Game) return;
+		if(socket.Game.Status !== "start") return;
+
+		var Country = socket.Game.Countries[socket.country];
+		if(Country.strategy === strategy) return;
+
+		Country.strategy = strategy;
+
+		var newBuildType = (strategy === "aggressive") ? "nuclear" : "airdefense";
+
+		for(var ct in Country.cities){
+			var city = Country.cities[ct];
+			if(city.build && city.build.type !== "center"){
+				if(newBuildType === "nuclear"){
+					city.build = { type: "nuclear", usable: 0 };
+				}else{
+					city.build = { type: "airdefense" };
+				}
+				break;
+			}
+		}
+
+		socket.SendPrivateData();
+		socket.Notice('<b lang="en">Strategy selected:</b> ' + strategy);
+	});
 
 });
 

@@ -85,7 +85,13 @@ Lang.prototype.pack.tr = {
         "Cancelled ..." : "İptal edildi ...",
         "Cancel" : "İptal Et",
         "Help" : "Yardım",
-        "You should destroy this city if the command center is here" : "Eğer düşmanın komuta merkezi buradaysa bu şehri yoketmelisiniz"
+        "You should destroy this city if the command center is here" : "Eğer düşmanın komuta merkezi buradaysa bu şehri yoketmelisiniz",
+        "Choose Your Strategy" : "Stratejinizi Seçin",
+        "Aggressive" : "Saldırgan",
+        "Defensive" : "Savunmacı",
+        "Start with Launcher. 10% faster reload." : "Fırlatıcı ile başla. %10 hızlı dolum.",
+        "Start with Air Defense. 10% faster AD build." : "Hava savunması ile başla. %10 hızlı inşa.",
+        "Strategy selected:" : "Strateji seçildi:"
 
     },
     "regex": [

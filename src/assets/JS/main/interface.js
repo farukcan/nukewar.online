@@ -108,7 +108,9 @@
 						InterfaceMakeCardActive("build");
 						InterfaceSetInfo('build',RemainTime(NukewarStandarts.BuildCost));
 						InterfaceMakeCardActive("defense");
-						InterfaceSetInfo('defense',RemainTime(NukewarStandarts.AirDefenseCost));
+						var adCostDisplay = NukewarStandarts.AirDefenseCost;
+						if(Countries[your_county].strategy === "defensive") adCostDisplay = Math.floor(adCostDisplay * 0.9);
+						InterfaceSetInfo('defense',RemainTime(adCostDisplay));
 					}
 
 					InterfaceSetInfo('nuke',translate('City is yours'));
@@ -635,6 +637,9 @@
 		});
 
 		$("#world").click(function(){
+			block_window_click = true;
+		});
+		$("#info").click(function(){
 			block_window_click = true;
 		});
 		var old_link="non";

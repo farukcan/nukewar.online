@@ -24,10 +24,10 @@
 	<div class="interface" id="interface">
 		<div id="world" style="display: none;"></div>
 
-		<div id="info" onclick="block_window_click = true;$(this).fadeOut()" style="display: none;">
+		<div id="info" style="display: none;">
 
 			<h1 lang="en">How to play?</h1>
-			
+
 			<ul>
 				<li lang="en">Country that command center is destroyed lose the game</li>
 				<li lang="en">All countries are each other's enemy</li>
@@ -40,8 +40,24 @@
 			<img src="images/city.svg" width="16px" /> <span id="infcity" lang="en">Civilian city : You can build new nuclear launcher</span> <br/>
 			<img src="images/airdefense.svg" width="16px" /> <span id="infairdefense" lang="en">Air Defense : You can defend your country against enemy nuclear missiles</span> <br/>
 
+			<div id="strategy_select">
+				<hr/>
+				<h2 lang="en">Choose Your Strategy</h2>
+				<div class="strategy_options">
+					<button id="strategy_aggressive" class="strategy_btn">
+						<img src="images/nuke.svg" width="32px" /><br/>
+						<span lang="en">Aggressive</span><br/>
+						<small lang="en">Start with Launcher. 10% faster reload.</small>
+					</button>
+					<button id="strategy_defensive" class="strategy_btn strategy_selected">
+						<img src="images/airdefenseM.svg" width="32px" /><br/>
+						<span lang="en">Defensive</span><br/>
+						<small lang="en">Start with Air Defense. 10% faster AD build.</small>
+					</button>
+				</div>
+			</div>
 
-			<button class="playagain" lang="en">Close</button>
+			<button id="info_close_btn" class="playagain" lang="en">Close</button>
 		</div>
 
 		<div id="gameover" style="display: none;">
@@ -228,7 +244,7 @@
 		</div>
 
 		<div id="status" style="display: none;">
-			
+
 		</div>
 
 
