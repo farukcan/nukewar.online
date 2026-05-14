@@ -5,5 +5,6 @@ var NukewarStandarts = {
 	ReloadCost : (4*_r$) ,
 	BuildCost : (4*_r$) ,
 	ClearCost : (1*_r$) ,
-	AirDefenseCost : (4*_r$)
+	AirDefenseCost : (4*_r$),
+	MatchmakingTimeout : 10000
 };

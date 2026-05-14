@@ -427,7 +427,7 @@ setInterval(function(){
 		NukeGameManager.CreateGame(gameSockets);
 	} else if(queue.length > 0){
 		var waited = Date.now() - queue[0].queuedAt;
-		if(waited > 30000){
+		if(waited > NukewarStandarts.MatchmakingTimeout){
 			var gameSockets = queue.splice(0, queue.length);
 			NukeGameManager.CreateGame(gameSockets);
 		}
