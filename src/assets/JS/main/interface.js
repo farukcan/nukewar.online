@@ -81,6 +81,7 @@
 	}
 
 	function InterfaceUpdateCards(){
+		$(".card").show();
 		InterfaceMakeCardDisabled();
 
 			var city = getCity(selected_city);
@@ -150,6 +151,13 @@
 				InterfaceSetInfo('defense',translate('It is not your city'));
 			}
 
+			// Override build cards when country is busy
+			if(Countries[your_county].busy > Date.now()){
+				InterfaceMakeCardDisabled("build");
+				InterfaceMakeCardDisabled("defense");
+				InterfaceMakeCardDisabled("swap");
+				InterfaceMakeCardDisabled("clear");
+			}
 
 			var outcoming_old = "";
 			var outcoming_now = "";
@@ -246,18 +254,18 @@
 
 	function InterfaceMakeCardDisabled(name){
 		if(name){
-			$("#"+name+"Td").css("opacity",0.4);
+			$("#"+name+"Td").css({"opacity":0.4,"cursor":"not-allowed"}).data("state","disabled");
 			return;
 		}
-		$(".card").css("opacity",0.4);
+		$(".card").css({"opacity":0.4,"cursor":"not-allowed"}).data("state","disabled");
 	}
 
 	function InterfaceMakeCardPassive(name){
-		$("#"+name+"Td").css("opacity",0.6);
+		$("#"+name+"Td").css({"opacity":0.6,"cursor":"not-allowed"}).data("state","passive");
 	}
 
 	function InterfaceMakeCardActive(name){
-		$("#"+name+"Td").css("opacity",1);
+		$("#"+name+"Td").css({"opacity":1,"cursor":"pointer"}).data("state","active");
 	}
 
 	function InterfaceSetInfo(card,info){
@@ -414,10 +422,7 @@
 		});
 
 
-		if(Countries[your_county].busy > Date.now() )
-			InterfaceHideBuildCards();
-		else
-			InterfaceShowCards();
+		InterfaceShowCards();
 
 		InterfaceUpdateStatus();
 
@@ -584,6 +589,7 @@
 
 
 		$("#nukeButton").click(function(){
+			if($("#nukeTd").data("state") !== "active") return;
 			block_window_click = true;
 			socket.emit('launch nuclear missile',{
 				target : selected_city,
@@ -592,11 +598,13 @@
 		});
 
 		$("#clearButton").click(function(){
+			if($("#clearTd").data("state") !== "active") return;
 			block_window_click = true;
 			socket.emit('clear area',selected_city);
 		});
 
 		$("#swapButton").click(function(){
+			if($("#swapTd").data("state") !== "active") return;
 			block_window_click = true;
 			socket.emit('transport',{
 				target : selected_city,
@@ -605,10 +613,12 @@
 		});
 
 		$("#buildButton").click(function(){
+			if($("#buildTd").data("state") !== "active") return;
 			block_window_click = true;
 			socket.emit('build missile launcher',selected_city);
 		});
 		$("#defenseButton").click(function(){
+			if($("#defenseTd").data("state") !== "active") return;
 			block_window_click = true;
 			socket.emit('build air defense',selected_city);
 		});
