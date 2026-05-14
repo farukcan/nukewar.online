@@ -44,11 +44,11 @@ could be spent on a low-value incoming missile while a missile heading for the
 command center was left untouched. Fixed by pre-sorting in-flight rockets so
 those targeting a `center` city are processed first.
 
-### 6. Bot Zombie State Is Irreversible
+### 6. ~~Bot Zombie State Is Irreversible~~ (Fixed)
 
-**File:** `NukeGameManager.js:419, 453`
+**File:** `NukeGameManager.js` — `updateBots()` rewritten
 
-When a bot loses its nuke and has no empty cities, `zombie = true` is set permanently. Bots cannot clear bombed cities, so they can never recover. Zombie bots are not `lose = true`, so they count toward `remain` in `checkGame()`, blocking the win condition. The last human player must manually destroy each zombie bot's command center.
+`Country.zombie` flag and all related checks removed. Bots now always stay active: on each tick they independently attempt to fire any ready launcher (attack step) and, when not busy, pick a weighted-random action — build launcher, build air defense, swap, or clear a bombed city. Bots can no longer get stuck as zombies, which also resolves the win-condition deadlock described in issue 7.
 
 ### 7. Win Condition Edge Case
 

@@ -357,109 +357,135 @@ var NukeGameManager = {
 				shuffle(cities);
 				return cities[0];
 			},
-			updateBots : function(){
-				// # Bilgisayarın insanlarla ve birbiriyle çatışmasını sağlayan fonksiyon
-				// taktik maktik yok bam bam bam
-				for(var countryname in this.Countries){ // her ülke için
-					var Country = this.Countries[countryname];
-					if(Country.isBot && !Country.lose && Country.busy<Date.now()){ // botsa ve kaybetmediyse ve meşgul değilse
+		updateBots : function(){
+			if(this.Status !== "playing") return;
 
-						if(Country.zombie) continue; // yarı ölüyse boşver
+			for(var countryname in this.Countries){
+				var Country = this.Countries[countryname];
+				if(!Country.isBot || Country.lose) continue;
 
-						if(Math.random() > 0.75 ) continue; // botun hamle zamanı ön görülemez olsun
-
-						var nuke = "none";
-
-						// nuke bul ()
-						for(var n in Country.cities){
-							if(!Country.cities[n].bombed && Country.cities[n].build && Country.cities[n].build.type=="nuclear"){
-								nuke = n;
-								break;
-							}
-						}
-
-						if(nuke!="none"){
-
-							if(Country.cities[nuke].build.usable < Date.now()){ // füze hazırsa
-
-								// saldır
-								var enemy = this.getEnemy(countryname); // rastgele bir düşman seç
-
-								if(enemy != "none"){
-
-									var to = this.getEnemyCity(enemy); // rastgele bir şehir seç
-
-									var from = Country.cities[nuke];
-									var target = this.Countries[enemy].cities[to];
-
-									var cost = RocketController.calcTime(from,target);
+				// --- Attack step (independent of busy) ---
+				// Find a ready nuclear launcher and fire at an enemy city.
+					for(var n in Country.cities){
+						var launcherCity = Country.cities[n];
+						if(!launcherCity.bombed && launcherCity.build && launcherCity.build.type === "nuclear"){
+							if(launcherCity.build.usable < Date.now()){
+								var enemy = this.getEnemy(countryname);
+								if(enemy !== "none"){
+								var to = this.getEnemyCity(enemy);
+								if(!to) break;
+								var target = this.Countries[enemy].cities[to];
+								if(!target) break;
+								var cost = RocketController.calcTime(launcherCity, target);
 									var reloadCost = NukewarStandarts.ReloadCost;
 									if(Country.strategy === "aggressive") reloadCost = Math.floor(reloadCost * 0.9);
-									from.build.usable = Date.now() + reloadCost + cost;
+									launcherCity.build.usable = Date.now() + reloadCost + cost;
 
-									var move = {
+									var rocketMove = {
 										country : countryname,
-										type : "rocket",
-										target : to,
-										from : nuke,
-										now : Date.now(),
-										ends : (Date.now() + cost )
+										type    : "rocket",
+										target  : to,
+										from    : n,
+										now     : Date.now(),
+										ends    : Date.now() + cost
 									};
-
-									
-									NukeGameServer.io.to(this.room).emit('move',move);
-									this.Moves.push(move);
-
-
-									// FIN
-
-								}else{
-									Country.zombie = true; // düşman bulamazsa zombi olur
-									// FIN
+									NukeGameServer.io.to(this.room).emit('move', rocketMove);
+									this.Moves.push(rocketMove);
 								}
-
-							}else{
-								// FIN
+								break; // one shot per tick per country
 							}
-
-						}else{
-
-							var emptycity = "none";
-
-							// boş şehir bul ()
-							for(var n in Country.cities){
-								if(!Country.cities[n].bombed && Country.cities[n].build==false){
-									emptycity = n;
-									break;
-								}
-							}
-
-							if(emptycity != "none"){
-								// inşa et
-								Country.busy = Date.now() + NukewarStandarts.BuildCost;
-
-								// timer ile şehre bir nuke build et ve update
-								var move = {
-									type : "build",
-									target : emptycity,
-									ends : Country.busy
-								};
-
-								this.Moves.push(move);
-								// FIN
-							}else{
-								Country.zombie = true; //nuke yok ve boş şehir kalmadıysa bot zombi olur
-								// FIN
-								
-							}
-
+							break; // launcher found but cooling down
 						}
-						
-
-
 					}
-				}
 
+					// --- Busy-action step ---
+					if(Country.busy >= Date.now()) continue;
+
+					var emptyCities  = [];
+					var bombedCities = [];
+					var swapFrom     = "none";
+					var swapTo       = "none";
+
+					for(var ct in Country.cities){
+						var city = Country.cities[ct];
+						if(city.bombed){
+							bombedCities.push(ct);
+						} else {
+							if(!city.build){
+								emptyCities.push(ct);
+							} else if(city.build.type !== "center" && swapFrom === "none"){
+								swapFrom = ct;
+							} else if(swapTo === "none"){
+								swapTo = ct;
+							}
+						}
+					}
+
+					var canSwap = (swapFrom !== "none" && swapTo !== "none");
+
+					var candidates = [];
+					if(emptyCities.length > 0)  candidates.push({ action: "buildLauncher", weight: 30 });
+					if(emptyCities.length > 0)  candidates.push({ action: "buildAD",       weight: 30 });
+					if(canSwap)                 candidates.push({ action: "swap",           weight: 20 });
+					if(bombedCities.length > 0) candidates.push({ action: "clean",          weight: 20 });
+
+					if(candidates.length === 0) continue;
+
+					var totalWeight = 0;
+					for(var ci = 0; ci < candidates.length; ci++) totalWeight += candidates[ci].weight;
+					var roll = Math.random() * totalWeight;
+					var chosen = candidates[0].action;
+					var acc = 0;
+					for(var ci = 0; ci < candidates.length; ci++){
+						acc += candidates[ci].weight;
+						if(roll < acc){ chosen = candidates[ci].action; break; }
+					}
+
+					var busyMove = null;
+
+					if(chosen === "buildLauncher"){
+						shuffle(emptyCities);
+						Country.busy = Date.now() + NukewarStandarts.BuildCost;
+						busyMove = {
+							country : countryname,
+							type    : "build",
+							target  : emptyCities[0],
+							ends    : Country.busy
+						};
+
+					} else if(chosen === "buildAD"){
+						shuffle(emptyCities);
+						Country.busy = Date.now() + NukewarStandarts.AirDefenseCost;
+						busyMove = {
+							country : countryname,
+							type    : "airdefense",
+							target  : emptyCities[0],
+							ends    : Country.busy
+						};
+
+					} else if(chosen === "swap"){
+						Country.busy = Date.now() + NukewarStandarts.SwapCost;
+						busyMove = {
+							country : countryname,
+							type    : "swap",
+							target  : swapTo,
+							from    : swapFrom,
+							ends    : Country.busy
+						};
+
+					} else if(chosen === "clean"){
+						shuffle(bombedCities);
+						Country.busy = Date.now() + NukewarStandarts.ClearCost;
+						busyMove = {
+							country : countryname,
+							type    : "clear",
+							target  : bombedCities[0],
+							ends    : Country.busy
+						};
+					}
+
+					if(busyMove) this.Moves.push(busyMove);
+				}
 			}
 		}
 

@@ -46,12 +46,14 @@
 				$('#matchmaking_timer').text('0:00');
 				break;
 
-			case 'game':
-				InterfaceSetState(state);
+		case 'game':
+			InterfaceSetState(state);
 
-				RocketController.deleteAll();
-				glitchPass.active = false;
-				break;
+			RocketController.deleteAll();
+			glitchPass.active = false;
+			$('.strategy_btn').removeClass('strategy_selected');
+			$('#strategy_select').fadeIn(300);
+			break;
 
 			case 'gameover':
 				InterfaceSetState(state);
