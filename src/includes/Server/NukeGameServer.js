@@ -69,7 +69,7 @@ NukeGameServer.io.on('connection',function(socket){
 	};
 	socket.win=function(){
 		// şuanlık lose değilde maine gönderelim
-		socket.Notice('<b lang="en">You are winner</b>');
+		socket.Notice('<b lang="en">You are the winner</b>');
 		socket.Game = null;
 		socket.JoinRoom("gameover");
 		socket.emit('state','win');
@@ -139,7 +139,7 @@ NukeGameServer.io.on('connection',function(socket){
 			logger.info(socket.username + ' : ' + msg + " [" + socket.room + "]");
 		}else{
 			socket.TimeLimitOfMessage += 2000;
-			socket.Notice('<b lang="en">Please wait for send message</b>');
+			socket.Notice('<b lang="en">Please wait before sending a message</b>');
 		}
 
 	});
@@ -151,12 +151,12 @@ NukeGameServer.io.on('connection',function(socket){
 
 		if(socket.TimeLimitOfMessage < Date.now()){
 			var report = EscapeMessage(msg.substring(0, 255));
-			socket.Notice('<b lang="en">Bug report sended</b> : ' + report);
+			socket.Notice('<b lang="en">Bug report sent</b> : ' + report);
 			logger.info(socket.username + " [BUG] "+ report);
 			socket.TimeLimitOfMessage = Date.now()+500;
 		}else{
 			socket.TimeLimitOfMessage += 2000;
-			socket.Notice('<b lang="en">Please wait for send message</b>');
+			socket.Notice('<b lang="en">Please wait before sending a message</b>');
 		}
 
 	});
@@ -203,8 +203,8 @@ NukeGameServer.io.on('connection',function(socket){
 		var Country = socket.Game.Countries[socket.country];
 
 		// kendi şehri değilse
-		if(socket.isYours(config.target)) return socket.Notice("<err lang='en'>City is yours</err>");
-		if(!socket.isYours(config.from)) return socket.Notice("<err lang='en'>It is not your city</err>");
+		if(socket.isYours(config.target)) return socket.Notice("<err lang='en'>This city is yours</err>");
+		if(!socket.isYours(config.from)) return socket.Notice("<err lang='en'>This is not your city</err>");
 
 		// o şehir bombalanmadıysa
 		if(target.bombed) return socket.Notice("<err lang='en'>City is already bombed</err>");
@@ -213,7 +213,7 @@ NukeGameServer.io.on('connection',function(socket){
 		if(socket.Game.Status == "start") return socket.Notice("<err lang='en'>Game has not started yet</err>");
 
 		// from geçerliyse ve orada nuke varsa
-		if(!from.build || from.build.type != "nuclear" ) return socket.Notice("<err lang='en'>City has not nuclear launcher</err>");
+		if(!from.build || from.build.type != "nuclear" ) return socket.Notice("<err lang='en'>City has no nuclear launcher</err>");
 
 		// nuke varsa bir sonraki zamanı uygunsa
 		if(from.build.usable > Date.now() ) return socket.Notice("<err lang='en'>Nuclear launcher is not ready, please wait</err>");
@@ -251,7 +251,7 @@ NukeGameServer.io.on('connection',function(socket){
 
 
 		// kendi şehriyse
-		if(!socket.isYours(target)) return socket.Notice("<err lang='en'>It is not your city</err>");
+		if(!socket.isYours(target)) return socket.Notice("<err lang='en'>This is not your city</err>");
 
 		// bombalandıyysa
 		if(!Target.bombed) return socket.Notice("<err lang='en'>City is not damaged</err>");
@@ -274,7 +274,7 @@ NukeGameServer.io.on('connection',function(socket){
 		socket.emit('move',move);
 		socket.SendPrivateData();
 
-		socket.Notice(target+" <b lang='en'>is clearing</b>");
+		socket.Notice(target+" <b lang='en'>is being repaired</b>");
 
 	} );
 
@@ -291,8 +291,8 @@ NukeGameServer.io.on('connection',function(socket){
 		var Country = socket.Game.Countries[socket.country];
 
 		// iki şehirde kendi şehriyse
-		if(!socket.isYours(config.target)) return socket.Notice("<err lang='en'>It is not your city</err>");
-		if(!socket.isYours(config.from)) return socket.Notice("<err lang='en'>It is not your city</err>");
+		if(!socket.isYours(config.target)) return socket.Notice("<err lang='en'>This is not your city</err>");
+		if(!socket.isYours(config.from)) return socket.Notice("<err lang='en'>This is not your city</err>");
 
 		// iki şehirde bombalanmadıysa
 		if(target.bombed || from.bombed ) return socket.Notice("<err lang='en'>City is bombed</err>");
@@ -316,7 +316,7 @@ NukeGameServer.io.on('connection',function(socket){
 		socket.emit('move',move);
 		socket.SendPrivateData();
 
-		socket.Notice(config.from+" <b lang='en'>is transporting to</b> "+config.target);
+		socket.Notice(config.from+" <b lang='en'>is being transported to</b> "+config.target);
 
 
 	} );
@@ -332,7 +332,7 @@ NukeGameServer.io.on('connection',function(socket){
 		var Country = socket.Game.Countries[socket.country];
 
 		// kendi şehriyse
-		if(!socket.isYours(target)) return socket.Notice("<err lang='en'>It is not your city</err>");
+		if(!socket.isYours(target)) return socket.Notice("<err lang='en'>This is not your city</err>");
 
 		// bombalanmadıysa
 		if(Target.bombed) return socket.Notice("<err lang='en'>City is bombed</err>");
@@ -358,7 +358,7 @@ NukeGameServer.io.on('connection',function(socket){
 		socket.emit('move',move);
 		socket.SendPrivateData();
 
-		socket.Notice("<b lang='en'>Building nuclear launcher to</b> "+target);
+		socket.Notice("<b lang='en'>Building nuclear launcher in</b> "+target);
 
 
 	} );
@@ -371,7 +371,7 @@ NukeGameServer.io.on('connection',function(socket){
 
 		if(typeof(socket.Game) == 'undefined' || typeof(socket.Game) == 'null' ) return socket.Notice("ERR");
 
-		if(!socket.isYours(target)) return socket.Notice("<err lang='en'>It is not your city</err>");
+		if(!socket.isYours(target)) return socket.Notice("<err lang='en'>This is not your city</err>");
 
 
 		var Target = socket.getCity(target);
@@ -401,7 +401,7 @@ NukeGameServer.io.on('connection',function(socket){
 		socket.emit('move',move);
 		socket.SendPrivateData();
 
-		socket.Notice("<b lang='en'>Air Defense building ...</b>");
+		socket.Notice("<b lang='en'>Building air defense ...</b>");
 
 	} );
 

@@ -29,15 +29,15 @@
 			<h1 lang="en">How to play?</h1>
 
 			<ul>
-				<li lang="en">Country that command center is destroyed lose the game</li>
-				<li lang="en">All countries are each other's enemy</li>
-				<li lang="en">Only survived country wins the game</li>
-				<li lang="en">You can release nuclear bomb from city that has nuclear launcher</li>
+				<li lang="en">The country whose command center is destroyed loses the game</li>
+				<li lang="en">All countries are enemies of each other</li>
+				<li lang="en">Only the surviving country wins the game</li>
+				<li lang="en">You can launch a nuclear bomb from a city that has a nuclear launcher</li>
 			</ul>
 
-			<img src="images/center.svg" width="16px" /> <span id="infcenter" lang="en">Command Center : If you lose this city you lose the game. You can transport cities</span> <br/>
+			<img src="images/center.svg" width="16px" /> <span id="infcenter" lang="en">Command Center : If you lose this city, you lose the game. You can transport cities</span> <br/>
 			<img src="images/nuclear.svg" width="16px" /> <span id="infnuclear" lang="en">Nuclear launcher : You can destroy enemy cities</span> <br/>
-			<img src="images/city.svg" width="16px" /> <span id="infcity" lang="en">Civilian city : You can build new nuclear launcher</span> <br/>
+			<img src="images/city.svg" width="16px" /> <span id="infcity" lang="en">Civilian city : You can build a new nuclear launcher</span> <br/>
 			<img src="images/airdefense.svg" width="16px" /> <span id="infairdefense" lang="en">Air Defense : You can defend your country against enemy nuclear missiles</span> <br/>
 
 			<div id="strategy_select">
@@ -66,7 +66,7 @@
 
 			<h2 id="youwon" lang="en">You won</h2>
 
-			<span lang="en">If this war actually was real, we would have lost all the world because of radiation and nuclear winter...</span>
+			<span lang="en">If this war had been real, we would have lost the whole world to radiation and nuclear winter...</span>
 
 			<button onclick="Exit()" class="playagain" lang="en">Play Again</button>
 
@@ -215,10 +215,10 @@
 
 			<table>			
 				<tr id="nukeTd" class="card"><td><img id="nukeButton" height="48px" src="images/nuke.svg" onmouseover="this.src='images/nuke2.svg';" onmouseout="this.src='images/nuke.svg';"/></td><td><span lang="en">Launch nuclear missile from</span> <missileselector id="missilefrom">[ ]</missileselector> <inf>x sec</inf></td></tr>
-				<tr id="clearTd" class="card"><td><img id="clearButton" height="48px" src="images/clear.svg" onmouseover="this.src='images/clear2.svg';" onmouseout="this.src='images/clear.svg';"/></td><td><span lang="en">Clear Area</span> <inf>60 sec</inf></td></tr>
-				<tr id="swapTd" class="card"><td><img id="swapButton" height="48px" src="images/swap.svg" onmouseover="this.src='images/swap2.svg';" onmouseout="this.src='images/swap.svg';"/></td><td><span lang="en">Transport to</span> <cityselector id="cityfrom">[ ]</cityselector> <inf>180 sec</inf></td></tr>
+				<tr id="clearTd" class="card"><td><img id="clearButton" height="48px" src="images/clear.svg" onmouseover="this.src='images/clear2.svg';" onmouseout="this.src='images/clear.svg';"/></td><td><span lang="en">Repair city</span> <inf>60 sec</inf></td></tr>
+				<tr id="swapTd" class="card"><td><img id="swapButton" height="48px" src="images/swap.svg" onmouseover="this.src='images/swap2.svg';" onmouseout="this.src='images/swap.svg';"/></td><td><span lang="en">Transport city to</span> <cityselector id="cityfrom">[ ]</cityselector> <inf>180 sec</inf></td></tr>
 
-				<tr id="buildTd" class="card"><td><img id="buildButton" height="48px" src="images/build.svg" onmouseover="this.src='images/build2.svg';" onmouseout="this.src='images/build.svg';"/></td><td><span lang="en">Build missile launcher</span><inf>240 sec</inf></td></tr>
+				<tr id="buildTd" class="card"><td><img id="buildButton" height="48px" src="images/build.svg" onmouseover="this.src='images/build2.svg';" onmouseout="this.src='images/build.svg';"/></td><td><span lang="en">Build nuclear missile launcher</span><inf>240 sec</inf></td></tr>
 				<tr id="defenseTd" class="card"><td><img id="defenseButton" height="48px" src="images/airdefenseM.svg" onmouseover="this.src='images/airdefenseM2.svg';" onmouseout="this.src='images/airdefenseM.svg';"/></td><td><span lang="en">Build air defense</span><inf>240 sec</inf></td></tr>
 			</table>
 
@@ -231,7 +231,7 @@
 				<p>
 					<b lang="en">Population</b> : <span id="selected_country_population">0</span>
 				</p>
-				<p id="outmissiles_p"> <b lang="en">Outcoming missiles</b> : <span id="outcoming_old">newyork</span> </p>
+				<p id="outmissiles_p"> <b lang="en">Outgoing missiles</b> : <span id="outcoming_old">newyork</span> </p>
 				<p>
 					<span id="outcoming_now">[ Gönderiliyor - Sarı ]</span>
 				</p>

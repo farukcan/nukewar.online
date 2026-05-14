@@ -113,7 +113,7 @@
 						InterfaceSetInfo('defense',RemainTime(adCostDisplay));
 					}
 
-					InterfaceSetInfo('nuke',translate('City is yours'));
+					InterfaceSetInfo('nuke',translate('This city is yours'));
 					
 				}
 
@@ -122,10 +122,10 @@
 				InterfaceMakeCardPassive("nuke");
 				InterfaceSetInfo('nuke',translate('Game has not started yet'));
 
-				InterfaceSetInfo('clear',translate('It is not your city'));
-				InterfaceSetInfo('swap',translate('It is not your city'));
-				InterfaceSetInfo('build',translate('It is not your city'));
-				InterfaceSetInfo('defense',translate('It is not your city'));
+				InterfaceSetInfo('clear',translate('This is not your city'));
+				InterfaceSetInfo('swap',translate('This is not your city'));
+				InterfaceSetInfo('build',translate('This is not your city'));
+				InterfaceSetInfo('defense',translate('This is not your city'));
 
 			}else{
 
@@ -147,10 +147,10 @@
 
 
 
-				InterfaceSetInfo('clear',translate('It is not your city'));
-				InterfaceSetInfo('swap',translate('It is not your city'));
-				InterfaceSetInfo('build',translate('It is not your city'));
-				InterfaceSetInfo('defense',translate('It is not your city'));
+				InterfaceSetInfo('clear',translate('This is not your city'));
+				InterfaceSetInfo('swap',translate('This is not your city'));
+				InterfaceSetInfo('build',translate('This is not your city'));
+				InterfaceSetInfo('defense',translate('This is not your city'));
 			}
 
 			// Override build cards when country is busy
@@ -201,7 +201,7 @@
 				var t = "city";
 				if(Cities[selected_city].build) t = Cities[selected_city].build.type;
 				if(Cities[selected_city].bombed) 
-					$("#cityinf").html("Your city is bombed. Please clear this city");
+					$("#cityinf").html("Your city is bombed. Please repair this city");
 				else
 					$("#cityinf").html($("#inf"+t).html());
 			}
@@ -210,7 +210,7 @@
 				if(Cities[selected_city].bombed) 
 					$("#cityinf").html("City is bombed");
 				else
-					$("#cityinf").html("You should destroy this city if the command center is here");
+					$("#cityinf").html("You should destroy this city if the enemy's command center is here");
 			}	
 
 
@@ -410,7 +410,7 @@
 			}
 
 			if(citynum!=0)
-				$("#cityselect_"+country).find("option[value='none']").html(citynum+" "+translate("City Left"));
+				$("#cityselect_"+country).find("option[value='none']").html(citynum+" "+translate("cities left"));
 			else
 				$("#cityselect_"+country).find("option[value='none']").html(translate("Defeated"));				
 

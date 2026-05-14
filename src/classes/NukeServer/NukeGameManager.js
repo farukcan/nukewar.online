@@ -209,7 +209,7 @@ var NukeGameManager = {
 								usable : 0
 							};
 							if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
-								this.Countries[c].socket.Notice('<b lang="en">Nuclear launcher successfully built to</b> '+Move.target);
+								this.Countries[c].socket.Notice('<b lang="en">Nuclear launcher successfully built in</b> '+Move.target);
 								this.Countries[c].socket.SendPrivateData();
 							}
 						}
@@ -225,7 +225,7 @@ var NukeGameManager = {
 								type : "airdefense"
 							};
 							if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
-								this.Countries[c].socket.Notice('<b lang="en">Air defense successfully built to</b> '+Move.target);
+								this.Countries[c].socket.Notice('<b lang="en">Air defense successfully built in</b> '+Move.target);
 								this.Countries[c].socket.SendPrivateData();
 							}
 						}
@@ -237,7 +237,7 @@ var NukeGameManager = {
 						target.bombed = false;
 
 						if(!this.Countries[c].lose && this.Countries[c].socket && this.Countries[c].socket.SendPrivateData){
-							this.Countries[c].socket.Notice('<b lang="en">City successfully cleared :</b> '+Move.target);
+							this.Countries[c].socket.Notice('<b lang="en">City successfully repaired :</b> '+Move.target);
 							this.Countries[c].socket.SendPrivateData();
 						}
 
