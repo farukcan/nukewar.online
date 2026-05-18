@@ -1,5 +1,20 @@
 # Nukewar Online
 
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?logo=javascript&logoColor=black)
+![License](https://img.shields.io/badge/License-ISC-blue?logo=opensourceinitiative&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-supported-2496ED?logo=docker&logoColor=white)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-4.x-010101?logo=socket.io&logoColor=white)
+![Three.js](https://img.shields.io/badge/Three.js-3D%20Globe-black?logo=three.js&logoColor=white)
+![jQuery](https://img.shields.io/badge/jQuery-UI-0769AD?logo=jquery&logoColor=white)
+![npm](https://img.shields.io/badge/npm-required-CB3837?logo=npm&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Browser-4285F4?logo=googlechrome&logoColor=white)
+![Multiplayer](https://img.shields.io/badge/Multiplayer-up%20to%2010%20players-FF6600)
+![Realtime](https://img.shields.io/badge/Real--time-WebSocket-00C7B7?logo=websocket&logoColor=white)
+![Game](https://img.shields.io/badge/Genre-Strategy%20%7C%20Nuclear%20Warfare-8B0000)
+![Players](https://img.shields.io/badge/Bots-AI%20opponents-6A0DAD)
+![Port](https://img.shields.io/badge/Default%20Port-80-lightgrey)
+
 A real-time, browser-based multiplayer nuclear warfare strategy game. Battleship-style gameplay set on a 3D globe where up to 10 countries compete to destroy each other's command centers with nuclear missiles.
 
 ## Tech Stack
