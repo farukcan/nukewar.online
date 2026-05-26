@@ -13,7 +13,7 @@
 ![Realtime](https://img.shields.io/badge/Real--time-WebSocket-00C7B7?logo=websocket&logoColor=white)
 ![Game](https://img.shields.io/badge/Genre-Strategy%20%7C%20Nuclear%20Warfare-8B0000)
 ![Players](https://img.shields.io/badge/Bots-AI%20opponents-6A0DAD)
-![Port](https://img.shields.io/badge/Default%20Port-80-lightgrey)
+![Port](https://img.shields.io/badge/Default%20Port-3000-lightgrey)
 
 A real-time, browser-based multiplayer nuclear warfare strategy game. Battleship-style gameplay set on a 3D globe where up to 10 countries compete to destroy each other's command centers with nuclear missiles.
 
@@ -64,7 +64,7 @@ npm start
 
 This runs `node app.js`, which:
 1. Boots the katip-framework (loads configs, functions, classes, includes from `src/`)
-2. Starts an HTTP server on port **80** (or `$PORT` env variable)
+2. Starts an HTTP server on port **3000** (or `$PORT` env variable)
 3. Starts a Socket.IO server on the same port (attached to the HTTP server)
 
 For development with auto-rebuild on source changes, use `npm run dev` instead. It runs `node app.js --dev`, which builds once and then watches the client source files via chokidar, rebuilding `game.js` on every change while the server is running.
@@ -72,10 +72,10 @@ For development with auto-rebuild on source changes, use `npm run dev` instead. 
 ### 4. Open in browser
 
 ```
-http://localhost:80
+http://localhost:3000
 ```
 
-> **Note**: Port 80 may require root/admin privileges. Set a custom port via environment variable:
+> **Note**: Set a custom port via environment variable:
 > ```bash
 > PORT=8080 npm start
 > ```
