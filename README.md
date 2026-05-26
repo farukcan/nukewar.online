@@ -82,16 +82,43 @@ http://localhost:80
 
 ## Running with Docker
 
+The container does **not** start the game server immediately. It runs `wrapper.js`, a lightweight TCP proxy that spawns the game on demand and shuts it down after idle time.
+
 ```bash
 docker build -t nukewar .
-docker run -p 80:80 nukewar
+docker run -p 3000:3000 nukewar
 ```
+
+Connect to `http://localhost:3000` (or map another host port, e.g. `-p 8080:3000`).
+
+### Wrapper (`wrapper.js`)
+
+In Docker, `node wrapper.js` is the entrypoint. The wrapper listens on `LISTEN_PORT` (default **3000**) and forwards each incoming TCP connection to the game process on `GAME_PORT` (default **3001**).
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `LISTEN_PORT` | `3000` | Public port the wrapper accepts connections on |
+| `GAME_PORT` | `3001` | Internal port where `app.js` listens after spawn |
+| `GAME_CMD` | `node` | Executable used to start the game |
+| `GAME_ARGS` | `app.js` | Space-separated arguments passed to `GAME_CMD` |
+| `IDLE_MS` | `300000` | Kill the game after this many ms with zero active connections |
+| `BOOT_TIMEOUT` | `30000` | Max wait for the game to accept connections on `GAME_PORT` |
+
+**Lifecycle:**
+
+1. A client connects to `LISTEN_PORT`.
+2. If the game is not running, the wrapper spawns it (`PORT=GAME_PORT`) and waits until `GAME_PORT` is reachable.
+3. The wrapper pipes the client socket to the game server.
+4. When all connections close, an idle timer starts; after `IDLE_MS` with no connections, the game process is terminated to free memory.
+
+For local development without Docker, run `npm start` directly (no wrapper).
 
 ## Project Structure
 
 ```
 .
 ├── app.js                      # Entry point - boots katip-framework
+├── wrapper.js                  # Docker entrypoint: on-demand spawn + TCP proxy
 ├── katip-framework/            # Custom module loader framework
 │   ├── loader.js               # Main loader (configs, functions, classes, includes)
 │   ├── watcher.js              # File watcher for hot-reload
@@ -129,6 +156,7 @@ docker run -p 80:80 nukewar
 - **katip-framework**: A custom module loader that uses `eval()` to load configs, functions, classes, and includes from the `src/` directory. It provides dependency ordering via `depends()` and `needs()` declarations.
 - **Client JS build**: `game.js` is built explicitly via `npm run build` (one-shot) or `npm run dev` (build + chokidar watch for hot-rebuild). The default `npm start` does not trigger any build.
 - **Shared code**: Some classes (GPos, Countries, RocketController, NukewarStandarts) are shared between server (loaded via eval) and client (concatenated into game.js).
+- **Docker wrapper**: Production containers use `wrapper.js` instead of starting `app.js` at boot. The game only runs while players are connected (plus `IDLE_MS` grace), which reduces idle resource usage on platforms like Fly.io or similar always-on hosts.
 
 ## License
 
