@@ -140,7 +140,7 @@ For local development without Docker, run `npm start` directly (no wrapper).
 │   │   └── Server/
 │   │       ├── HTTP.js           # HTTP server & static file serving
 │   │       ├── NukeGameServer.js # Game logic, Socket.IO events, lobby, matchmaking
-│   │       └── WebConsole.js     # Debug console (Socket.IO /console namespace)
+│   │       └── WebConsole.js     # Debug console (disabled: unauthenticated remote code execution)
 │   └── assets/
 │       ├── JS/main/            # Client-side game code (Three.js scenes, controls, UI)
 │       ├── JS/languages/       # i18n translations
@@ -152,7 +152,7 @@ For local development without Docker, run `npm start` directly (no wrapper).
 
 ## Architecture Notes
 
-- **Single port**: Both HTTP and Socket.IO run on the same port. The game uses the default `/` namespace; the debug WebConsole uses the `/console` namespace.
+- **Single port**: Both HTTP and Socket.IO run on the same port. The game uses the default `/` namespace. The debug WebConsole (`/console` namespace) is disabled because it runs arbitrary code without authentication.
 - **katip-framework**: A custom module loader that uses `eval()` to load configs, functions, classes, and includes from the `src/` directory. It provides dependency ordering via `depends()` and `needs()` declarations.
 - **Client JS build**: `game.js` is built explicitly via `npm run build` (one-shot) or `npm run dev` (build + chokidar watch for hot-rebuild). The default `npm start` does not trigger any build.
 - **Shared code**: Some classes (GPos, Countries, RocketController, NukewarStandarts) are shared between server (loaded via eval) and client (concatenated into game.js).

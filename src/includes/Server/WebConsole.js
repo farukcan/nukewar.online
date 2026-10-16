@@ -1,3 +1,6 @@
+// Disabled: the /console namespace has no authentication and evals arbitrary code on the server.
+// Do not re-enable without adding authentication.
+/*
 depends("Server/HTTP.js");
 depends("Server/NukeGameServer.js");
 
@@ -68,5 +71,6 @@ function loadConsoleCMDs(){
 		eval("console_cmds['"+_file+"'] = " + readFile(Settings.WebConsole.Dir+_files[key]));
 	}
 }
+*/
 
 
