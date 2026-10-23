@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:26.12.1-alpine
 
 COPY package.json /srv
 COPY app.js /srv

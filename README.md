@@ -1,6 +1,6 @@
 # Nukewar Online 2016 (game)
 
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-26.12.1-339933?logo=node.js&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?logo=javascript&logoColor=black)
 ![License](https://img.shields.io/badge/License-ISC-blue?logo=opensourceinitiative&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-supported-2496ED?logo=docker&logoColor=white)
@@ -19,7 +19,7 @@ A real-time, browser-based multiplayer nuclear warfare strategy game. Battleship
 
 ## Tech Stack
 
-- **Server**: Node.js (>=18) with custom "katip-framework" (file-based module loader)
+- **Server**: Node.js 26.12.1 with custom "katip-framework" (file-based module loader)
 - **Networking**: Socket.IO 4.x (real-time WebSocket communication)
 - **3D Rendering**: Three.js (Earth globe with atmosphere, rockets, explosions, lens flares)
 - **Client Libraries**: jQuery, SweetAlert, Howler.js (audio), js-cookie
@@ -37,7 +37,7 @@ A real-time, browser-based multiplayer nuclear warfare strategy game. Battleship
 
 ## Prerequisites
 
-- **Node.js 18+** (tested on Node.js 25)
+- **Node.js 26.12.1** (Docker image `node:26.12.1-alpine`)
 - **npm** (comes with Node.js)
 
 ## Getting Started
